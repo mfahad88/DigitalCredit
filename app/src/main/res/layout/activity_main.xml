@@ -15,6 +15,16 @@
         android:layout_alignParentTop="true"
         android:textAllCaps="true"
         android:textStyle="bold"
+        android:id="@+id/textViewUsername"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/textViewUsername"
+        android:layout_centerInParent="true"
+        android:id="@+id/editTextUsername"
         android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
