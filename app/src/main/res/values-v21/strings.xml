@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_score">Base Score</string>
+    <string name="behavior_score">Behavior Score</string>
+    <string name="available_limit">Available Limit</string>
+</resources>
