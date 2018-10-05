@@ -17,4 +17,8 @@
     <string name="base_score">Base Score</string>
     <string name="behavior_score">Behavior Score</string>
     <string name="available_limit">Available Limit</string>
+    <string name="avail_loan">Avail Loan</string>
+    <string name="history">History</string>
+    <string name="repayments">Repayments</string>
+    <string name="notifications">Notifications</string>
 </resources>
