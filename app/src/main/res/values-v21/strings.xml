@@ -7,4 +7,8 @@
     <string name="history">History</string>
     <string name="repayments">Repayments</string>
     <string name="notifications">Notifications</string>
+    <string name="tenure">Tenure</string>
+    <string name="consumed_amount">Consumed Amount</string>
+    <string name="processing_fee">Processing Fee</string>
+    <string name="available_balance">Available Balance</string>
 </resources>

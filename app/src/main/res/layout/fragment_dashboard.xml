@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".DashboardFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/linearScore"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:cardCornerRadius="5dp"
+                android:layout_margin="5dp"
+                android:id="@+id/card_view_base"
+                app:cardBackgroundColor="#1Affffff">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/base_score"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="17sp"
+                    android:textAlignment="center"
+                    android:padding="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:textSize="70sp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:padding="5dp"
+                    android:id="@+id/textViewBase"/>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:cardCornerRadius="5dp"
+                android:layout_margin="5dp"
+                android:id="@+id/case_view_behavior"
+                app:cardBackgroundColor="#1Affffff">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:padding="5dp"
+                    android:textSize="17sp"
+                    android:textAlignment="center"
+                    android:text="Behavior Score"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:textSize="70sp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:padding="5dp"
+                    android:id="@+id/textViewBehavior"/>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearScore"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            app:cardCornerRadius="5dp"
+            android:layout_margin="5dp"
+            app:cardBackgroundColor="#1Affffff">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="sans-serif-smallcaps"
+                android:padding="5dp"
+                android:textSize="17sp"
+                android:textAlignment="center"
+                android:text="@string/available_limit"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 2000"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-smallcaps"
+                android:textSize="70sp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:padding="5dp"
+                android:id="@+id/textViewAvailablelimit"/>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>
