@@ -12,4 +12,5 @@
     <string name="processing_fee">Processing Fee</string>
     <string name="available_balance">Available Balance</string>
     <string name="home">Home</string>
+    <string name="dashboard">Dashboard</string>
 </resources>
