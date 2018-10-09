@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/jsbl_logo" />
 
@@ -27,7 +27,7 @@
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-smallcaps"
         android:textStyle="bold"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:textSize="@dimen/heading"
         android:textAlignment="center"
         android:text="@string/header" />
@@ -38,7 +38,7 @@
         android:layout_below="@id/textViewHead"
         android:hint="@string/full_name"
         android:ems="15"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/editTextFullname"
         android:textColor="@android:color/black"
@@ -52,20 +52,20 @@
         android:layout_below="@id/editTextFullname"
         android:hint="@string/cnic"
         android:ems="15"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textViewCnic"
-        android:textColor="@android:color/background_light"
+        android:id="@+id/editTextCnic"
+        android:textColor="@android:color/black"
         android:singleLine="true"
         android:inputType="number"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewCnic"
+        android:layout_below="@id/editTextCnic"
         android:hint="@string/mobile_no"
         android:ems="15"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/editTextMobileno"
         android:textColor="@android:color/black"
@@ -81,15 +81,17 @@
         android:textColor="@android:color/white"
         android:background="@drawable/button_bg_round"
         android:id="@+id/button"
-        android:layout_marginTop="20dp" />
+        android:padding="15dp"
+        android:layout_marginTop="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/by_login_you_confirm"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:fontFamily="sans-serif-condensed"
         android:layout_below="@id/button"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="18dp"
+        android:fontFamily="sans-serif-condensed"
         android:gravity="bottom"
-        />
+        android:text="@string/by_login_you_confirm" />
 </RelativeLayout>

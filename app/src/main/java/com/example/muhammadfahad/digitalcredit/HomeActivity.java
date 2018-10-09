@@ -1,10 +1,7 @@
 package com.example.muhammadfahad.digitalcredit;
 
-import android.app.FragmentManager;
-import android.graphics.Color;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -14,37 +11,67 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import com.example.muhammadfahad.digitalcredit.fragment.AvailLoanFragment;
+import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
 
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    FrameLayout layout;
-    FragmentTransaction ft;
-    Fragment fragment;
+    private FrameLayout layout;
+    private FragmentTransaction ft;
+    private Fragment fragment;
+    private Toolbar toolbar;
+    private TextView tvName;
+    private TextView tvCnic;
+    private Bundle extras;
+    private View header;
+    ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        init();
+        if(dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+    public void init(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Dashboard");
-//        toolbar.setTitleTextColor(Color.parseColor("#000000"));
+        dialog=new ProgressDialog(getApplicationContext());
+
         setSupportActionBar(toolbar);
         layout=findViewById(R.id.view_container);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        extras=getIntent().getExtras();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(this);
-        fragment=DashboardFragment.getInstance();
+        header=navigationView.getHeaderView(0);
+        tvName=header.findViewById(R.id.textViewName);
+        tvCnic=header.findViewById(R.id.textViewCnic);
+
+        if(extras!=null){
+            tvName.setText(extras.getString("name"));
+            tvCnic.setText(extras.getString("cnic"));
+        }
+        fragment= DashboardFragment.getInstance();
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);
         ft.commit();
+
+
     }
 
     @Override
@@ -62,22 +89,14 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if(id==R.id.avail_loan){
-            fragment=AvailLoanFragment.getInstance();
+        if(id==R.id.home_loan){
+            toolbar.setTitle("Dashboard");
+            fragment=DashboardFragment.getInstance();
         }
-       /* if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
+        else if(id==R.id.avail_loan) {
+            toolbar.setTitle("Avail Loan");
+            fragment = AvailLoanFragment.getInstance();
+        }
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);
         ft.commit();
