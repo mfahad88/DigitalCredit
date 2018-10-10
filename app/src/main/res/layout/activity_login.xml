@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/jsbl_logo" />
+
+   <TextView
+    android:id="@+id/textViewHead"
+    android:layout_width="200sp"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/imageView"
+    android:layout_centerHorizontal="true"
+    android:fontFamily="sans-serif-smallcaps"
+    android:textStyle="bold"
+    android:layout_marginTop="10dp"
+    android:textSize="@dimen/heading"
+    android:textAlignment="center"
+    android:text="@string/header" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewHead"
+        android:hint="@string/mobile_no"
+        android:ems="15"
+        android:layout_marginTop="70dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/editTextMobileno"
+        android:textColor="@android:color/black"
+        android:singleLine="true"
+        android:maxLength="11"
+        android:inputType="phone"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextMobileno"
+        android:hint="Password"
+        android:ems="15"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/editTextPassword"
+        android:textColor="@android:color/black"
+        android:singleLine="true"
+        android:maxLength="11"
+        android:inputType="textWebPassword"/>
+
+    <Button
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/submit"
+        android:layout_below="@id/editTextPassword"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_bg_round"
+        android:id="@+id/buttonSignin"
+        android:padding="15dp"
+        android:layout_marginTop="40dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/buttonSignin"
+        android:id="@+id/linearBottom"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonSignin"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_alignParentBottom="true"
+            android:gravity="start|bottom"
+            android:text="@string/don_t_have" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonSignin"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_alignParentBottom="true"
+            android:gravity="start|bottom"
+            android:textStyle="bold"
+            android:id="@+id/textViewSignup"
+            android:text=" Sign Up"
+            android:clickable="true"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

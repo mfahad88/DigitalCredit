@@ -1,37 +1,46 @@
 package com.example.muhammadfahad.digitalcredit.client;
 
+import com.example.muhammadfahad.digitalcredit.Interface.ApiInterface;
+import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
+
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ApiClient {
  
-    public static final String BASE_URL = "http://53.53.53.20:8080/";
+    public static final String BASE_URL = "http://53.53.53.28:8080/";
     private static Retrofit retrofit = null;
+
  
- 
-    public static Retrofit getInstance() {
+    public static ApiInterface getInstance() {
 
         if (retrofit==null) {
 
-            retrofit = new Retrofit.Builder()
+                    retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(getRequestHeader())
                     .build();
         }
-        return retrofit;
+        return retrofit.create(ApiInterface.class);
     }
 
     private static OkHttpClient getRequestHeader() {
+        HttpLoggingInterceptor interceptor=new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient httpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
         .connectTimeout(10,TimeUnit.SECONDS)
         .readTimeout(30,TimeUnit.SECONDS)
         .writeTimeout(20, TimeUnit.SECONDS)
         .build();
         return httpClient;
     }
+
 }

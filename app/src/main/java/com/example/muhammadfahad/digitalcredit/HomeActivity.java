@@ -14,7 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.muhammadfahad.digitalcredit.Model.InfoBean;
+import com.example.muhammadfahad.digitalcredit.Utils.Helper;
 import com.example.muhammadfahad.digitalcredit.fragment.AvailLoanFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
 
@@ -30,24 +33,35 @@ public class HomeActivity extends AppCompatActivity
     private Bundle extras;
     private View header;
     ProgressDialog dialog;
+    InfoBean bean;
+    private int counter=0;
+    private Helper helper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         init();
+
         if(dialog.isShowing()) {
             dialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        helper.clearSession(this);
+        super.onDestroy();
+
     }
 
     public void init(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Dashboard");
         dialog=new ProgressDialog(getApplicationContext());
-
+        bean=InfoBean.getInstance();
         setSupportActionBar(toolbar);
         layout=findViewById(R.id.view_container);
-
+        helper=Helper.getInstance();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -56,9 +70,9 @@ public class HomeActivity extends AppCompatActivity
         extras=getIntent().getExtras();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        navigationView.setNavigationItemSelectedListener(this);
         header=navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+
         tvName=header.findViewById(R.id.textViewName);
         tvCnic=header.findViewById(R.id.textViewCnic);
 
@@ -66,7 +80,7 @@ public class HomeActivity extends AppCompatActivity
             tvName.setText(extras.getString("name"));
             tvCnic.setText(extras.getString("cnic"));
         }
-        fragment= DashboardFragment.getInstance();
+        fragment=new DashboardFragment();
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);
         ft.commit();
@@ -76,11 +90,18 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        counter++;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+                if(counter>=2) {
+                    if(helper.clearSession(this)) {
+                        finishAffinity();
+                        System.exit(0);
+                    }
+                }
+//            super.onBackPressed();
         }
     }
 
@@ -91,11 +112,11 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
         if(id==R.id.home_loan){
             toolbar.setTitle("Dashboard");
-            fragment=DashboardFragment.getInstance();
+            fragment=new DashboardFragment();
         }
         else if(id==R.id.avail_loan) {
             toolbar.setTitle("Avail Loan");
-            fragment = AvailLoanFragment.getInstance();
+            fragment = new AvailLoanFragment();
         }
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);

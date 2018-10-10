@@ -57,4 +57,14 @@ public class InfoBean {
     public static void setBean(InfoBean bean) {
         InfoBean.bean = bean;
     }
+
+    @Override
+    public String toString() {
+        return "InfoBean{" +
+                "name='" + name + '\'' +
+                ", cnic='" + cnic + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
 }

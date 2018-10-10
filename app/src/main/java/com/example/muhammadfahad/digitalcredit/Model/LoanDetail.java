@@ -30,6 +30,10 @@ private String loanStatus;
 @Expose
 private String lastPaidDate;
 
+@SerializedName("remainingAmt")
+@Expose
+private int remainingAmt;
+
 public Integer getId() {
 return id;
 }
@@ -93,6 +97,14 @@ return lastPaidDate;
 public void setLastPaidDate(String lastPaidDate) {
 this.lastPaidDate = lastPaidDate;
 }
+
+    public int getRemainingAmt() {
+        return remainingAmt;
+    }
+
+    public void setRemainingAmt(int remainingAmt) {
+        this.remainingAmt = remainingAmt;
+    }
 
     @Override
     public String toString() {
