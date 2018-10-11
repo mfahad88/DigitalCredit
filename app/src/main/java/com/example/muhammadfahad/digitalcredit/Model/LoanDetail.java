@@ -34,6 +34,14 @@ private String lastPaidDate;
 @Expose
 private int remainingAmt;
 
+@SerializedName("loanFees")
+@Expose
+private int loanFees;
+
+@SerializedName("partialPayment")
+@Expose
+private boolean partialPayment;
+
 public Integer getId() {
 return id;
 }
@@ -106,17 +114,20 @@ this.lastPaidDate = lastPaidDate;
         this.remainingAmt = remainingAmt;
     }
 
-    @Override
-    public String toString() {
-        return "LoanDetail{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", amt=" + amt +
-                ", loanCreatedDate='" + loanCreatedDate + '\'' +
-                ", loanDueDate='" + loanDueDate + '\'' +
-                ", amtPaid=" + amtPaid +
-                ", loanStatus='" + loanStatus + '\'' +
-                ", lastPaidDate='" + lastPaidDate + '\'' +
-                '}';
+    public int getLoanFees() {
+        return loanFees;
     }
+
+    public void setLoanFees(int loanFees) {
+        this.loanFees = loanFees;
+    }
+
+    public boolean isPartialPayment() {
+        return partialPayment;
+    }
+
+    public void setPartialPayment(boolean partialPayment) {
+        this.partialPayment = partialPayment;
+    }
+
 }

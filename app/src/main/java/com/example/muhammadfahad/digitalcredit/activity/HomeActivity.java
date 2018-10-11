@@ -1,6 +1,7 @@
-package com.example.muhammadfahad.digitalcredit;
+package com.example.muhammadfahad.digitalcredit.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,12 +15,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.muhammadfahad.digitalcredit.Model.InfoBean;
+import com.example.muhammadfahad.digitalcredit.Model.CustomerDetail;
+import com.example.muhammadfahad.digitalcredit.R;
 import com.example.muhammadfahad.digitalcredit.Utils.Helper;
+import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 import com.example.muhammadfahad.digitalcredit.fragment.AvailLoanFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
+import com.example.muhammadfahad.digitalcredit.fragment.HistoryFragment;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -30,12 +37,13 @@ public class HomeActivity extends AppCompatActivity
     private Toolbar toolbar;
     private TextView tvName;
     private TextView tvCnic;
-    private Bundle extras;
+    private Bundle extras,bundle;
     private View header;
     ProgressDialog dialog;
-    InfoBean bean;
+
     private int counter=0;
     private Helper helper;
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,18 +55,11 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        helper.clearSession(this);
-        super.onDestroy();
-
-    }
 
     public void init(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Dashboard");
         dialog=new ProgressDialog(getApplicationContext());
-        bean=InfoBean.getInstance();
         setSupportActionBar(toolbar);
         layout=findViewById(R.id.view_container);
         helper=Helper.getInstance();
@@ -80,7 +81,11 @@ public class HomeActivity extends AppCompatActivity
             tvName.setText(extras.getString("name"));
             tvCnic.setText(extras.getString("cnic"));
         }
+
+
+
         fragment=new DashboardFragment();
+        //fragment.setArguments(bundle);
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);
         ft.commit();
@@ -117,6 +122,9 @@ public class HomeActivity extends AppCompatActivity
         else if(id==R.id.avail_loan) {
             toolbar.setTitle("Avail Loan");
             fragment = new AvailLoanFragment();
+        }else if(id==R.id.avail_history){
+            toolbar.setTitle("History");
+            fragment=new HistoryFragment();
         }
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);

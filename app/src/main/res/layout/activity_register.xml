@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/login_screen"
     android:background="@drawable/background_gradient"
-    tools:context=".MainActivity">
+    tools:context=".activity.RegisterActivity">
 
 
     <ImageView
@@ -35,18 +35,18 @@
 -->
 
     <EditText
+        android:id="@+id/editTextFullname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageView"
-        android:hint="@string/full_name"
-        android:ems="15"
-        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:id="@+id/editTextFullname"
-        android:textColor="@android:color/black"
-        android:singleLine="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:ems="15"
+        android:hint="@string/full_name"
         android:inputType="textFilter|textNoSuggestions|textPersonName"
-         />
+        android:singleLine="true"
+        android:textColor="@android:color/black" />
 
     <EditText
         android:layout_width="wrap_content"

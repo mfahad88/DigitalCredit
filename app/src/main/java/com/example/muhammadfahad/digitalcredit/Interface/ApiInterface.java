@@ -12,6 +12,7 @@ import retrofit2.Callback;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
@@ -37,6 +38,13 @@ public interface ApiInterface {
 	@POST("/api/insert/Customerloan")
 	Call<Integer> CustomerLoan(@Body LoanDetail loanDetail);
 
-	/*@GET("/api/update/loan/{userId}/{RemainAmt}")
-	Call<Integer> updateLoan(@Path("userId")int userId,int RemainAmt);*/
+
+	@GET("/api/fetch/category/{cat}")
+	Call<Integer> getCategory(@Path("cat")String cat);
+
+	@GET("/api/fetch/Singleloan/{userId}/{loanId}")
+	Call<LoanDetail> SingleLoan(@Path("userId")String userId,@Path("loanId")String loanId);
+
+	@PUT("/api/update/Customerloan")
+	Call<Integer> updateLoanStatus(@Body LoanDetail loanDetail);
 }

@@ -55,6 +55,7 @@ public class CustomerDetail {
     @Expose
     private Integer dbrValueFlag;
 
+
     public Integer getUserId() {
         return userId;
     }

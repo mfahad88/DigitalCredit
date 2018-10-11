@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     android:background="@drawable/background_gradient"
     tools:openDrawer="start"
-    tools:context=".HomeActivity">
+    tools:context=".activity.HomeActivity">
 
     <include
         layout="@layout/app_bar_home"

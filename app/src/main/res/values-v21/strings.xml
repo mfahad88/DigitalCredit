@@ -14,4 +14,5 @@
     <string name="home">Home</string>
     <string name="dashboard">Dashboard</string>
     <string name="don_t_have">Don\'t have an account yet?</string>
+    <string name="pay">Pay</string>
 </resources>

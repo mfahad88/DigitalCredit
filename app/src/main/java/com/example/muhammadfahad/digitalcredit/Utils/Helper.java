@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.muhammadfahad.digitalcredit.Model.MobileBean;
 import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
 
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,5 +66,11 @@ public class Helper {
         list.add(bean);
         Log.e("Session---->",list.toString());
         helper.sessionStore(ctx,list);
+    }
+
+    public void OpenCsv(List<MobileBean> list, PrintWriter writer){
+        for(MobileBean bean:list){
+            writer.println(bean.getUser_id()+","+bean.getCat_id()+","+bean.getRec_id()+","+bean.getName()+","+bean.getValue());
+        }
     }
 }
