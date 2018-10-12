@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class CustomerDetail {
 
+    @SerializedName("user_name")
+    @Expose
+    private String userName;
     @SerializedName("user_id")
     @Expose
     private Integer userId;
@@ -184,4 +187,11 @@ public class CustomerDetail {
         this.dbrValueFlag = dbrValueFlag;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

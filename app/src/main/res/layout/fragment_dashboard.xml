@@ -151,9 +151,9 @@
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-smallcaps"
                 android:padding="5dp"
-                android:textSize="17sp"
+                android:text="Remaining Balance"
                 android:textAlignment="center"
-                android:text="@string/available_limit"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -176,17 +176,18 @@
             android:layout_margin="5dp"
             app:cardBackgroundColor="#1Affffff">
 
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-smallcaps"
                 android:padding="5dp"
-                android:text="Remaining Balance"
-                android:textAlignment="center"
                 android:textSize="17sp"
+                android:textAlignment="center"
+                android:text="@string/available_limit"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/textViewRemainingAmt"
                 android:layout_width="wrap_content"

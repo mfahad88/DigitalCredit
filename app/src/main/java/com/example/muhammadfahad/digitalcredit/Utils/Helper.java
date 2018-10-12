@@ -73,4 +73,14 @@ public class Helper {
             writer.println(bean.getUser_id()+","+bean.getCat_id()+","+bean.getRec_id()+","+bean.getName()+","+bean.getValue());
         }
     }
+
+    public boolean isValidMobileNo(String mobileNo){
+        String regex="^((\\+92)|(0092))-{0,1}\\d{3}-{0,1}\\d{7}$|^\\d{11}$|^\\d{4}-\\d{7}$";
+        return mobileNo.matches(regex);
+    }
+
+    public boolean isValidName(String name){
+        String regex="^\\p{Lu}\\p{M}*+(?:\\p{L}\\p{M}*+|[,.'-])++(?: (?:\\p{L}\\p{M}*+|[,.'-])++)*+$";
+        return name.matches(regex);
+    }
 }

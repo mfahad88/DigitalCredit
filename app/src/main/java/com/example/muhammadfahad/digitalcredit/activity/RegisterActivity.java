@@ -71,11 +71,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 edtCnic.setError("Please provide Cnic");
             }if(TextUtils.isEmpty(edtMobile.getText().toString().trim())){
                 edtMobile.setError("Please provide Mobile Number");
+            }if(!helper.isValidMobileNo(edtMobile.getText().toString())){
+                edtMobile.setError("Please enter valid mobile number");
             }
             if(!TextUtils.isEmpty(edtName.getText().toString().trim()) && (!TextUtils.isEmpty(edtCnic.getText().toString().trim()))
-                    && (!TextUtils.isEmpty(edtMobile.getText().toString().trim()))) {
+                    && (!TextUtils.isEmpty(edtMobile.getText().toString().trim())) && helper.isValidMobileNo(edtMobile.getText().toString())) {
                 dialog.show();
-
+                detail.setUserName(edtName.getText().toString());
                 detail.setUserMobileNo(edtMobile.getText().toString());
                 detail.setUserCnic(edtCnic.getText().toString());
                 detail.setUserChannelId("Test");
@@ -87,7 +89,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if(response.code()==200){
-                            startActivity(intent);
+                            if(response.body().equalsIgnoreCase("409")){
+
+                                Toast.makeText(RegisterActivity.this, "User already exists...", Toast.LENGTH_SHORT).show();
+                            }else {
+                                startActivity(intent);
+                            }
+                            dialog.dismiss();
                         }
                     }
 

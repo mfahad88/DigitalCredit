@@ -1,6 +1,7 @@
 package com.example.muhammadfahad.digitalcredit.fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +32,7 @@ import com.example.muhammadfahad.digitalcredit.activity.LoginActivity;
 import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +60,7 @@ public class AvailLoanFragment extends Fragment {
     private View viewRoot;
     private EditText editTextConsumed;
     private Integer weeks;
-    private Integer remaining_bal,availableAmt,consumedAmt;
+    private int remaining_bal,availableAmt,consumedAmt;
     private Button btn;
     private LoanDetail loanDetail;
     private Date date;
@@ -67,6 +70,7 @@ public class AvailLoanFragment extends Fragment {
     boolean isAvailed=false;
     private Intent intent;
     private int processingFee;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,11 +87,13 @@ public class AvailLoanFragment extends Fragment {
                         @Override
                         public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
                             availableAmt=response.body().getAvailableAmountLimit();
+
+
                             if(availableAmt>0) {
-                                tvAmt.setText("Rs. " + helper.CashFormatter(availableAmt.toString()));
+                                tvAmt.setText("Rs. " + helper.CashFormatter(String.valueOf(availableAmt)));
                             }else{
                                 Toast.makeText(viewRoot.getContext(), "Insufficient Limit", Toast.LENGTH_SHORT).show();
-                                tvAmt.setText("Rs. " + availableAmt.toString());
+                                tvAmt.setText("Rs. " + String.valueOf(availableAmt));
                                 editTextConsumed.setEnabled(false);
                                 btn.setEnabled(false);
                             }
@@ -131,6 +137,23 @@ public class AvailLoanFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selected=adapterView.getAdapter().getItem(Integer.parseInt(String.valueOf(l))).toString().trim();
                 weeks= Integer.valueOf(selected.replace(" weeks",""));
+                if(!TextUtils.isEmpty(editTextConsumed.getText().toString().trim()) && Integer.parseInt(editTextConsumed.getText().toString())>0){
+                    ApiClient.getInstance().getProcessingFee(weeks,Integer.parseInt(editTextConsumed.getText().toString().trim()))
+                            .enqueue(new Callback<Integer>() {
+                                @Override
+                                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    processingFee=response.body();
+                                    tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
+                                    remaining_bal= availableAmt-(consumedAmt+processingFee);
+                                    tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
+                                }
+
+                                @Override
+                                public void onFailure(Call<Integer> call, Throwable t) {
+
+                                }
+                            });
+                }
             }
 
             @Override
@@ -153,7 +176,8 @@ public class AvailLoanFragment extends Fragment {
             @Override
             public void afterTextChanged(final Editable editable) {
                 if(editable.length()>0 && (!TextUtils.isEmpty(editable.toString())) && Integer.parseInt(editable.toString())>0){
-                    consumedAmt=Integer.parseInt(editable.toString());
+
+                    consumedAmt=Integer.parseInt(String.valueOf(editable));
                     ApiClient.getInstance().getProcessingFee(weeks, Integer.parseInt(editable.toString())).enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -162,6 +186,9 @@ public class AvailLoanFragment extends Fragment {
                                 tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
                                 remaining_bal= availableAmt-(consumedAmt+processingFee);
                                 tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
+                                Log.e("consumedAmt--->", ""+consumedAmt);
+                                Log.e("availableAmt--->", ""+availableAmt);
+
 
                             }
                         }
@@ -192,13 +219,22 @@ public class AvailLoanFragment extends Fragment {
                        loanDetail.setLoanStatus("U");
                        loanDetail.setRemainingAmt(remaining_bal);
                        loanDetail.setLoanFees(processingFee);
+                       if(Integer.parseInt(editTextConsumed.getText().toString())>availableAmt) {
+                           Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
+                       }
                        if(consumedAmt>0){
-                           if(Integer.parseInt(editTextConsumed.getText().toString())>0) {
+                           if(Integer.parseInt(editTextConsumed.getText().toString())>0 &&
+                                   Integer.parseInt(editTextConsumed.getText().toString())<=availableAmt) {
                                ApiClient.getInstance().CustomerLoan(loanDetail).enqueue(new Callback<Integer>() {
                                    @Override
                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                       if (response.body() == 200) {
+                                        btn.setEnabled(false);
+                                       if(response.code()==200 && response.isSuccessful()){
+                                           Toast.makeText(getActivity(), "Successful...", Toast.LENGTH_SHORT).show();
+                                           intent=new Intent(getActivity(), HomeActivity.class);
 
+//                                           intent.putExtra("loan","A");
+                                           startActivity(intent);
                                        }
                                    }
 
@@ -207,6 +243,7 @@ public class AvailLoanFragment extends Fragment {
 
                                    }
                                });
+
                            }
 
                        }
@@ -214,7 +251,7 @@ public class AvailLoanFragment extends Fragment {
 
 
 
-                       Toast.makeText(viewRoot.getContext(), "Successful...", Toast.LENGTH_SHORT).show();
+
              /*   try {
                     detail.request().cacheControl().noCache();
                     Log.e("API-------->",ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("user_mobile_no").toString())
@@ -223,10 +260,8 @@ public class AvailLoanFragment extends Fragment {
                     e.printStackTrace();
                 }*/
 
-                       helper.putSession(viewRoot.getContext(),"available_Amount_Limit", String.valueOf(remaining_bal));
-                       intent=new Intent(viewRoot.getContext(), HomeActivity.class);
-                       intent.putExtra("loan","A");
-                       startActivity(intent);
+                       //helper.putSession(viewRoot.getContext(),"available_Amount_Limit", String.valueOf(remaining_bal));
+
                    }catch (Exception e){
                        e.printStackTrace();
                    }
@@ -250,6 +285,7 @@ public class AvailLoanFragment extends Fragment {
         loanDetail=new LoanDetail();
         sdf = new SimpleDateFormat("YYYY-MM-dd");
         calendar=Calendar.getInstance();
+        InputMethodManager imm = (InputMethodManager) viewRoot.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         /*retrofit= ApiClient.getInstance();
         service=retrofit.create(ApiInterface.class);*/
     }

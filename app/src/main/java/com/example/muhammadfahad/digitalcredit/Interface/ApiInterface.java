@@ -16,6 +16,9 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
+
+	@GET("/api/fetch/user/{mobileNo}")
+	Call<Integer> loginUser(@Path("mobileNo") String mobileNo);
 	
 	@GET("/api/fetch/{mobileNo}")
 	Call<CustomerDetail> getCustomerDetails(@Path("mobileNo") String mobileNo);
@@ -28,6 +31,9 @@ public interface ApiInterface {
 
 	@GET("/api/fetch/loan/{userId}/{status}")
 	Call<List<LoanDetail>> getLoan(@Path("userId")String userId, @Path("status") String status);
+
+	@GET("/api/fetch/loan/{userId}")
+	Call<List<LoanDetail>> getLoanAll(@Path("userId")String userId);
 
 	@GET("/api/fetch/tenure")
 	Call<List<TenureDetail>> getTenure();

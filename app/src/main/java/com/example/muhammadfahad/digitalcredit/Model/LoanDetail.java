@@ -7,13 +7,13 @@ public class LoanDetail {
 
 @SerializedName("id")
 @Expose
-private Integer id;
+private int id;
 @SerializedName("customerId")
 @Expose
-private Integer customerId;
+private int customerId;
 @SerializedName("amt")
 @Expose
-private Integer amt;
+private int amt;
 @SerializedName("loanCreatedDate")
 @Expose
 private String loanCreatedDate;
@@ -22,7 +22,7 @@ private String loanCreatedDate;
 private String loanDueDate;
 @SerializedName("amtPaid")
 @Expose
-private Integer amtPaid;
+private int amtPaid;
 @SerializedName("loanStatus")
 @Expose
 private String loanStatus;
@@ -42,69 +42,69 @@ private int loanFees;
 @Expose
 private boolean partialPayment;
 
-public Integer getId() {
-return id;
-}
+    public int getId() {
+        return id;
+    }
 
-public void setId(Integer id) {
-this.id = id;
-}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-public Integer getCustomerId() {
-return customerId;
-}
+    public int getCustomerId() {
+        return customerId;
+    }
 
-public void setCustomerId(Integer customerId) {
-this.customerId = customerId;
-}
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
-public Integer getAmt() {
-return amt;
-}
+    public int getAmt() {
+        return amt;
+    }
 
-public void setAmt(Integer amt) {
-this.amt = amt;
-}
+    public void setAmt(int amt) {
+        this.amt = amt;
+    }
 
-public String getLoanCreatedDate() {
-return loanCreatedDate;
-}
+    public String getLoanCreatedDate() {
+        return loanCreatedDate;
+    }
 
-public void setLoanCreatedDate(String loanCreatedDate) {
-this.loanCreatedDate = loanCreatedDate;
-}
+    public void setLoanCreatedDate(String loanCreatedDate) {
+        this.loanCreatedDate = loanCreatedDate;
+    }
 
-public String getLoanDueDate() {
-return loanDueDate;
-}
+    public String getLoanDueDate() {
+        return loanDueDate;
+    }
 
-public void setLoanDueDate(String loanDueDate) {
-this.loanDueDate = loanDueDate;
-}
+    public void setLoanDueDate(String loanDueDate) {
+        this.loanDueDate = loanDueDate;
+    }
 
-public Integer getAmtPaid() {
-return amtPaid;
-}
+    public int getAmtPaid() {
+        return amtPaid;
+    }
 
-public void setAmtPaid(Integer amtPaid) {
-this.amtPaid = amtPaid;
-}
+    public void setAmtPaid(int amtPaid) {
+        this.amtPaid = amtPaid;
+    }
 
-public String getLoanStatus() {
-return loanStatus;
-}
+    public String getLoanStatus() {
+        return loanStatus;
+    }
 
-public void setLoanStatus(String loanStatus) {
-this.loanStatus = loanStatus;
-}
+    public void setLoanStatus(String loanStatus) {
+        this.loanStatus = loanStatus;
+    }
 
-public String getLastPaidDate() {
-return lastPaidDate;
-}
+    public String getLastPaidDate() {
+        return lastPaidDate;
+    }
 
-public void setLastPaidDate(String lastPaidDate) {
-this.lastPaidDate = lastPaidDate;
-}
+    public void setLastPaidDate(String lastPaidDate) {
+        this.lastPaidDate = lastPaidDate;
+    }
 
     public int getRemainingAmt() {
         return remainingAmt;
@@ -129,5 +129,4 @@ this.lastPaidDate = lastPaidDate;
     public void setPartialPayment(boolean partialPayment) {
         this.partialPayment = partialPayment;
     }
-
 }

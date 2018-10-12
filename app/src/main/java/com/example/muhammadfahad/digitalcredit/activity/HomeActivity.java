@@ -23,6 +23,7 @@ import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 import com.example.muhammadfahad.digitalcredit.fragment.AvailLoanFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.HistoryFragment;
+import com.example.muhammadfahad.digitalcredit.fragment.RepaymentFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,12 +77,21 @@ public class HomeActivity extends AppCompatActivity
 
         tvName=header.findViewById(R.id.textViewName);
         tvCnic=header.findViewById(R.id.textViewCnic);
+        ApiClient.getInstance().getCustomerDetails(helper.getSession(this).get("mobileNo").toString())
+                .enqueue(new Callback<CustomerDetail>() {
+                    @Override
+                    public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                        if(response.code()==200 && response.isSuccessful()){
+                            tvName.setText(response.body().getUserName());
+                            tvCnic.setText(response.body().getUserCnic());
+                        }
+                    }
 
-        if(extras!=null){
-            tvName.setText(extras.getString("name"));
-            tvCnic.setText(extras.getString("cnic"));
-        }
+                    @Override
+                    public void onFailure(Call<CustomerDetail> call, Throwable t) {
 
+                    }
+                });
 
 
         fragment=new DashboardFragment();
@@ -125,6 +135,16 @@ public class HomeActivity extends AppCompatActivity
         }else if(id==R.id.avail_history){
             toolbar.setTitle("History");
             fragment=new HistoryFragment();
+        }else if(id==R.id.repayments){
+            toolbar.setTitle("Repayments");
+            fragment=new RepaymentFragment();
+        }else if(id==R.id.logout){
+
+            Intent intent=new Intent(this,LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra("clear","1");
+            startActivity(intent);
+
         }
         ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.view_container,fragment);

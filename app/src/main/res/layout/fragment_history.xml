@@ -9,28 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_below="@id/linearAvail"
-        android:layout_margin="5dp"
         android:background="@drawable/square_edittext"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TableLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tableLayout"
-                    android:layout_gravity="center">
+                    android:id="@+id/tableLayout">
 
                     <TableRow
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/textView"
@@ -40,20 +39,21 @@
                             android:padding="5dp"
                             android:text="Loan Id" />
 
-                        <TextView
+                        <!--<TextView
                             android:id="@+id/textView2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
                             android:padding="5dp"
-                            android:text="Paid Date" />
+                            android:text="Paid Date" />-->
 
                         <TextView
                             android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
                             android:padding="5dp"
+
                             android:text="Due Date" />
 
                         <TextView
@@ -72,7 +72,17 @@
                             android:textStyle="bold"
                             android:text="Status" />
 
+                        <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textStyle="bold"
+                        android:text="Fees" />
+
                     </TableRow>
+
+
                 </TableLayout>
             </LinearLayout>
         </ScrollView>

@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Created Date"
+                    android:text="Paid Date"
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
@@ -109,7 +109,7 @@
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
-                    android:id="@+id/textViewLoanCreatedDate" />
+                    android:id="@+id/textViewLoanPaidDate" />
             </TableRow>
             <TableRow
                 android:layout_width="wrap_content"
@@ -182,22 +182,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
 
-               <!-- <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Paid Date"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewLastPaidDate" />-->
+                <!-- <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Paid Date"
+                     android:fontFamily="sans-serif-smallcaps"
+                     android:textSize="17sp"
+                     android:layout_weight=".5"
+                     />
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text=""
+                     android:fontFamily="sans-serif-smallcaps"
+                     android:textSize="17sp"
+                     android:layout_weight=".5"
+                     android:id="@+id/textViewLastPaidDate" />-->
             </TableRow>
             <!--<TableRow
                 android:layout_width="wrap_content"
@@ -247,10 +247,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <Button
-                    android:id="@+id/buttonPay"
+                    android:id="@+id/buttonClose"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pay"
+                    android:text="Close"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     />

@@ -28,12 +28,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText edtTextMobileNo,edtTextPassword;
     private TextView tvSignUp;
     private Button btnSign;
-    private Intent intent;
+    private Intent intent,i;
     private Helper helper;
     private List<SessionBean> list;
     private SessionBean bean;
     private ProgressDialog dialog;
-
+    private Integer userId=0;
 
     @Override
     protected void onPostResume() {
@@ -51,6 +51,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         init();
         btnSign.setOnClickListener(this);
         tvSignUp.setOnClickListener(this);
+        if(helper.getSession(getApplicationContext())!=null){
+            helper.clearSession(getApplicationContext());
+        }
     }
 
     private void init(){
@@ -73,34 +76,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 helper.putSession(this,"mobileNo",edtTextMobileNo.getText().toString());
                 helper.putSession(this,"password",edtTextPassword.getText().toString());
                 intent=new Intent(this,HomeActivity.class);
-                ApiClient.getInstance().getCustomerDetails(edtTextMobileNo.getText().toString())
-                        .enqueue(new Callback<CustomerDetail>() {
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                ApiClient.getInstance().loginUser(edtTextMobileNo.getText().toString())
+                        .enqueue(new Callback<Integer>() {
                             @Override
-                            public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
                                 if(response.isSuccessful() && response.code()==200){
-                                    helper.putSession(LoginActivity.this,"user_id",response.body().getUserId().toString());
-                                    helper.putSession(LoginActivity.this,"user_mobile_no",response.body().getUserMobileNo().toString());
-                                    helper.putSession(LoginActivity.this,"user_cnic",response.body().getUserCnic().toString());
-                                    helper.putSession(LoginActivity.this,"user_channel_id",response.body().getUserChannelId().toString());
-                                    helper.putSession(LoginActivity.this,"income",response.body().getIncome().toString());
-                                    helper.putSession(LoginActivity.this,"user_status",response.body().getUserStatus().toString());
-                                    helper.putSession(LoginActivity.this,"available_Balance",response.body().getAvailableBalance().toString());
-                                    helper.putSession(LoginActivity.this,"base_scrore",response.body().getBaseScrore().toString());
-                                    helper.putSession(LoginActivity.this,"behavior_score",response.body().getBehaviorScore().toString());
-                                    helper.putSession(LoginActivity.this,"base_score_flag",response.body().getBaseScoreFlag().toString());
-                                    helper.putSession(LoginActivity.this,"behavior_score_flag",response.body().getBehaviorScoreFlag().toString());
-                                    helper.putSession(LoginActivity.this,"assigned_amount_Limit",response.body().getAssignedAmountLimit().toString());
-                                    helper.putSession(LoginActivity.this,"consumed_Limit",response.body().getConsumedLimit().toString());
-                                    helper.putSession(LoginActivity.this,"available_Amount_Limit",response.body().getAvailableAmountLimit().toString());
-                                    helper.putSession(LoginActivity.this,"dbr_value",response.body().getDbrValue().toString());
-                                    helper.putSession(LoginActivity.this,"dbr_value_flag",response.body().getDbrValueFlag().toString());
-                                    startActivity(intent);
+                                    helper.putSession(getApplicationContext(),"user_id",response.body().toString());
+                                    if(response.body()==-1){
+                                        Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        startActivity(intent);
+                                    }
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<CustomerDetail> call, Throwable t) {
-                                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            public void onFailure(Call<Integer> call, Throwable t) {
+
                             }
                         });
 
