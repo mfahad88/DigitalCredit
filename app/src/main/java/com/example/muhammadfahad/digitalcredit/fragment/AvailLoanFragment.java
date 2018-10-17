@@ -75,140 +75,141 @@ public class AvailLoanFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewRoot = inflater.inflate(R.layout.fragment_avail_loan, container, false);
-        init();
-        Log.e("Helper---------->",helper.getSession(viewRoot.getContext()).toString());
-        detail=ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("user_mobile_no").toString());
+       try{
+           init();
+           Log.e("Helper---------->",helper.getSession(viewRoot.getContext()).toString());
+           detail=ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("user_mobile_no").toString());
 
-        detail.clone().enqueue(new Callback<CustomerDetail>() {
-            @Override
-            public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                if(response.code()==200){
-                    detail.enqueue(new Callback<CustomerDetail>() {
-                        @Override
-                        public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                            availableAmt=response.body().getAvailableAmountLimit();
-
-
-                            if(availableAmt>0) {
-                                tvAmt.setText("Rs. " + helper.CashFormatter(String.valueOf(availableAmt)));
-                            }else{
-                                Toast.makeText(viewRoot.getContext(), "Insufficient Limit", Toast.LENGTH_SHORT).show();
-                                tvAmt.setText("Rs. " + String.valueOf(availableAmt));
-                                editTextConsumed.setEnabled(false);
-                                btn.setEnabled(false);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<CustomerDetail> call, Throwable t) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CustomerDetail> call, Throwable t) {
-                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+           detail.clone().enqueue(new Callback<CustomerDetail>() {
+               @Override
+               public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                   if(response.code()==200){
+                       detail.enqueue(new Callback<CustomerDetail>() {
+                           @Override
+                           public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                               availableAmt=response.body().getAvailableAmountLimit();
 
 
-        ApiClient.getInstance().getTenure().enqueue(new Callback<List<TenureDetail>>() {
-            @Override
-            public void onResponse(Call<List<TenureDetail>> call, Response<List<TenureDetail>> response) {
-                if(response.code()==200){
-                    List<String> weeks=new ArrayList<>();
-                    for(int i=0;i<response.body().size();i++){
-                        weeks.add(response.body().get(i).getTenureTime()+" weeks");
-                    }
-                    ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,weeks);
-                    spinner.setAdapter(adapter);
-                }
-            }
+                               if(availableAmt>0) {
+                                   tvAmt.setText("Rs. " + helper.CashFormatter(String.valueOf(availableAmt)));
+                               }else{
+                                   Toast.makeText(viewRoot.getContext(), "Insufficient Limit", Toast.LENGTH_SHORT).show();
+                                   tvAmt.setText("Rs. " + String.valueOf(availableAmt));
+                                   editTextConsumed.setEnabled(false);
+                                   btn.setEnabled(false);
+                               }
+                           }
 
-            @Override
-            public void onFailure(Call<List<TenureDetail>> call, Throwable t) {
-                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selected=adapterView.getAdapter().getItem(Integer.parseInt(String.valueOf(l))).toString().trim();
-                weeks= Integer.valueOf(selected.replace(" weeks",""));
-                if(!TextUtils.isEmpty(editTextConsumed.getText().toString().trim()) && Integer.parseInt(editTextConsumed.getText().toString())>0){
-                    ApiClient.getInstance().getProcessingFee(weeks,Integer.parseInt(editTextConsumed.getText().toString().trim()))
-                            .enqueue(new Callback<Integer>() {
-                                @Override
-                                public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                    processingFee=response.body();
-                                    tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
-                                    remaining_bal= availableAmt-(consumedAmt+processingFee);
-                                    tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
-                                }
+                           @Override
+                           public void onFailure(Call<CustomerDetail> call, Throwable t) {
 
-                                @Override
-                                public void onFailure(Call<Integer> call, Throwable t) {
+                           }
+                       });
+                   }
+               }
 
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        editTextConsumed.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(final Editable editable) {
-                if(editable.length()>0 && (!TextUtils.isEmpty(editable.toString())) && Integer.parseInt(editable.toString())>0){
-
-                    consumedAmt=Integer.parseInt(String.valueOf(editable));
-                    ApiClient.getInstance().getProcessingFee(weeks, Integer.parseInt(editable.toString())).enqueue(new Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            if(response.code()==200){
-                                processingFee=response.body();
-                                tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
-                                remaining_bal= availableAmt-(consumedAmt+processingFee);
-                                tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
-                                Log.e("consumedAmt--->", ""+consumedAmt);
-                                Log.e("availableAmt--->", ""+availableAmt);
+               @Override
+               public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                   Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+               }
+           });
 
 
-                            }
-                        }
+           ApiClient.getInstance().getTenure().enqueue(new Callback<List<TenureDetail>>() {
+               @Override
+               public void onResponse(Call<List<TenureDetail>> call, Response<List<TenureDetail>> response) {
+                   if(response.code()==200){
+                       List<String> weeks=new ArrayList<>();
+                       for(int i=0;i<response.body().size();i++){
+                           weeks.add(response.body().get(i).getTenureTime()+" weeks");
+                       }
+                       ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,weeks);
+                       spinner.setAdapter(adapter);
+                   }
+               }
 
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable t) {
+               @Override
+               public void onFailure(Call<List<TenureDetail>> call, Throwable t) {
+                   Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+               }
+           });
+           spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+               @Override
+               public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                   String selected=adapterView.getAdapter().getItem(Integer.parseInt(String.valueOf(l))).toString().trim();
+                   weeks= Integer.valueOf(selected.replace(" weeks",""));
+                   if(!TextUtils.isEmpty(editTextConsumed.getText().toString().trim()) && Integer.parseInt(editTextConsumed.getText().toString())>0){
+                       ApiClient.getInstance().getProcessingFee(weeks,Integer.parseInt(editTextConsumed.getText().toString().trim()))
+                               .enqueue(new Callback<Integer>() {
+                                   @Override
+                                   public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                       processingFee=response.body();
+                                       tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
+                                       remaining_bal= availableAmt-(consumedAmt+processingFee);
+                                       tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
+                                   }
 
-                        }
-                    });
-                }else{
-                    tvProcessingFee.setText("Rs. 0.00");
-                    tvRemaining.setText("Rs. 0.00");
-                }
-            }
-        });
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
+                                   @Override
+                                   public void onFailure(Call<Integer> call, Throwable t) {
 
-                   try{
+                                   }
+                               });
+                   }
+               }
+
+               @Override
+               public void onNothingSelected(AdapterView<?> adapterView) {
+
+               }
+           });
+
+           editTextConsumed.addTextChangedListener(new TextWatcher() {
+               @Override
+               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+               }
+
+               @Override
+               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+               }
+
+               @Override
+               public void afterTextChanged(final Editable editable) {
+                   if(editable.length()>0 && (!TextUtils.isEmpty(editable.toString())) && Integer.parseInt(editable.toString())>0){
+
+                       consumedAmt=Integer.parseInt(String.valueOf(editable));
+                       ApiClient.getInstance().getProcessingFee(weeks, Integer.parseInt(editable.toString())).enqueue(new Callback<Integer>() {
+                           @Override
+                           public void onResponse(Call<Integer> call, Response<Integer> response) {
+                               if(response.code()==200){
+                                   processingFee=response.body();
+                                   tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
+                                   remaining_bal= availableAmt-(consumedAmt+processingFee);
+                                   tvRemaining.setText("Rs. "+helper.CashFormatter(String.valueOf(remaining_bal)));
+                                   Log.e("consumedAmt--->", ""+consumedAmt);
+                                   Log.e("availableAmt--->", ""+availableAmt);
+
+
+                               }
+                           }
+
+                           @Override
+                           public void onFailure(Call<Integer> call, Throwable t) {
+
+                           }
+                       });
+                   }else{
+                       tvProcessingFee.setText("Rs. 0.00");
+                       tvRemaining.setText("Rs. 0.00");
+                   }
+               }
+           });
+           btn.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(final View view) {
+
+
                        date = new Date();
                        calendar.add(Calendar.WEEK_OF_YEAR,weeks);
                        loanDetail.setAmt(consumedAmt);
@@ -228,7 +229,7 @@ public class AvailLoanFragment extends Fragment {
                                ApiClient.getInstance().CustomerLoan(loanDetail).enqueue(new Callback<Integer>() {
                                    @Override
                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        btn.setEnabled(false);
+                                       btn.setEnabled(false);
                                        if(response.code()==200 && response.isSuccessful()){
                                            Toast.makeText(getActivity(), "Successful...", Toast.LENGTH_SHORT).show();
                                            intent=new Intent(getActivity(), HomeActivity.class);
@@ -248,26 +249,11 @@ public class AvailLoanFragment extends Fragment {
 
                        }
 
-
-
-
-
-             /*   try {
-                    detail.request().cacheControl().noCache();
-                    Log.e("API-------->",ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("user_mobile_no").toString())
-                            .execute().body().getAvailableBalance().toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
-
-                       //helper.putSession(viewRoot.getContext(),"available_Amount_Limit", String.valueOf(remaining_bal));
-
-                   }catch (Exception e){
-                       e.printStackTrace();
-                   }
-
-            }
-        });
+               }
+           });
+       }catch (Exception e){
+           e.printStackTrace();
+       }
         return viewRoot;
     }
 
@@ -283,10 +269,7 @@ public class AvailLoanFragment extends Fragment {
         helper=Helper.getInstance();
         btn=viewRoot.findViewById(R.id.buttonSubmit);
         loanDetail=new LoanDetail();
-        sdf = new SimpleDateFormat("YYYY-MM-dd");
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
         calendar=Calendar.getInstance();
-        InputMethodManager imm = (InputMethodManager) viewRoot.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        /*retrofit= ApiClient.getInstance();
-        service=retrofit.create(ApiInterface.class);*/
     }
 }

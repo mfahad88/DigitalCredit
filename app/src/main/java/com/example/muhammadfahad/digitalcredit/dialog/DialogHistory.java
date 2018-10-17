@@ -55,44 +55,48 @@ public class DialogHistory extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewRoot = inflater.inflate(R.layout.fragment_dialog_history, container, false);
-        init();
-        bundle=getArguments();
-        loanId=bundle.getInt("loanId");
-        ApiClient.getInstance().SingleLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(), String.valueOf(loanId))
-                .enqueue(new Callback<LoanDetail>() {
-                    @Override
-                    public void onResponse(Call<LoanDetail> call, Response<LoanDetail> response) {
-                        if(response.isSuccessful() && response.code()==200){
-                            try {
-                                bean=response.body();
-                                tvLoanId.setText(String.valueOf(bean.getId()));
+       try {
+           init();
+           bundle=getArguments();
+           loanId=bundle.getInt("loanId");
+           ApiClient.getInstance().SingleLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(), String.valueOf(loanId))
+                   .enqueue(new Callback<LoanDetail>() {
+                       @Override
+                       public void onResponse(Call<LoanDetail> call, Response<LoanDetail> response) {
+                           if(response.isSuccessful() && response.code()==200){
+                               try {
+                                   bean=response.body();
+                                   tvLoanId.setText(String.valueOf(bean.getId()));
 //                                tvUserId.setText(bean.getCustomerId().toString());
-                                tvAmount.setText(String.valueOf(bean.getAmt()));
-                                tvPaidDate.setText(bean.getLastPaidDate());
-                                tvDueDate.setText(bean.getLoanDueDate());
-                                tvAmountPaid.setText(String.valueOf(bean.getAmtPaid()));
-                                tvStatus.setText(bean.getLoanStatus());
+                                   tvAmount.setText(String.valueOf(bean.getAmt()));
+                                   tvPaidDate.setText(bean.getLastPaidDate());
+                                   tvDueDate.setText(bean.getLoanDueDate());
+                                   tvAmountPaid.setText(String.valueOf(bean.getAmtPaid()));
+                                   tvStatus.setText(bean.getLoanStatus());
 //                                tvPaidDate.setText(bean.getLastPaidDate());
 //                                tvRemainingAmount.setText(String.valueOf(bean.getRemainingAmt()));
-                                tvLoanFees.setText(String.valueOf(bean.getLoanFees()));
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
+                                   tvLoanFees.setText(String.valueOf(bean.getLoanFees()));
+                               }catch (Exception e){
+                                   e.printStackTrace();
+                               }
+                           }
+                       }
 
-                    @Override
-                    public void onFailure(Call<LoanDetail> call, Throwable t) {
-                        Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                       @Override
+                       public void onFailure(Call<LoanDetail> call, Throwable t) {
+                           Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                       }
+                   });
 
-            btnClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                }
-            });
+           btnClose.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   dismiss();
+               }
+           });
+       }catch (Exception e){
+           e.printStackTrace();
+       }
         return viewRoot;
 
     }
@@ -112,7 +116,7 @@ public class DialogHistory extends DialogFragment {
         helper=new Helper();
         getDialog().setTitle("Test");
         date=new Date();
-        sdf=new SimpleDateFormat("YYYY-MM-dd HH:MM:SS");
+        sdf=new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
     }
 
 }

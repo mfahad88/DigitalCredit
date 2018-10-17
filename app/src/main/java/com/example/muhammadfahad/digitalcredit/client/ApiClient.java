@@ -2,6 +2,8 @@ package com.example.muhammadfahad.digitalcredit.client;
 
 import com.example.muhammadfahad.digitalcredit.Interface.ApiInterface;
 import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,17 +16,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
  
-    public static final String BASE_URL = "http://53.53.53.21:8080/";
+//    public static final String BASE_URL = "http://eff33cf0.ngrok.io/";
+public static final String BASE_URL = "http://53.53.53.51:8080/";
     private static Retrofit retrofit = null;
 
  
     public static ApiInterface getInstance() {
 
         if (retrofit==null) {
-
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
                     retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(getRequestHeader())
                     .build();
         }

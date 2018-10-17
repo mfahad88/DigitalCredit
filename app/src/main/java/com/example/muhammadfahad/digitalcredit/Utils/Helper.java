@@ -1,23 +1,43 @@
 package com.example.muhammadfahad.digitalcredit.Utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.util.Log;
 
 import com.example.muhammadfahad.digitalcredit.Model.MobileBean;
 import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class Helper {
     public static final String MY_PREFS_NAME = "MyPrefs";
     public static Helper helper;
     private static List<SessionBean> list;
     private static SessionBean bean;
+    private static final int BUFFER = 1024*10;
     public Helper() {
     }
 
@@ -70,7 +90,7 @@ public class Helper {
 
     public void OpenCsv(List<MobileBean> list, PrintWriter writer){
         for(MobileBean bean:list){
-            writer.println(bean.getUser_id()+","+bean.getCat_id()+","+bean.getRec_id()+","+bean.getName()+","+bean.getValue());
+            writer.println(bean.getUser_id()+"<<>>"+bean.getCat_id()+"<<>>"+bean.getRec_id()+"<<>>"+bean.getName()+"<<>>"+bean.getValue());
         }
     }
 
@@ -82,5 +102,98 @@ public class Helper {
     public boolean isValidName(String name){
         String regex="^\\p{Lu}\\p{M}*+(?:\\p{L}\\p{M}*+|[,.'-])++(?: (?:\\p{L}\\p{M}*+|[,.'-])++)*+$";
         return name.matches(regex);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public boolean getAvailableInternalMemorySize() {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSizeLong();
+        long availableBlocks = stat.getAvailableBlocksLong();
+        if (((availableBlocks * blockSize) / 1024) / 1024 > 10) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteFile(String filename) {
+        File file = new File(filename);
+        if (file.delete()) {
+            Log.e("Deleting....", file.getName());
+            return true;
+        }
+        return false;
+    }
+
+    public String zip(String zipFilePath,String output) {
+        try {
+            Log.e("zip------------>",zipFilePath);
+            BufferedInputStream origin;
+            FileOutputStream dest = new FileOutputStream(output);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+
+            byte data[] = new byte[BUFFER];
+
+                FileInputStream fi = new FileInputStream(zipFilePath);
+                origin = new BufferedInputStream(fi, BUFFER);
+                ZipEntry entry = new ZipEntry(zipFilePath.substring(zipFilePath.lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+                out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    public void writeTxtFile(Context context,String txt){
+       try{
+           File myDirectory = new File(Environment.getExternalStorageDirectory(), "DC");
+           if(myDirectory.exists()){
+               deleteFile(myDirectory+"config.txt");
+           }
+           if(!myDirectory.exists()) {
+               myDirectory.mkdirs();
+           }
+           File gpxfile = new File(myDirectory, "config.txt");
+           FileWriter writer = new FileWriter(gpxfile);
+           writer.append(txt);
+           writer.flush();
+           writer.close();
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+    }
+
+    public String readtxtFile(String filename){
+        File dir = Environment.getExternalStorageDirectory();
+        //File yourFile = new File(dir, "path/to/the/file/inside/the/sdcard.ext");
+
+        //Get the text file
+        File file = new File(dir,"/DC/"+filename);
+        // i have kept text.txt in the sd-card
+
+
+            //Read text from file
+            StringBuilder text = new StringBuilder();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                }
+            }
+            catch (IOException e) {
+                //You'll need to add proper error handling here
+            }
+            //Set the text
+            return  text.toString();
+
     }
 }

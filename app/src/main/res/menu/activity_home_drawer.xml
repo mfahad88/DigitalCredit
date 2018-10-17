@@ -22,10 +22,10 @@
             android:icon="@drawable/history"
             android:title="@string/history" />
 
-        <item
+       <!-- <item
             android:id="@+id/notifications"
             android:icon="@drawable/notification"
-            android:title="@string/notifications" />
+            android:title="@string/notifications" />-->
     </group>
         <item android:id="@+id/logout"
             android:title="Logout"/>

@@ -2,17 +2,21 @@ package com.example.muhammadfahad.digitalcredit.Interface;
 
 import com.example.muhammadfahad.digitalcredit.Model.CustomerDetail;
 import com.example.muhammadfahad.digitalcredit.Model.LoanDetail;
+import com.example.muhammadfahad.digitalcredit.Model.MobileLocation;
 import com.example.muhammadfahad.digitalcredit.Model.TenureDetail;
 
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
@@ -53,4 +57,14 @@ public interface ApiInterface {
 
 	@PUT("/api/update/Customerloan")
 	Call<Integer> updateLoanStatus(@Body LoanDetail loanDetail);
+
+	@Multipart
+	@POST("/api/app")
+	Call<String> upload(@Part MultipartBody.Part file);
+
+	@GET("/api/fetch/{mobileNo}/{status}")
+	Call<Void> setStatus(@Path("mobileNo") String mobileNo,@Path("status") String status);
+
+	@POST("/api/insert/mobileLocation")
+	Call<Long> setLocation(@Body MobileLocation location);
 }

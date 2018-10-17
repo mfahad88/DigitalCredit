@@ -58,47 +58,51 @@ public class HomeActivity extends AppCompatActivity
 
 
     public void init(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Dashboard");
-        dialog=new ProgressDialog(getApplicationContext());
-        setSupportActionBar(toolbar);
-        layout=findViewById(R.id.view_container);
-        helper=Helper.getInstance();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        extras=getIntent().getExtras();
+        try{
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("Dashboard");
+            dialog=new ProgressDialog(getApplicationContext());
+            setSupportActionBar(toolbar);
+            layout=findViewById(R.id.view_container);
+            helper=Helper.getInstance();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+            extras=getIntent().getExtras();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        header=navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            header=navigationView.getHeaderView(0);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        tvName=header.findViewById(R.id.textViewName);
-        tvCnic=header.findViewById(R.id.textViewCnic);
-        ApiClient.getInstance().getCustomerDetails(helper.getSession(this).get("mobileNo").toString())
-                .enqueue(new Callback<CustomerDetail>() {
-                    @Override
-                    public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                        if(response.code()==200 && response.isSuccessful()){
-                            tvName.setText(response.body().getUserName());
-                            tvCnic.setText(response.body().getUserCnic());
+            tvName=header.findViewById(R.id.textViewName);
+            tvCnic=header.findViewById(R.id.textViewCnic);
+            ApiClient.getInstance().getCustomerDetails(helper.getSession(this).get("mobileNo").toString())
+                    .enqueue(new Callback<CustomerDetail>() {
+                        @Override
+                        public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                            if(response.code()==200 && response.isSuccessful()){
+                                tvName.setText(response.body().getUserName());
+                                tvCnic.setText(response.body().getUserCnic());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<CustomerDetail> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
 
 
-        fragment=new DashboardFragment();
-        //fragment.setArguments(bundle);
-        ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.view_container,fragment);
-        ft.commit();
+            fragment=new DashboardFragment();
+            //fragment.setArguments(bundle);
+            ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.view_container,fragment);
+            ft.commit();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
     }
@@ -140,10 +144,14 @@ public class HomeActivity extends AppCompatActivity
             fragment=new RepaymentFragment();
         }else if(id==R.id.logout){
 
-            Intent intent=new Intent(this,LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra("clear","1");
-            startActivity(intent);
+            try {
+                Intent intent=new Intent(this,LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra("clear","1");
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
         ft=getSupportFragmentManager().beginTransaction();

@@ -45,8 +45,11 @@ public class RepaymentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         init(inflater,container,savedInstanceState);
-        populateTable();
-
+        try {
+            populateTable();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return viewRoot;
     }
 

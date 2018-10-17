@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyService extends Service implements LocationListener {
+public class MyService extends Service {
     private static final long GPS_TIME = 1000*60*1;
     private Helper helper;
     private String csvFilename;
@@ -56,8 +56,6 @@ public class MyService extends Service implements LocationListener {
     private MultipartBody.Part body;
     private String mobileNo;
     private String imei;
-    private String userId;
-    private int recId=0;
     public MyService() {
     }
 
@@ -78,94 +76,63 @@ public class MyService extends Service implements LocationListener {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy =
-                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-        mobileNo=intent.getStringExtra("mobileNo");
-        Log.e("Service--------->","Started");
-        init();
-        ApiClient.getInstance().setStatus(mobileNo, "I")
-                .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if(response.code()==200 && response.isSuccessful()){
-                            if (helper.getAvailableInternalMemorySize()) {
-                                getStatus();
+        try{
+            if (android.os.Build.VERSION.SDK_INT > 9) {
+                StrictMode.ThreadPolicy policy =
+                        new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
+            init();
+
+            mobileNo=intent.getStringExtra("mobileNo");
+            Log.e("Service--------->","Started");
+
+            ApiClient.getInstance().setStatus(mobileNo, "I")
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if(response.code()==200 && response.isSuccessful()){
+                                if (helper.getAvailableInternalMemorySize()) {
+                                    getStatus();
                                 /*if (wifiManager.isWifiEnabled() && mWifi.isConnected()) {
 
                                 }*/
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Log.e("Error",t.getMessage());
-                    }
-                });
-    }
-
-    @SuppressLint("MissingPermission")
-    private void init(){
-        try {
-            context=getApplicationContext();
-            helper=Helper.getInstance();
-            tm=(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-            imei=tm.getDeviceId();
-            locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,GPS_TIME,0,this);
-            wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-            connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            dp=Datapoints.getInstance();
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("Error",t.getMessage());
+                        }
+                    });
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        if(location!=null){
-            recId++;
-            MobileLocation bean=dp.location(context,location,recId,helper);
-            ApiClient.getInstance().setLocation(bean).enqueue(new Callback<Long>() {
-                @Override
-                public void onResponse(Call<Long> call, Response<Long> response) {
-                    if(response.code()==200 && response.isSuccessful()){
-                        Log.e("Location------->",response.body().toString());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Long> call, Throwable t) {
-
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
+    @SuppressLint("MissingPermission")
+    private void init(){
+            context=getApplicationContext();
+            helper=Helper.getInstance();
+            tm=(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+            imei=tm.getDeviceId();
+            /*locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,GPS_TIME,0,this);*/
+            wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            dp=Datapoints.getInstance();
 
     }
 
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 
     private void getStatus(){
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
 //                Log.e("Datapoints---------->",helper.getSession(context).toString());
+
                 ApiClient.getInstance().getCustomerDetails(mobileNo)
                         .enqueue(new Callback<CustomerDetail>() {
                             @SuppressLint("MissingPermission")
@@ -201,25 +168,15 @@ public class MyService extends Service implements LocationListener {
                                                         file=new File(helper.zip(csvFilename,Environment.getExternalStorageDirectory()+ File.separator+imei+".zip"));
                                                         requestFile=RequestBody.create(MediaType.parse("multipart/form-data"),file);
                                                         body= MultipartBody.Part.createFormData("file",file.getName(),requestFile);
-//                                                        if(helper.deleteFile(csvFilename)){
+                                                        if(helper.deleteFile(csvFilename)){
                                                             ApiClient.getInstance().upload(body).enqueue(new Callback<String>() {
                                                                 @Override
                                                                 public void onResponse(Call<String> call, Response<String> response) {
-
-
-                                                                            ApiClient.getInstance().setStatus(mobileNo,"C").enqueue(new Callback<Void>() {
-                                                                                @Override
-                                                                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                                                                    response.body();
-                                                                                }
-
-                                                                                @Override
-                                                                                public void onFailure(Call<Void> call, Throwable t) {
-
-                                                                                }
-                                                                            });
-
-
+                                                                    if(response.code()==200){
+                                                                        if(response.body().equalsIgnoreCase("Success")){
+                                                                            helper.deleteFile(Environment.getExternalStorageDirectory()+ File.separator+imei+".zip");
+                                                                        }
+                                                                    }
                                                                 }
 
                                                                 @Override
@@ -227,7 +184,19 @@ public class MyService extends Service implements LocationListener {
                                                                     Log.e("Error-->",t.getMessage());
                                                                 }
                                                             });
-//                                                        }
+
+                                                            ApiClient.getInstance().setStatus(mobileNo,"C").enqueue(new Callback<Void>() {
+                                                                @Override
+                                                                public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Call<Void> call, Throwable t) {
+
+                                                                }
+                                                            });
+                                                        }
                                                     }
 
                                                     @Override

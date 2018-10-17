@@ -58,65 +58,69 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewRoot=inflater.inflate(R.layout.fragment_dashboard, container, false);
-        init();
-        ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("mobileNo").toString())
-                .enqueue(new Callback<CustomerDetail>() {
-                    @Override
-                    public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                        if(response.isSuccessful() && response.code()==200){
+        try {
+            init();
+            ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("mobileNo").toString())
+                    .enqueue(new Callback<CustomerDetail>() {
+                        @Override
+                        public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                            if(response.isSuccessful() && response.code()==200){
 
-                            helper.putSession(viewRoot.getContext(),"user_id",response.body().getUserId().toString());
-                            helper.putSession(viewRoot.getContext(),"user_mobile_no",response.body().getUserMobileNo().toString());
-                            helper.putSession(viewRoot.getContext(),"user_cnic",response.body().getUserCnic().toString());
-                            helper.putSession(viewRoot.getContext(),"user_channel_id",response.body().getUserChannelId().toString());
-                            helper.putSession(viewRoot.getContext(),"income",response.body().getIncome().toString());
-                            helper.putSession(viewRoot.getContext(),"user_status",response.body().getUserStatus().toString());
-                            helper.putSession(viewRoot.getContext(),"available_Balance",response.body().getAvailableBalance().toString());
-                            helper.putSession(viewRoot.getContext(),"base_scrore",response.body().getBaseScrore().toString());
-                            helper.putSession(viewRoot.getContext(),"behavior_score",response.body().getBehaviorScore().toString());
-                            helper.putSession(viewRoot.getContext(),"base_score_flag",response.body().getBaseScoreFlag().toString());
-                            helper.putSession(viewRoot.getContext(),"behavior_score_flag",response.body().getBehaviorScoreFlag().toString());
-                            helper.putSession(viewRoot.getContext(),"assigned_amount_Limit",response.body().getAssignedAmountLimit().toString());
-                            helper.putSession(viewRoot.getContext(),"consumed_Limit",response.body().getConsumedLimit().toString());
-                            helper.putSession(viewRoot.getContext(),"available_Amount_Limit",response.body().getAvailableAmountLimit().toString());
-                            helper.putSession(viewRoot.getContext(),"dbr_value",response.body().getDbrValue().toString());
-                            helper.putSession(viewRoot.getContext(),"dbr_value_flag",response.body().getDbrValueFlag().toString());
-                            //startActivity(intent);
-                            tvBase.setText(helper.getSession(viewRoot.getContext()).get("base_scrore").toString());
-                            tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
-                            tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
-                            Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
-                            tvRemainingAmt.setText("Rs. "+helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Balance").toString()));
-                            if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
-                                tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));
-                            }else{
-                                tvLimit.setText("Rs. " + helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString());
-                            }
+                                helper.putSession(viewRoot.getContext(),"user_id",response.body().getUserId().toString());
+                                helper.putSession(viewRoot.getContext(),"user_mobile_no",response.body().getUserMobileNo().toString());
+                                helper.putSession(viewRoot.getContext(),"user_cnic",response.body().getUserCnic().toString());
+                                helper.putSession(viewRoot.getContext(),"user_channel_id",response.body().getUserChannelId().toString());
+                                helper.putSession(viewRoot.getContext(),"income",response.body().getIncome().toString());
+                                helper.putSession(viewRoot.getContext(),"user_status",response.body().getUserStatus().toString());
+                                helper.putSession(viewRoot.getContext(),"available_Balance",response.body().getAvailableBalance().toString());
+                                helper.putSession(viewRoot.getContext(),"base_scrore",response.body().getBaseScrore().toString());
+                                helper.putSession(viewRoot.getContext(),"behavior_score",response.body().getBehaviorScore().toString());
+                                helper.putSession(viewRoot.getContext(),"base_score_flag",response.body().getBaseScoreFlag().toString());
+                                helper.putSession(viewRoot.getContext(),"behavior_score_flag",response.body().getBehaviorScoreFlag().toString());
+                                helper.putSession(viewRoot.getContext(),"assigned_amount_Limit",response.body().getAssignedAmountLimit().toString());
+                                helper.putSession(viewRoot.getContext(),"consumed_Limit",response.body().getConsumedLimit().toString());
+                                helper.putSession(viewRoot.getContext(),"available_Amount_Limit",response.body().getAvailableAmountLimit().toString());
+                                helper.putSession(viewRoot.getContext(),"dbr_value",response.body().getDbrValue().toString());
+                                helper.putSession(viewRoot.getContext(),"dbr_value_flag",response.body().getDbrValueFlag().toString());
+                                //startActivity(intent);
+                                tvBase.setText(helper.getSession(viewRoot.getContext()).get("base_scrore").toString());
+                                tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
+                                tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
+                                Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
+                                tvRemainingAmt.setText("Rs. "+helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Balance").toString()));
+                                if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
+                                    tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));
+                                }else{
+                                    tvLimit.setText("Rs. " + helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString());
+                                }
 
-                            ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
-                                    .enqueue(new Callback<List<LoanDetail>>() {
-                                        @Override
-                                        public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
-                                            if(response.code()==200) {
-                                                populateTable(response.body());
+                                ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
+                                        .enqueue(new Callback<List<LoanDetail>>() {
+                                            @Override
+                                            public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
+                                                if(response.code()==200) {
+                                                    populateTable(response.body());
 
+                                                }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
-                                            Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                            @Override
+                                            public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
+                                                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<CustomerDetail> call, Throwable t) {
-                        Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                            Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
 
