@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.muhammadfahad.digitalcredit.Model.CustomerDetail;
 import com.example.muhammadfahad.digitalcredit.R;
@@ -40,7 +41,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView tvCnic;
     private Bundle extras,bundle;
     private View header;
-    ProgressDialog dialog;
+    ProgressDialog pd;
 
     private int counter=0;
     private Helper helper;
@@ -51,8 +52,8 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         init();
 
-        if(dialog.isShowing()) {
-            dialog.dismiss();
+        if(pd.isShowing()) {
+            pd.dismiss();
         }
     }
 
@@ -61,10 +62,11 @@ public class HomeActivity extends AppCompatActivity
         try{
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle("Dashboard");
-            dialog=new ProgressDialog(getApplicationContext());
+
             setSupportActionBar(toolbar);
             layout=findViewById(R.id.view_container);
             helper=Helper.getInstance();
+            pd=helper.showDialog(this,"Loading","Please wait...");
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -83,14 +85,24 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
                             if(response.code()==200 && response.isSuccessful()){
+                                if(pd.isShowing()) {
+                                    pd.dismiss();
+                                }
                                 tvName.setText(response.body().getUserName());
                                 tvCnic.setText(response.body().getUserCnic());
+                            }else {
+                                if(pd.isShowing()) {
+                                    pd.dismiss();
+                                }
                             }
                         }
 
                         @Override
                         public void onFailure(Call<CustomerDetail> call, Throwable t) {
-
+                            if(pd.isShowing()) {
+                                pd.dismiss();
+                            }
+                            Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -150,6 +162,10 @@ public class HomeActivity extends AppCompatActivity
                 intent.putExtra("clear","1");
                 startActivity(intent);
             }catch (Exception e){
+                if(pd.isShowing()) {
+                    pd.dismiss();
+                }
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 

@@ -1,6 +1,7 @@
 package com.example.muhammadfahad.digitalcredit.dialog;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -45,6 +46,7 @@ public class DialogHistory extends DialogFragment {
     private Bundle bundle;
     private Date date;
     private SimpleDateFormat sdf;
+    private ProgressDialog pd;
 
     public DialogHistory() {
         // Required empty public constructor
@@ -59,11 +61,16 @@ public class DialogHistory extends DialogFragment {
            init();
            bundle=getArguments();
            loanId=bundle.getInt("loanId");
+           pd.show();
            ApiClient.getInstance().SingleLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(), String.valueOf(loanId))
                    .enqueue(new Callback<LoanDetail>() {
                        @Override
                        public void onResponse(Call<LoanDetail> call, Response<LoanDetail> response) {
+
                            if(response.isSuccessful() && response.code()==200){
+                               if(pd.isShowing()){
+                                   pd.dismiss();
+                               }
                                try {
                                    bean=response.body();
                                    tvLoanId.setText(String.valueOf(bean.getId()));
@@ -84,6 +91,9 @@ public class DialogHistory extends DialogFragment {
 
                        @Override
                        public void onFailure(Call<LoanDetail> call, Throwable t) {
+                           if(pd.isShowing()){
+                               pd.dismiss();
+                           }
                            Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                        }
                    });
@@ -113,10 +123,11 @@ public class DialogHistory extends DialogFragment {
 //        tvRemainingAmount=viewRoot.findViewById(R.id.textViewRemainingAmt);
         tvLoanFees=viewRoot.findViewById(R.id.textViewLoanFees);
         btnClose=viewRoot.findViewById(R.id.buttonClose);
-        helper=new Helper();
+        helper=Helper.getInstance();
         getDialog().setTitle("Test");
         date=new Date();
         sdf=new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait");
     }
 
 }

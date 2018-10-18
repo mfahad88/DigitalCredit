@@ -1,6 +1,7 @@
 package com.example.muhammadfahad.digitalcredit.fragment;
 
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class RepaymentFragment extends Fragment {
     private TableLayout tableLayout;
     private Helper helper;
     private DialogFragment dialog;
+    private ProgressDialog pd;
     public RepaymentFragment() {
         // Required empty public constructor
     }
@@ -46,6 +48,7 @@ public class RepaymentFragment extends Fragment {
         // Inflate the layout for this fragment
         init(inflater,container,savedInstanceState);
         try {
+            pd.show();
             populateTable();
         }catch (Exception e){
             e.printStackTrace();
@@ -59,6 +62,7 @@ public class RepaymentFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=new Helper();
         dialog=new DialogLoan();
+        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
 
     }
 
@@ -68,6 +72,8 @@ public class RepaymentFragment extends Fragment {
             @Override
             public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                 if(response.code()==200) {
+
+
 
                     for (LoanDetail loanDetail : response.body()) {
                         TableRow row = new TableRow(viewRoot.getContext());
@@ -85,6 +91,7 @@ public class RepaymentFragment extends Fragment {
                         tvId.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                //pd.show();
                                 Bundle bundle=new Bundle();
                                 bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
                                 dialog.setArguments(bundle);
@@ -92,18 +99,20 @@ public class RepaymentFragment extends Fragment {
                             }
                         });
 
-                        TextView tvCreatedDate = new TextView(viewRoot.getContext());
+                        /*TextView tvCreatedDate = new TextView(viewRoot.getContext());
                         tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                         tvCreatedDate.setTextSize(15f);
                         tvCreatedDate.setGravity(Gravity.CENTER_HORIZONTAL);
                         tvCreatedDate.setText(loanDetail.getLoanCreatedDate());
-                        row.addView(tvCreatedDate);
+                        tvCreatedDate.setWidth(100);
+                        row.addView(tvCreatedDate);*/
 
                         TextView tvDueDate = new TextView(viewRoot.getContext());
                         tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                         tvDueDate.setTextSize(15f);
                         tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
                         tvDueDate.setText(loanDetail.getLoanDueDate());
+//                        tvDueDate.setWidth(100);
                         row.addView(tvDueDate);
 
                         TextView tvAmt = new TextView(viewRoot.getContext());
@@ -124,10 +133,17 @@ public class RepaymentFragment extends Fragment {
                         tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
                     }
                 }
+                if(pd.isShowing()){
+                    pd.dismiss();
+                }
             }
 
             @Override
             public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
+                if(pd.isShowing()){
+                    pd.dismiss();
+                }
+
                 Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

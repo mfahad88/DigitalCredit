@@ -2,6 +2,7 @@ package com.example.muhammadfahad.digitalcredit.fragment;
 
 
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public class DashboardFragment extends Fragment {
     private DialogFragment dialog;
     private Fragment prev;
     private String userId;
-
+    private ProgressDialog pd;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class DashboardFragment extends Fragment {
         viewRoot=inflater.inflate(R.layout.fragment_dashboard, container, false);
         try {
             init();
+            pd.show();
             ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("mobileNo").toString())
                     .enqueue(new Callback<CustomerDetail>() {
                         @Override
@@ -87,11 +89,15 @@ public class DashboardFragment extends Fragment {
                                 tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
                                 tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
                                 Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
-                                tvRemainingAmt.setText("Rs. "+helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Balance").toString()));
+                                tvRemainingAmt.setText("Rs. "+helper.CashFormatter(response.body().getAvailableBalance().toString()));
                                 if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
                                     tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));
                                 }else{
-                                    tvLimit.setText("Rs. " + helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString());
+                                    if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())<0){
+                                        tvLimit.setText("Rs. 0.00");
+                                    }else {
+                                        tvLimit.setText("Rs. " + helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString());
+                                    }
                                 }
 
                                 ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
@@ -100,12 +106,17 @@ public class DashboardFragment extends Fragment {
                                             public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                                                 if(response.code()==200) {
                                                     populateTable(response.body());
-
+                                                }
+                                                if(pd.isShowing()){
+                                                    pd.dismiss();
                                                 }
                                             }
 
                                             @Override
                                             public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
+                                                if(pd.isShowing()){
+                                                    pd.dismiss();
+                                                }
                                                 Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
@@ -114,6 +125,9 @@ public class DashboardFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                            if(pd.isShowing()){
+                                pd.dismiss();
+                            }
                             Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -136,9 +150,9 @@ public class DashboardFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         tvRemainingAmt=viewRoot.findViewById(R.id.textViewRemainingAmt);
         helper=Helper.getInstance();
-
         ft=this.getActivity().getSupportFragmentManager().beginTransaction();
         dialog=new DialogLoan();
+        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
 
     }
 
@@ -154,30 +168,33 @@ public class DashboardFragment extends Fragment {
             tvId.setText(String.valueOf(loanDetail.getId()));
             row.addView(tvId);
             tvId.setClickable(true);
-            tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            /*tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             tvId.setTextColor(Color.argb(255,0,0,255));
             tvId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //pd.show();
                     Bundle bundle=new Bundle();
                     bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
                     dialog.setArguments(bundle);
                     dialog.show(getFragmentManager(),"Loan");
                 }
             });
-
-            TextView tvCreatedDate = new TextView(viewRoot.getContext());
+*/
+            /*TextView tvCreatedDate = new TextView(viewRoot.getContext());
             tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             tvCreatedDate.setTextSize(15f);
             tvCreatedDate.setGravity(Gravity.CENTER_HORIZONTAL);
             tvCreatedDate.setText(loanDetail.getLoanCreatedDate());
-            row.addView(tvCreatedDate);
+            tvCreatedDate.setWidth(100);
+            row.addView(tvCreatedDate);*/
 
             TextView tvDueDate = new TextView(viewRoot.getContext());
             tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             tvDueDate.setTextSize(15f);
             tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
             tvDueDate.setText(loanDetail.getLoanDueDate());
+//            tvDueDate.setWidth(100);
             row.addView(tvDueDate);
 
             TextView tvAmt = new TextView(viewRoot.getContext());

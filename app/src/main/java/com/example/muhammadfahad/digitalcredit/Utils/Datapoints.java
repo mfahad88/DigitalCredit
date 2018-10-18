@@ -23,8 +23,10 @@ import com.example.muhammadfahad.digitalcredit.Model.MobileLocation;
 import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ import java.util.regex.Pattern;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class Datapoints {
@@ -54,14 +58,13 @@ public class Datapoints {
         return datapoints;
     }
 
-    public void sms(Context context, Helper helper, PrintWriter printWriter) {
+    public void sms(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
-
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
         List<MobileBean> list;
         try {
-           int catId= ApiClient.getInstance().getCategory("sms").execute().body().intValue();
+            int catId= ApiClient.getInstance().getCategory("sms").execute().body().intValue();
             list = new ArrayList<>();
 
             cursor = context.getContentResolver().query(Telephony.Sms.CONTENT_URI/*Uri.parse("content://sms/inbox")*/, null/*new String[]{"body", "error_code", "rcs_message_id", "rcs_message_type"}*/,
@@ -96,9 +99,8 @@ public class Datapoints {
         }
     }
 
-    public void contact(Context context, Helper helper, PrintWriter printWriter) {
+    public void contact(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
-
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
         List<MobileBean> list;
@@ -113,8 +115,8 @@ public class Datapoints {
                     recId++;
                     for (int i = 0; i < cursor.getColumnCount(); i++) {
 
-                            bean = new MobileBean(userId, catId, recId, cursor.getColumnName(i).trim(), String.valueOf(cursor.getString(i)).trim());
-                            list.add(bean);
+                        bean = new MobileBean(userId, catId, recId, cursor.getColumnName(i).trim(), String.valueOf(cursor.getString(i)).trim());
+                        list.add(bean);
 
                     }
                 } while (cursor.moveToNext());
@@ -129,7 +131,7 @@ public class Datapoints {
     }
 
     @SuppressLint("MissingPermission")
-    public void call(Context context, Helper helper, PrintWriter printWriter) {
+    public void call(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
@@ -158,9 +160,8 @@ public class Datapoints {
         }
     }
 
-    public void sensor(Context context, Helper helper, PrintWriter printWriter) {
+    public void sensor(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
-
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
         List<MobileBean> list;
@@ -185,7 +186,7 @@ public class Datapoints {
         }
     }
 
-    public void deviceInfo(Context context, Helper helper, PrintWriter printWriter) {
+    public void deviceInfo(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
@@ -236,7 +237,7 @@ public class Datapoints {
         }
     }
 
-    public void account(Context context, Helper helper, PrintWriter printWriter) {
+    public void account(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
 
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
@@ -264,9 +265,8 @@ public class Datapoints {
     }
 
     @SuppressLint("MissingPermission")
-    public void calendarcontractEvents(Context context, Helper helper, PrintWriter printWriter) {
+    public void calendarcontractEvents(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
-
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         Cursor cursor = null;
         List<MobileBean> list;
@@ -299,7 +299,7 @@ public class Datapoints {
     }
 
     @SuppressLint("MissingPermission")
-    public void calendarcontractReminder(Context context, Helper helper, PrintWriter printWriter) {
+    public void calendarcontractReminder(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
 
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
@@ -334,7 +334,7 @@ public class Datapoints {
     }
 
     @SuppressLint("MissingPermission")
-    public void battery(Context context, Helper helper, PrintWriter printWriter) {
+    public void battery(final Context context, final Helper helper, final PrintWriter printWriter) {
         int recId=0;
         int userId= Integer.parseInt(helper.getSession(context).get("user_id").toString());
         List<MobileBean> list;
@@ -361,49 +361,71 @@ public class Datapoints {
         }
     }
 
-    public MobileLocation location(Context context, final Location location,int recId,int userId) {
+    public void location(final Context context, final Location location, final int recId, final int userId, Helper helper) {
 
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-DD-MM");
-        simpleDateFormat.setTimeZone(TimeZone.getDefault());
-        Geocoder geocoder=new Geocoder(context, Locale.getDefault());
+        ApiClient.getInstance().getCategory("location").enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, retrofit2.Response<Integer> response) {
+                if(response.isSuccessful() && response.code()==200){
+                    try{
+                        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-DD-MM");
+                        simpleDateFormat.setTimeZone(TimeZone.getDefault());
+                        Geocoder geocoder=new Geocoder(context, Locale.getDefault());
+                        MobileLocation bean = null;
+                        OkHttpClient client = new OkHttpClient();
+                        final List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        Request request_place = new Request.Builder()
+                                .url("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+String.valueOf(location.getLatitude())+","+String.valueOf(location.getLongitude())+"&radius=10&key=AIzaSyAMly2uKnHT14gr3sYXOKSrytvw25SlcsA")
+                                .build();
 
+                        Response response_place = client.newCall(request_place).execute();
+                        JSONObject object_place=new JSONObject(response_place.body().string());
+                        JSONArray array_place=object_place.getJSONArray("results");
 
-        MobileLocation bean = null;
-        try {
-            final List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            int catId= ApiClient.getInstance().getCategory("location").execute().body().intValue();
-            OkHttpClient client = new OkHttpClient();
-            Request request_place = new Request.Builder()
-                    .url("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+String.valueOf(location.getLatitude())+","+String.valueOf(location.getLongitude())+"&radius=10&key=AIzaSyAMly2uKnHT14gr3sYXOKSrytvw25SlcsA")
-                    .build();
+                        bean=new MobileLocation();
+                        bean.setUserId(userId);
+                        bean.setRecId(String.valueOf(recId));
+                        bean.setAccuracy(location.getAccuracy());
+                        bean.setAddress(addresses.get(0).getAddressLine(0));
+                        bean.setAltitude(location.getAltitude());
+                        bean.setBearing(location.getBearing());
+                        bean.setElapseTime(location.getElapsedRealtimeNanos());
+                        bean.setLatitude(location.getLatitude());
+                        bean.setLongitude(location.getLongitude());
+                        bean.setProvider(location.getProvider());
+                        bean.setSpead(location.getSpeed());
+                        bean.setLocTime(location.getTime());
+                        bean.setRadius(10);
+                        if(addresses!=null){
+                            bean.setAddress(addresses.get(0).getAddressLine(0));
+                            bean.setKnownNameLoc(addresses.get(0).getFeatureName());
+                            bean.setPlaceNameLoc(array_place.getJSONObject(1).getString("name"));
+                        }
+                        ApiClient.getInstance().setLocation(bean).enqueue(new Callback<Long>() {
+                            @Override
+                            public void onResponse(Call<Long> call, retrofit2.Response<Long> response) {
+                                if(response.code()==200 && response.isSuccessful()){
+                                    Log.e("Location------->",response.body().toString());
+                                }
+                            }
 
-            Response response_place = client.newCall(request_place).execute();
-            JSONObject object_place=new JSONObject(response_place.body().string());
-            JSONArray array_place=object_place.getJSONArray("results");
+                            @Override
+                            public void onFailure(Call<Long> call, Throwable t) {
 
-            bean=new MobileLocation();
-            bean.setUserId(userId);
-            bean.setRecId(String.valueOf(recId));
-            bean.setAccuracy(location.getAccuracy());
-            bean.setAddress(addresses.get(0).getAddressLine(0));
-            bean.setAltitude(location.getAltitude());
-            bean.setBearing(location.getBearing());
-            bean.setElapseTime(location.getElapsedRealtimeNanos());
-            bean.setLatitude(location.getLatitude());
-            bean.setLongitude(location.getLongitude());
-            bean.setProvider(location.getProvider());
-            bean.setSpead(location.getSpeed());
-            bean.setLocTime(location.getTime());
-            bean.setRadius(10);
-            if(addresses!=null){
-                bean.setAddress(addresses.get(0).getAddressLine(0));
-                bean.setKnownNameLoc(addresses.get(0).getFeatureName());
-                bean.setPlaceNameLoc(array_place.getJSONObject(1).getString("name"));
+                            }
+                        });
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return bean;
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
     }
 }

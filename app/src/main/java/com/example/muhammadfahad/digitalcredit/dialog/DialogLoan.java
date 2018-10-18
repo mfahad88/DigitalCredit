@@ -1,6 +1,7 @@
 package com.example.muhammadfahad.digitalcredit.dialog;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -20,6 +21,7 @@ import com.example.muhammadfahad.digitalcredit.Utils.Helper;
 
 import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
+import com.example.muhammadfahad.digitalcredit.fragment.RepaymentFragment;
 
 
 import java.text.SimpleDateFormat;
@@ -50,7 +52,7 @@ public class DialogLoan extends DialogFragment {
     private Date date;
     private SimpleDateFormat sdf;
     private Button btnClose;
-
+    private ProgressDialog pd;
 
 
     @Override
@@ -61,11 +63,14 @@ public class DialogLoan extends DialogFragment {
             init();
             bundle=getArguments();
             loanId=bundle.getInt("loanId");
-
+            //pd.show();
             ApiClient.getInstance().SingleLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(), String.valueOf(loanId))
                     .enqueue(new Callback<LoanDetail>() {
                         @Override
                         public void onResponse(Call<LoanDetail> call, Response<LoanDetail> response) {
+                            if(pd.isShowing()){
+                                pd.dismiss();
+                            }
                             if(response.isSuccessful() && response.code()==200){
                                 try {
                                     bean=response.body();
@@ -87,6 +92,9 @@ public class DialogLoan extends DialogFragment {
 
                         @Override
                         public void onFailure(Call<LoanDetail> call, Throwable t) {
+                            if(pd.isShowing()){
+                                pd.dismiss();
+                            }
                             Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -114,7 +122,7 @@ public class DialogLoan extends DialogFragment {
                                 // Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                        Fragment fragment=new DashboardFragment();
+                        Fragment fragment=new RepaymentFragment();
                         FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.view_container,fragment).commit();
                         dismiss();
@@ -145,6 +153,7 @@ public class DialogLoan extends DialogFragment {
         getDialog().setTitle("Loan Details");
         date=new Date();
         sdf=new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait");
 
     }
 }

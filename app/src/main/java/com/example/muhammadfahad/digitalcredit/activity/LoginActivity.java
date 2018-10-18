@@ -1,17 +1,31 @@
 package com.example.muhammadfahad.digitalcredit.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.muhammadfahad.digitalcredit.BuildConfig;
+import com.example.muhammadfahad.digitalcredit.Model.AppVersion;
+import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
+import com.facebook.appevents.AppEventsLogger;
 
 import com.example.muhammadfahad.digitalcredit.Model.CustomerDetail;
 import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
@@ -27,6 +41,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,14 +58,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Helper helper;
     private List<SessionBean> list;
     private SessionBean bean;
-    private ProgressDialog dialog;
+    private ProgressDialog pd;
     private Integer userId=0;
-
+    private TelephonyManager tm;
+    private Bundle bundle;
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (dialog.isShowing()) {
-            dialog.dismiss();
+        edtTextMobileNo.setText("");
+        edtTextPassword.setText("");
+        if (pd.isShowing()) {
+            pd.dismiss();
         }
     }
 
@@ -60,24 +79,59 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         System.exit(0);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        init();
-        requestStoragePermission();
+        try{
+            setContentView(R.layout.activity_login);
+            init();
+            requestStoragePermission();
 
+            bundle.putString("imei",tm.getDeviceId());
 
+           // helper.facebookLog(getApplicationContext(),"Device Info",bundle);
 
-        if(helper.getSession(getApplicationContext())!=null){
-            helper.clearSession(getApplicationContext());
+            if(helper.getSession(getApplicationContext())!=null){
+                helper.clearSession(getApplicationContext());
+            }
+
+            tvSignUp.setOnClickListener(LoginActivity.this);
+
+            ApiClient.getInstance().appVersion()
+                    .enqueue(new Callback<AppVersion>() {
+                        @Override
+                        public void onResponse(Call<AppVersion> call, Response<AppVersion> response) {
+                            if(response.code()==200 && response.isSuccessful()){
+                                Log.e("App Version",response.body().getAppVersion().toString());
+                                Double version= Double.valueOf(BuildConfig.VERSION_NAME);
+                                Log.e("App check-->", String.valueOf(response.body().getAppVersion()< version));
+                                if(response.body().getAppVersion()> version){
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(response.body().getAppUrl())));
+                                    android.os.Process.killProcess(android.os.Process.myPid());
+                                }
+                            }else{
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<AppVersion> call, Throwable t) {
+                            t.fillInStackTrace();
+                        }
+                    });
+        }catch (Exception e){
+            if (pd.isShowing()) {
+                pd.dismiss();
+            }
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
-
-        tvSignUp.setOnClickListener(LoginActivity.this);
-
     }
 
     private void init(){
+        bundle = new Bundle();
         edtTextMobileNo=findViewById(R.id.editTextMobileno);
         edtTextPassword=findViewById(R.id.editTextPassword);
         tvSignUp=findViewById(R.id.textViewSignup);
@@ -85,7 +139,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         helper=Helper.getInstance();
         list=new ArrayList<>();
         bean=SessionBean.getInstance();
-        dialog=new ProgressDialog(this);
+        pd=helper.showDialog(this,"Loading","Please wait...");
+        tm=(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+//        helper.generateKeyHash(getApplicationContext());
+
     }
 
     @Override
@@ -94,27 +151,40 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             if(view.getId()==R.id.buttonSignin){
                 if(!TextUtils.isEmpty(edtTextMobileNo.getText().toString().trim()) && (!TextUtils.isEmpty(edtTextPassword.getText().toString().trim()))){
+                    pd.show();
                     helper.putSession(this,"mobileNo",edtTextMobileNo.getText().toString());
                     helper.putSession(this,"password",edtTextPassword.getText().toString());
                     intent=new Intent(this,HomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    btnSign.setEnabled(false);
                     ApiClient.getInstance().loginUser(edtTextMobileNo.getText().toString())
                             .enqueue(new Callback<Integer>() {
                                 @Override
                                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                                     if(response.isSuccessful() && response.code()==200){
+                                        btnSign.setEnabled(true);
                                         helper.putSession(getApplicationContext(),"user_id",response.body().toString());
                                         if(response.body()==-1){
                                             Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
                                         }else{
                                             startActivity(intent);
                                         }
+                                    }else{
+                                        if (pd.isShowing()) {
+                                            btnSign.setEnabled(true);
+                                            pd.dismiss();
+                                            Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<Integer> call, Throwable t) {
-
+                                    if (pd.isShowing()) {
+                                        pd.dismiss();
+                                    }
+                                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                                    btnSign.setEnabled(true);
                                 }
                             });
 
@@ -127,6 +197,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
             }
         }catch (Exception e){
+            if (pd.isShowing()) {
+                pd.dismiss();
+            }
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -137,16 +211,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                    .withPermissions(
                            Manifest.permission.INTERNET,
                            Manifest.permission.ACCESS_FINE_LOCATION,
-                           Manifest.permission.ACCESS_COARSE_LOCATION)
+                           Manifest.permission.ACCESS_COARSE_LOCATION,
+                           Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                           Manifest.permission.READ_EXTERNAL_STORAGE)
                    .withListener(new MultiplePermissionsListener() {
                        @Override
                        public void onPermissionsChecked(MultiplePermissionsReport report) {
                            // check if all permissions are granted
 
                            if (report.areAllPermissionsGranted()) {
-
-
-
 
                            }
 

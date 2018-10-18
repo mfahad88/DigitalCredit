@@ -1,5 +1,6 @@
 package com.example.muhammadfahad.digitalcredit.Interface;
 
+import com.example.muhammadfahad.digitalcredit.Model.AppVersion;
 import com.example.muhammadfahad.digitalcredit.Model.CustomerDetail;
 import com.example.muhammadfahad.digitalcredit.Model.LoanDetail;
 import com.example.muhammadfahad.digitalcredit.Model.MobileLocation;
@@ -67,4 +68,7 @@ public interface ApiInterface {
 
 	@POST("/api/insert/mobileLocation")
 	Call<Long> setLocation(@Body MobileLocation location);
+
+	@GET("/api/fetch/appVersion")
+	Call<AppVersion> appVersion();
 }

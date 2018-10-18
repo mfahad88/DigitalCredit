@@ -1,15 +1,24 @@
 package com.example.muhammadfahad.digitalcredit.Utils;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.muhammadfahad.digitalcredit.Model.MobileBean;
 import com.example.muhammadfahad.digitalcredit.Model.SessionBean;
+import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
+import com.facebook.appevents.AppEventsLogger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -23,6 +32,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,16 +146,16 @@ public class Helper {
 
             byte data[] = new byte[BUFFER];
 
-                FileInputStream fi = new FileInputStream(zipFilePath);
-                origin = new BufferedInputStream(fi, BUFFER);
-                ZipEntry entry = new ZipEntry(zipFilePath.substring(zipFilePath.lastIndexOf("/") + 1));
-                out.putNextEntry(entry);
-                int count;
-                while ((count = origin.read(data, 0, BUFFER)) != -1) {
-                    out.write(data, 0, count);
-                }
-                origin.close();
-                out.close();
+            FileInputStream fi = new FileInputStream(zipFilePath);
+            origin = new BufferedInputStream(fi, BUFFER);
+            ZipEntry entry = new ZipEntry(zipFilePath.substring(zipFilePath.lastIndexOf("/") + 1));
+            out.putNextEntry(entry);
+            int count;
+            while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                out.write(data, 0, count);
+            }
+            origin.close();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,22 +163,22 @@ public class Helper {
     }
 
     public void writeTxtFile(Context context,String txt){
-       try{
-           File myDirectory = new File(Environment.getExternalStorageDirectory(), "DC");
-           if(myDirectory.exists()){
-               deleteFile(myDirectory+"config.txt");
-           }
-           if(!myDirectory.exists()) {
-               myDirectory.mkdirs();
-           }
-           File gpxfile = new File(myDirectory, "config.txt");
-           FileWriter writer = new FileWriter(gpxfile);
-           writer.append(txt);
-           writer.flush();
-           writer.close();
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+        try{
+            File myDirectory = new File(Environment.getExternalStorageDirectory(), "DC");
+            if(myDirectory.exists()){
+                deleteFile(myDirectory+"config.txt");
+            }
+            if(!myDirectory.exists()) {
+                myDirectory.mkdirs();
+            }
+            File gpxfile = new File(myDirectory, "config.txt");
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(txt);
+            writer.flush();
+            writer.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String readtxtFile(String filename){
@@ -178,22 +190,64 @@ public class Helper {
         // i have kept text.txt in the sd-card
 
 
-            //Read text from file
-            StringBuilder text = new StringBuilder();
+        //Read text from file
+        StringBuilder text = new StringBuilder();
 
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
 
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                }
+            while ((line = br.readLine()) != null) {
+                text.append(line);
             }
-            catch (IOException e) {
-                //You'll need to add proper error handling here
-            }
-            //Set the text
-            return  text.toString();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+        //Set the text
+        return  text.toString();
 
     }
+
+    public void generateKeyHash(Context context){
+
+
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(
+                    "com.example.muhammadfahad.digitalcredit",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.e("KeyHash:---------->", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void facebookLog(Context context, String eventName, Bundle parameters){
+        try{
+            FacebookSdk.sdkInitialize(context);
+            AppEventsLogger.activateApp(context);
+            FacebookSdk.setIsDebugEnabled(true);
+            FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            AppEventsLogger logger=AppEventsLogger.newLogger(context);
+            logger.logEvent(eventName,parameters);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public ProgressDialog showDialog(Context context,String title,String message){
+        ProgressDialog pd=new ProgressDialog(context);
+        pd.setTitle(title);
+        pd.setMessage(message);
+        return pd;
+    }
+
+
 }

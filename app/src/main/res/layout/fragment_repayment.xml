@@ -41,13 +41,13 @@
                            android:padding="5dp"
                            android:text="Loan Id" />
 
-                       <TextView
+                       <!--<TextView
                            android:id="@+id/textView2"
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:textStyle="bold"
                            android:padding="5dp"
-                           android:text="Created Date" />
+                           android:text="Created Date" />-->
 
                        <TextView
                            android:id="@+id/textView3"

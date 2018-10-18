@@ -1,6 +1,7 @@
 package com.example.muhammadfahad.digitalcredit.fragment;
 
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class HistoryFragment extends Fragment {
     private Helper helper;
     private TableLayout tableLayout;
     private DialogFragment dialog;
+    private ProgressDialog pd;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -49,13 +51,16 @@ public class HistoryFragment extends Fragment {
         viewRoot=inflater.inflate(R.layout.fragment_history, container, false);
         try {
             init();
+            pd.show();
             Log.e("User_id------->",helper.getSession(viewRoot.getContext()).get("user_id").toString());
             ApiClient.getInstance().getLoanAll(helper.getSession(viewRoot.getContext()).get("user_id").toString())
                     .enqueue(new Callback<List<LoanDetail>>() {
                         @Override
                         public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                             if(response.code()==200) {
-
+                                if(pd.isShowing()){
+                                    pd.dismiss();
+                                }
                                 for (LoanDetail loanDetail : response.body()) {
                                     TableRow row = new TableRow(viewRoot.getContext());
                                     row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -74,6 +79,7 @@ public class HistoryFragment extends Fragment {
                                     tvId.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            //pd.show();
                                             Bundle bundle=new Bundle();
                                             bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
                                             dialog.setArguments(bundle);
@@ -92,7 +98,8 @@ public class HistoryFragment extends Fragment {
                         row.addView(tvPaidDate);
 */
                                     TextView tvDueDate = new TextView(viewRoot.getContext());
-                                    tvDueDate.setLayoutParams(new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+
                                     tvDueDate.setTextSize(15f);
                                     tvDueDate.setGravity(Gravity.NO_GRAVITY);
                                     tvDueDate.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -145,5 +152,6 @@ public class HistoryFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=Helper.getInstance();
         dialog=new DialogHistory();
+        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
     }
 }

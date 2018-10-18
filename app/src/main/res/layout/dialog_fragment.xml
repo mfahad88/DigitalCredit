@@ -16,248 +16,210 @@
         app:cardBackgroundColor="#1Affffff"
         android:id="@+id/card_view">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:id="@+id/tableLayout">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-
-            <TableRow
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Loan Id"
+                    android:text="Loan Id: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewLoanId" />
-            </TableRow>
-            <!--<TableRow
-                android:layout_width="wrap_content"
+                    android:id="@+id/textViewLoanId"
+                    android:layout_weight=".5"/>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="customer Id"
+                    android:text="Amount: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewUserId" />
-            </TableRow>-->
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Amount"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     android:id="@+id/textViewAmt" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Created Date"
+                    android:text="Created Date: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewLoanCreatedDate" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
+                    android:id="@+id/textViewLoanCreatedDate"
+                    android:layout_weight=".5"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Due Date"
+                    android:text="Due Date: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     android:id="@+id/textViewLoanDueDate" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Amount Paid"
+                    android:text="Amount Paid: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
+                    android:id="@+id/textViewAmtPaid"
                     android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewAmtPaid" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
+                    android:layout_weight=".5"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Status"
+                    android:text="Status: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     android:id="@+id/textViewLoanStatus" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
 
-               <!-- <TextView
-                    android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Paid Date"
+                    android:text="Loan Fees: "
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewLastPaidDate" />-->
-            </TableRow>
-            <!--<TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remaining Amount"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    android:id="@+id/textViewRemainingAmt" />
-            </TableRow>-->
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loan Fees"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:textSize="17sp"
-                    android:layout_weight=".5"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:fontFamily="sans-serif-smallcaps"
                     android:textSize="17sp"
                     android:layout_weight=".5"
                     android:id="@+id/textViewLoanFees" />
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
                 <Button
                     android:id="@+id/buttonPay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pay"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    />
+                     />
 
-            </TableRow>
+            </LinearLayout>
+        </LinearLayout>
 
-        </TableLayout>
+        <!--
+
+
+
+
+
+
+
+
+             />-->
+
+
+
+
 
     </android.support.v7.widget.CardView>
 

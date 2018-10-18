@@ -45,10 +45,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Intent intent;
     private Call<String> api,api_userId;
     private CustomerDetail detail;
-    private ProgressDialog dialog;
     private boolean isGranted=false;
     private SessionBean sessionBean;
     private Helper helper;
+    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,14 +65,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         edtName=findViewById(R.id.editTextFullname);
         edtCnic=findViewById(R.id.editTextCnic);
         edtMobile=findViewById(R.id.editTextMobileno);
-        dialog=new ProgressDialog(RegisterActivity.this);
-        dialog.setTitle("Loading...");
-        dialog.setMessage("Please Wait...");
         detail=new CustomerDetail();
         list=new ArrayList<>();
         sessionBean=SessionBean.getInstance();
         helper=Helper.getInstance();
-
+        pd=helper.showDialog(this,"Loading","Please wait...");
 
 
     }
@@ -92,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
                 if(!TextUtils.isEmpty(edtName.getText().toString().trim()) && (!TextUtils.isEmpty(edtCnic.getText().toString().trim()))
                         && (!TextUtils.isEmpty(edtMobile.getText().toString().trim())) && helper.isValidMobileNo(edtMobile.getText().toString())) {
-                    dialog.show();
+                    pd.show();
                     detail.setUserName(edtName.getText().toString());
                     detail.setUserMobileNo(edtMobile.getText().toString());
                     detail.setUserCnic(edtCnic.getText().toString());
@@ -101,34 +98,54 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                     intent = new Intent(RegisterActivity.this, LoginActivity.class);
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                     api=ApiClient.getInstance().insertRecord(detail);
                     api.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            if(response.code()==200){
-                                if(response.body().equalsIgnoreCase("409")){
-
-                                    Toast.makeText(RegisterActivity.this, "User already exists...", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    helper.putSession(RegisterActivity.this,"user_id",response.body());
-                                    helper.writeTxtFile(RegisterActivity.this,response.body());
-                                    Log.e("MobileNo---------->",edtMobile.getText().toString());
-                                    Intent i=new Intent(getApplicationContext(), MyService.class);
-                                    i.putExtra("mobileNo",edtMobile.getText().toString());
+                            if(response.code()==200 && response.isSuccessful()){
+                               try{
+                                   if(response.body().equalsIgnoreCase("409")){
+                                       if(pd.isShowing()){
+                                           pd.dismiss();
+                                       }
+                                       Toast.makeText(RegisterActivity.this, "User already exists...", Toast.LENGTH_SHORT).show();
+                                   }else {
+                                       helper.putSession(RegisterActivity.this,"user_id",response.body());
+                                       helper.writeTxtFile(RegisterActivity.this,response.body());
+                                       Log.e("MobileNo---------->",edtMobile.getText().toString());
+                                       Intent i=new Intent(getApplicationContext(), MyService.class);
+                                       i.putExtra("mobileNo",edtMobile.getText().toString());
 //                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    getApplicationContext().startService(i);
-                                    startActivity(intent);
+                                       getApplicationContext().startService(i);
+                                       startActivity(intent);
+                                       if(pd.isShowing()){
+                                           pd.dismiss();
+                                       }
+                                   }
+
+                               }catch (Exception e){
+                                   e.printStackTrace();
+                               }
+                            }else{
+                                try{
+                                    if(pd.isShowing()){
+                                        pd.dismiss();
+                                    }
+                                    Log.e("Error",response.body().trim());
+                                    // Toast.makeText(RegisterActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
-                                dialog.dismiss();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            if(dialog.isShowing()){
-                                dialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            if(pd.isShowing()){
+                                pd.dismiss();
                             }
+                            Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -150,11 +167,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Manifest.permission.READ_CALENDAR,
                             Manifest.permission.BATTERY_STATS,
                             Manifest.permission.ACCESS_NETWORK_STATE,
-                            Manifest.permission.ACCESS_WIFI_STATE,
-                            Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
+                            Manifest.permission.ACCESS_WIFI_STATE)
                     .withListener(new MultiplePermissionsListener() {
                         @Override
                         public void onPermissionsChecked(MultiplePermissionsReport report) {

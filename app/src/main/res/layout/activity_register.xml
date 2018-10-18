@@ -44,6 +44,7 @@
         android:layout_marginTop="70dp"
         android:fontFamily="sans-serif"
         android:ems="15"
+        android:maxLength="30"
         android:layout_alignLeft="@id/imageView"
         android:layout_alignRight="@id/imageView"
         android:hint="@string/full_name"
