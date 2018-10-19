@@ -16,6 +16,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -87,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try{
             setContentView(R.layout.activity_login);
             init();
+
             requestStoragePermission();
 
             bundle.putString("imei",tm.getDeviceId());
@@ -131,6 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void init(){
+
         bundle = new Bundle();
         edtTextMobileNo=findViewById(R.id.editTextMobileno);
         edtTextPassword=findViewById(R.id.editTextPassword);
@@ -145,8 +149,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
 
         try {
             if(view.getId()==R.id.buttonSignin){
@@ -165,12 +170,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         btnSign.setEnabled(true);
                                         helper.putSession(getApplicationContext(),"user_id",response.body().toString());
                                         if(response.body()==-1){
-                                            Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
+                                            helper.showMesage(view.getRootView(),"Invalid user...");
+                                            //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
                                         }else{
                                             startActivity(intent);
                                         }
                                     }else{
-                                        Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
+                                        helper.showMesage(view.getRootView(),"Service not available");
+//                                        Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
 
                                     }
                                     if (pd.isShowing()) {

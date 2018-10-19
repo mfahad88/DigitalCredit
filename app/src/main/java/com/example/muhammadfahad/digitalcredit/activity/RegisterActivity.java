@@ -135,7 +135,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                         pd.dismiss();
                                     }
                                     Log.e("Error",response.body().trim());
-                                    // Toast.makeText(RegisterActivity.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+                                     Toast.makeText(RegisterActivity.this, "Please contact system administrator", Toast.LENGTH_SHORT).show();
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
