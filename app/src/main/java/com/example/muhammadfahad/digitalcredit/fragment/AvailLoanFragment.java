@@ -266,7 +266,7 @@ public class AvailLoanFragment extends Fragment {
                            if(consumedAmt>0){
                                if( consumedAmt<=availableAmt /*&& (consumedAmt+processingFee)>availableAmt*/) {
                                    if(consumedAmt<processingFee || consumedAmt==processingFee){
-                                       btn.setEnabled(true);
+                                       btn.setEnabled(false);
                                        Toast.makeText(viewRoot.getContext(), "Consumed amount cannot be less than processing fee", Toast.LENGTH_SHORT).show();
                                    }else {
                                        ApiClient.getInstance().CustomerLoan(loanDetail).enqueue(new Callback<Integer>() {
@@ -293,7 +293,7 @@ public class AvailLoanFragment extends Fragment {
 
                                }
                                else {
-                                    btn.setEnabled(true);
+                                    btn.setEnabled(false);
                                    Toast.makeText(viewRoot.getContext(), "Invalid amount", Toast.LENGTH_SHORT).show();
                                }
 

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.muhammadfahad.digitalcredit.Model.LoanDetail;
 import com.example.muhammadfahad.digitalcredit.R;
 import com.example.muhammadfahad.digitalcredit.Utils.Helper;
+import com.example.muhammadfahad.digitalcredit.activity.LoginActivity;
 import com.example.muhammadfahad.digitalcredit.client.ApiClient;
 import com.example.muhammadfahad.digitalcredit.dialog.DialogLoan;
 
@@ -50,6 +52,7 @@ public class RepaymentFragment extends Fragment {
         try {
             pd.show();
             populateTable();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -62,19 +65,16 @@ public class RepaymentFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=new Helper();
         dialog=new DialogLoan();
-        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
+        pd=helper.showDialog(getActivity(),"Loading","Please wait...");
 
     }
 
     private void populateTable(){
-        ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U").clone()
+        ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
         .enqueue(new Callback<List<LoanDetail>>() {
             @Override
             public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                 if(response.code()==200) {
-
-
-
                     for (LoanDetail loanDetail : response.body()) {
                         TableRow row = new TableRow(viewRoot.getContext());
                         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -96,6 +96,7 @@ public class RepaymentFragment extends Fragment {
                                 bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
                                 dialog.setArguments(bundle);
                                 dialog.show(getFragmentManager(),"Loan");
+
                             }
                         });
 
@@ -132,10 +133,16 @@ public class RepaymentFragment extends Fragment {
                         row.setPadding(5,5,5,5);
                         tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
                     }
+                    if(pd.isShowing()){
+                        pd.dismiss();
+                    }
+                }else{
+                    if (pd.isShowing()) {
+                        pd.dismiss();
+                        Toast.makeText(viewRoot.getContext(), "Service not available", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                if(pd.isShowing()){
-                    pd.dismiss();
-                }
+
             }
 
             @Override

@@ -49,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SessionBean sessionBean;
     private Helper helper;
     private ProgressDialog pd;
+    private View viewRoot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         sessionBean=SessionBean.getInstance();
         helper=Helper.getInstance();
         pd=helper.showDialog(this,"Loading","Please wait...");
+        viewRoot=View.inflate(this,R.layout.activity_login,null);
 
 
     }
@@ -173,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         public void onPermissionsChecked(MultiplePermissionsReport report) {
                             // check if all permissions are granted
                             if (report.areAllPermissionsGranted()) {
-                                Toast.makeText(RegisterActivity.this, "Permission Granted...", Toast.LENGTH_SHORT).show();
+                                helper.showMesage(viewRoot,"Permission Granted...");
                             }
 
                           /*  // check for permanent denial of any permission

@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 helper.clearSession(getApplicationContext());
             }
 
-            tvSignUp.setOnClickListener(LoginActivity.this);
+
 
             ApiClient.getInstance().appVersion()
                     .enqueue(new Callback<AppVersion>() {
@@ -170,11 +170,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             startActivity(intent);
                                         }
                                     }else{
-                                        if (pd.isShowing()) {
-                                            btnSign.setEnabled(true);
-                                            pd.dismiss();
-                                            Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
-                                        }
+                                        Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                    if (pd.isShowing()) {
+                                        btnSign.setEnabled(true);
+                                        pd.dismiss();
+
                                     }
                                 }
 
@@ -212,6 +214,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                            Manifest.permission.INTERNET,
                            Manifest.permission.ACCESS_FINE_LOCATION,
                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                           Manifest.permission.READ_PHONE_STATE,
                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
                            Manifest.permission.READ_EXTERNAL_STORAGE)
                    .withListener(new MultiplePermissionsListener() {
@@ -232,6 +235,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                            for(int i=0;i<report.getGrantedPermissionResponses().size();i++){
                                if(report.getGrantedPermissionResponses().get(i).getPermissionName().equalsIgnoreCase("android.permission.ACCESS_FINE_LOCATION")){
+                                   tvSignUp.setOnClickListener(LoginActivity.this);
                                    btnSign.setOnClickListener(LoginActivity.this);
                                    startService(new Intent(getApplicationContext(), LocationService.class));
                                }

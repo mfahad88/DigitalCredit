@@ -112,6 +112,12 @@ public class HomeActivity extends AppCompatActivity
             ft=getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.view_container,fragment);
             ft.commit();
+            if(extras.getString("availLoan").equalsIgnoreCase("Yes")){
+                Fragment fragment=new RepaymentFragment();
+                toolbar.setTitle("Avail Loan");
+                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.view_container,fragment).commit();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

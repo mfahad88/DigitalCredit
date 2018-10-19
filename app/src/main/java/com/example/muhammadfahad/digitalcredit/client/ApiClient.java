@@ -17,22 +17,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
  
 //    public static final String BASE_URL = "http://53.53.53.60:8080/";
-    public static final String BASE_URL = "http://c1c13aaf.ngrok.io/";
+    public static final String BASE_URL = "http://e0efc406.ngrok.io/";
     private static Retrofit retrofit = null;
 
  
     public static ApiInterface getInstance() {
 
-        if (retrofit==null) {
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
-                    retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(getRequestHeader())
-                    .build();
-        }
+          if (retrofit==null) {
+              Gson gson = new GsonBuilder()
+                      .setLenient()
+                      .create();
+              retrofit = new Retrofit.Builder()
+                      .baseUrl(BASE_URL)
+                      .addConverterFactory(GsonConverterFactory.create(gson))
+                      .client(getRequestHeader())
+                      .build();
+          }
+
         return retrofit.create(ApiInterface.class);
     }
 
