@@ -153,6 +153,7 @@
                       android:textStyle="bold"
                       android:textSize="18sp"
                       android:singleLine="true"
+                      android:longClickable="false"
                       android:ems="7"
                       android:maxLength="5"
                       android:inputType="number"

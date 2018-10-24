@@ -1,5 +1,6 @@
 package com.example.muhammadfahad.digitalcredit.Utils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.design.widget.Snackbar;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -234,6 +236,7 @@ public class Helper {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void facebookLog(Context context, String eventName, Bundle parameters){
         try{
             FacebookSdk.sdkInitialize(context);
@@ -241,7 +244,12 @@ public class Helper {
             FacebookSdk.setIsDebugEnabled(true);
             FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
             AppEventsLogger logger=AppEventsLogger.newLogger(context);
-            logger.logEvent(eventName,parameters);
+            if(!eventName.equals(null)) {
+                logger.logEvent(eventName, parameters);
+            }else {
+                TelephonyManager tm=(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+                logger.logEvent(tm.getDeviceId(),parameters);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -279,4 +287,39 @@ public class Helper {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public  void logcat(Context context) {
+
+        File filename = new File(Environment.getExternalStorageDirectory() + "/mylog.txt");
+        try {
+            Runtime.getRuntime().exec("logcat -c");
+            filename.createNewFile();
+            String cmd = "logcat -d -f" + filename.getAbsolutePath();
+            Runtime.getRuntime().exec(cmd);
+            File file = new File(Environment.getExternalStorageDirectory(),"/mylog.txt");
+            // i have kept text.txt in the sd-card
+
+
+            //Read text from file
+            StringBuilder text = new StringBuilder();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                }
+            }
+            catch (IOException e) {
+                //You'll need to add proper error handling here
+            }
+            //Set the text
+            Bundle bundle=new Bundle();
+            bundle.putString("Debug",text.toString());
+            facebookLog(context,"LOGS",bundle);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

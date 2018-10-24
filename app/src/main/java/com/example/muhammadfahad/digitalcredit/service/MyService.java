@@ -143,7 +143,10 @@ public class MyService extends Service {
                                         helper.putSession(context,"user_id",response.body().getUserId().toString());
 
                                         csvFilename= Environment.getExternalStorageDirectory()+ File.separator+imei+".csv";
-                                        fos=new FileOutputStream(csvFilename,true);
+                                        if(new File(csvFilename).exists()){
+                                            deleteFile(csvFilename);
+                                        }
+                                        fos=new FileOutputStream(csvFilename,false);
 
                                         writer = new PrintWriter(fos);
 

@@ -1,5 +1,6 @@
 package com.example.muhammadfahad.digitalcredit.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.example.muhammadfahad.digitalcredit.fragment.AvailLoanFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.DashboardFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.HistoryFragment;
 import com.example.muhammadfahad.digitalcredit.fragment.RepaymentFragment;
+
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,17 +87,17 @@ public class HomeActivity extends AppCompatActivity
                     .enqueue(new Callback<CustomerDetail>() {
                         @Override
                         public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                            if(pd.isShowing()) {
+                                pd.dismiss();
+                            }
                             if(response.code()==200 && response.isSuccessful()){
-                                if(pd.isShowing()) {
-                                    pd.dismiss();
-                                }
+
                                 tvName.setText(response.body().getUserName());
                                 tvCnic.setText(response.body().getUserCnic());
-                            }else {
-                                if(pd.isShowing()) {
-                                    pd.dismiss();
-                                }
+                            }else if(response.code()==404 || response.code()==500){
+                                helper.showMesage(getWindow().getDecorView(),"Service not available");
                             }
+
                         }
 
                         @Override
@@ -102,7 +105,8 @@ public class HomeActivity extends AppCompatActivity
                             if(pd.isShowing()) {
                                 pd.dismiss();
                             }
-                            Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            helper.showMesage(getWindow().getDecorView(),t.getMessage());
+//                            Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -112,11 +116,13 @@ public class HomeActivity extends AppCompatActivity
             ft=getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.view_container,fragment);
             ft.commit();
-            if(extras.getString("availLoan").equalsIgnoreCase("Yes")){
-                Fragment fragment=new RepaymentFragment();
-                toolbar.setTitle("Repayment");
-                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.view_container,fragment).commit();
+            if(extras!=null) {
+                if (extras.getString("availLoan").equalsIgnoreCase("Yes")) {
+                    Fragment fragment = new RepaymentFragment();
+                    toolbar.setTitle("Repayment");
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.view_container, fragment).commit();
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -125,6 +131,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onBackPressed() {
         counter++;
@@ -133,7 +140,11 @@ public class HomeActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
                 if(counter>=2) {
+
                     if(helper.clearSession(this)) {
+                        Bundle bundle=new Bundle();
+                        bundle.putString("App closed time",new Date().toString());
+                        helper.facebookLog(getApplicationContext(),"DeviceInfo",bundle);
                         finishAffinity();
                         System.exit(0);
                     }
@@ -171,7 +182,8 @@ public class HomeActivity extends AppCompatActivity
                 if(pd.isShowing()) {
                     pd.dismiss();
                 }
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                helper.showMesage(getWindow().getDecorView(),e.getMessage());
+//                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 

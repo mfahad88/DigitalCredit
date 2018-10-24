@@ -50,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Helper helper;
     private ProgressDialog pd;
     private View viewRoot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +112,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                        if(pd.isShowing()){
                                            pd.dismiss();
                                        }
-                                       Toast.makeText(RegisterActivity.this, "User already exists...", Toast.LENGTH_SHORT).show();
+                                       helper.showMesage(getWindow().getDecorView(),"User already exists...");
+//                                       Toast.makeText(RegisterActivity.this, "User already exists...", Toast.LENGTH_SHORT).show();
                                    }else {
                                        helper.putSession(RegisterActivity.this,"user_id",response.body());
                                        helper.writeTxtFile(RegisterActivity.this,response.body());
@@ -129,13 +131,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                }catch (Exception e){
                                    e.printStackTrace();
                                }
-                            }else{
+                            }else if(response.code()==404 || response.code()==500){
                                 try{
                                     if(pd.isShowing()){
                                         pd.dismiss();
                                     }
                                     Log.e("Error",response.body().trim());
-                                     Toast.makeText(RegisterActivity.this, "Please contact system administrator", Toast.LENGTH_SHORT).show();
+                                    helper.showMesage(getWindow().getDecorView(),"Please contact system administrator");
+//                                     Toast.makeText(RegisterActivity.this, "Please contact system administrator", Toast.LENGTH_SHORT).show();
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -147,7 +150,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             if(pd.isShowing()){
                                 pd.dismiss();
                             }
-                            Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            helper.showMesage(getWindow().getDecorView(),t.getMessage());
                         }
                     });
 
@@ -193,6 +196,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     withErrorListener(new PermissionRequestErrorListener() {
                         @Override
                         public void onError(DexterError error) {
+
                             Toast.makeText(getApplicationContext(), "Error occurred! ", Toast.LENGTH_SHORT).show();
                         }
                     })

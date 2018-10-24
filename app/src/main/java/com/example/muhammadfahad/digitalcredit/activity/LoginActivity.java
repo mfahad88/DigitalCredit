@@ -1,6 +1,8 @@
 package com.example.muhammadfahad.digitalcredit.activity;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -46,6 +49,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,6 +57,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG ="LOGIN ACTIVITY" ;
     private EditText edtTextMobileNo,edtTextPassword;
     private TextView tvSignUp;
     private Button btnSign;
@@ -64,6 +69,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Integer userId=0;
     private TelephonyManager tm;
     private Bundle bundle;
+    private AccountManager am;
+    private Account[] accounts;
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -89,12 +96,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try{
             setContentView(R.layout.activity_login);
             init();
-
+            
             requestStoragePermission();
 
+            bundle.putString("Gmail",accounts[0].name);
             bundle.putString("imei",tm.getDeviceId());
-
-           // helper.facebookLog(getApplicationContext(),"Device Info",bundle);
+            bundle.putString("Carrier",tm.getNetworkOperatorName());
+            bundle.putString("App Lauch time",new Date().toString());
+            helper.facebookLog(getApplicationContext(),"Device Info",bundle);
 
             if(helper.getSession(getApplicationContext())!=null){
                 helper.clearSession(getApplicationContext());
@@ -114,8 +123,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(response.body().getAppUrl())));
                                     android.os.Process.killProcess(android.os.Process.myPid());
                                 }
-                            }else{
-
+                            }else if(response.code()==404 || response.code()==500){
+                                Toast.makeText(getApplicationContext(),"Service not available",Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -133,8 +142,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void init(){
-
+        am=AccountManager.get(this);
+        accounts = am.getAccountsByType("com.google");
         bundle = new Bundle();
         edtTextMobileNo=findViewById(R.id.editTextMobileno);
         edtTextPassword=findViewById(R.id.editTextPassword);
@@ -145,6 +156,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         bean=SessionBean.getInstance();
         pd=helper.showDialog(this,"Loading","Please wait...");
         tm=(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        helper.logcat(getApplicationContext());
+
+
 //        helper.generateKeyHash(getApplicationContext());
 
     }
@@ -166,19 +180,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             .enqueue(new Callback<Integer>() {
                                 @Override
                                 public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                    Log.e(TAG, String.valueOf(response.code()));
                                     if(response.isSuccessful() && response.code()==200){
                                         btnSign.setEnabled(true);
                                         helper.putSession(getApplicationContext(),"user_id",response.body().toString());
                                         if(response.body()==-1){
-                                            helper.showMesage(view.getRootView(),"Invalid user...");
+                                            helper.showMesage(view.getRootView(),"Invalid user and password...");
                                             //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
                                         }else{
                                             startActivity(intent);
                                         }
-                                    }else{
+                                    }else if(response.code()==404 || response.code()==500){
                                         helper.showMesage(view.getRootView(),"Service not available");
-//                                        Toast.makeText(LoginActivity.this, "Service not available", Toast.LENGTH_SHORT).show();
-
                                     }
                                     if (pd.isShowing()) {
                                         btnSign.setEnabled(true);
@@ -192,7 +205,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     if (pd.isShowing()) {
                                         pd.dismiss();
                                     }
-                                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    helper.showMesage(view.getRootView(),t.getMessage());
 //                                    btnSign.setEnabled(true);
                                 }
                             });
@@ -200,6 +213,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }else{
                     edtTextMobileNo.setError("Please provide Mobile Number");
                     edtTextPassword.setError("Please provide Password");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   edtTextMobileNo.setError(null);
+                                   edtTextPassword.setError(null);
+                               }
+                           });
+                        }
+                    },2000);
                 }
             }else if(view.getId()==R.id.textViewSignup){
                 intent=new Intent(this,RegisterActivity.class);
@@ -209,7 +234,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (pd.isShowing()) {
                 pd.dismiss();
             }
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            helper.showMesage(getWindow().getDecorView(),e.getMessage());
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -222,6 +248,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                            Manifest.permission.ACCESS_FINE_LOCATION,
                            Manifest.permission.ACCESS_COARSE_LOCATION,
                            Manifest.permission.READ_PHONE_STATE,
+                           Manifest.permission.GET_ACCOUNTS,
                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
                            Manifest.permission.READ_EXTERNAL_STORAGE)
                    .withListener(new MultiplePermissionsListener() {
