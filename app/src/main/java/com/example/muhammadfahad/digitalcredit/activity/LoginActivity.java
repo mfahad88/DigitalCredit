@@ -7,9 +7,11 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,8 @@ import android.widget.Toast;
 
 import com.example.muhammadfahad.digitalcredit.BuildConfig;
 import com.example.muhammadfahad.digitalcredit.Model.AppVersion;
+import com.example.muhammadfahad.digitalcredit.broadcast.GpsLocationReceiver;
+import com.example.muhammadfahad.digitalcredit.service.LocService;
 import com.facebook.FacebookSdk;
 import com.facebook.LoggingBehavior;
 import com.facebook.appevents.AppEventsLogger;
@@ -71,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Bundle bundle;
     private AccountManager am;
     private Account[] accounts;
+    private LocationManager locationManager;
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -81,12 +86,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    @SuppressLint("NewApi")
     @Override
     protected void onDestroy() {
         super.onDestroy();
         finishAffinity();
         System.exit(0);
     }
+
+    /*@Override
+    protected void onResume() {
+        GpsLocationReceiver receiver=new GpsLocationReceiver();
+        this.registerReceiver(receiver,new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        super.onResume();
+    }*/
 
     @SuppressLint("MissingPermission")
     @Override
@@ -96,7 +109,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try{
             setContentView(R.layout.activity_login);
             init();
-            
+
+          /*  if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))){
+                Intent intent=new Intent(this,LocationCheckActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }else{
+
+            }*/
             requestStoragePermission();
 
             bundle.putString("Gmail",accounts[0].name);
@@ -157,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd=helper.showDialog(this,"Loading","Please wait...");
         tm=(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         helper.logcat(getApplicationContext());
-
+        locationManager=(LocationManager)getSystemService(LOCATION_SERVICE);
 
 //        helper.generateKeyHash(getApplicationContext());
 
@@ -173,8 +193,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     pd.show();
                     helper.putSession(this,"mobileNo",edtTextMobileNo.getText().toString());
                     helper.putSession(this,"password",edtTextPassword.getText().toString());
-                    intent=new Intent(this,HomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                     btnSign.setEnabled(false);
                     ApiClient.getInstance().loginUser(edtTextMobileNo.getText().toString())
                             .enqueue(new Callback<Integer>() {
@@ -188,6 +207,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             helper.showMesage(view.getRootView(),"Invalid user and password...");
                                             //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
                                         }else{
+                                            intent=new Intent(LoginActivity.this,HomeActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent);
                                         }
                                     }else if(response.code()==404 || response.code()==500){
@@ -263,7 +284,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                            // check for permanent denial of any permission
                            if (report.isAnyPermissionPermanentlyDenied()) {
                                // show alert dialog navigating to Settings
-
                                Toast.makeText(LoginActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
                            }
 
@@ -271,7 +291,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                if(report.getGrantedPermissionResponses().get(i).getPermissionName().equalsIgnoreCase("android.permission.ACCESS_FINE_LOCATION")){
                                    tvSignUp.setOnClickListener(LoginActivity.this);
                                    btnSign.setOnClickListener(LoginActivity.this);
-                                   startService(new Intent(getApplicationContext(), LocationService.class));
+                                  // startActivity(new Intent(getApplicationContext(),LocationCheckActivity.class));
+//                                   startService(new Intent(getApplicationContext(), LocService.class));
+                                   Intent intent=new Intent(getApplicationContext(),LocService.class);
+                                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                   startService(intent);
                                }
                            }
                        }
