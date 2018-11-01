@@ -4,6 +4,7 @@ import com.example.administrator.digitalcredit.Model.AppVersion;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.MobileLocation;
+import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
 
 
@@ -71,4 +72,7 @@ public interface ApiInterface {
 
 	@GET("/api/fetch/appVersion")
 	Call<AppVersion> appVersion();
+
+	@GET("/api/fetch/product")
+	Call<Product> getProduct();
 }

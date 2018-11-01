@@ -9,6 +9,11 @@
             android:checked="true"
             android:icon="@drawable/home_black"
             android:title="@string/dashboard"/>
+
+        <item
+            android:id="@+id/order"
+            android:icon="@drawable/order"
+            android:title="Order"/>
         <item
             android:id="@+id/avail_loan"
             android:icon="@drawable/avail_loan"
