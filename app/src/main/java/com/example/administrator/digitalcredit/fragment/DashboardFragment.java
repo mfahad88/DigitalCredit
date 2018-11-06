@@ -3,8 +3,6 @@ package com.example.administrator.digitalcredit.fragment;
 
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -23,7 +21,6 @@ import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
-import com.example.administrator.digitalcredit.activity.LoginActivity;
 import com.example.administrator.digitalcredit.client.ApiClient;
 import com.example.administrator.digitalcredit.dialog.DialogLoan;
 

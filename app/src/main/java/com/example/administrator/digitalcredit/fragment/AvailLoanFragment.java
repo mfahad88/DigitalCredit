@@ -1,7 +1,6 @@
 package com.example.administrator.digitalcredit.fragment;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,11 +27,8 @@ import com.example.administrator.digitalcredit.Model.TenureDetail;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
 import com.example.administrator.digitalcredit.activity.HomeActivity;
-import com.example.administrator.digitalcredit.activity.LoginActivity;
 import com.example.administrator.digitalcredit.client.ApiClient;
 
-import java.io.IOException;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.activity.LocationCheckActivity;
-import com.example.administrator.digitalcredit.activity.LoginActivity;
 
 public class GpsLocationReceiver extends BroadcastReceiver {
     LocationManager locationManager;

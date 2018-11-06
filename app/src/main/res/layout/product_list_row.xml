@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="5dp">
 
     <ImageView
         android:layout_width="50dp"
@@ -14,17 +14,21 @@
         android:layout_alignParentLeft="true" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="80sp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/imageView"
-        android:text="Water"
-        android:textSize="20sp"
+        android:text="Name"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:id="@+id/textViewProduct"
         android:layout_alignTop="@id/imageView"
         android:textColor="@android:color/black"
         android:layout_marginLeft="5dp"/>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewProductId"
+        android:visibility="gone"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,66 +45,79 @@
         android:id="@+id/textViewPrices"
         android:layout_alignTop="@id/textViewPrice"
         android:layout_alignBottom="@id/textViewPrice"
-        android:text="25.5"/>
+        android:text="Rs. 0.00"/>
 
     <TextView
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewDescription"
         android:layout_below="@id/textViewPrices"
         android:layout_alignLeft="@id/textViewPrice"
         android:textColor="@android:color/darker_gray"
-        android:text="This is description"
+        android:text="Description"
          />
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Rs. "
+        android:layout_toLeftOf="@id/textViewAmount"
+        android:layout_alignTop="@id/textViewAmount"
+        android:layout_alignBottom="@id/textViewAmount"/>
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewAmount"
+        android:text="0.00"
+        android:textSize="20sp"
+        android:layout_alignParentRight="true"/>
+
+    <LinearLayout
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_toRightOf="@id/textViewDescription"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
         android:id="@+id/linearLayout"
-        android:layout_alignTop="@id/textViewProduct">
+        android:layout_below="@id/textViewAmount"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:id="@+id/textViewMinus"
-            android:padding="7dp"
+            android:padding="12dp"
+            android:gravity="center"
             />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:text="2"
+            android:text="0"
             android:id="@+id/textViewQty"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:padding="3dp"
+            android:gravity="center"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:id="@+id/textViewPlus"
-            android:padding="7dp"
+            android:padding="12dp"
+            android:gravity="center"
             />
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewAmount"
-        android:text="Rs .51"
-        android:textSize="20sp"
-        android:layout_alignBottom="@id/textViewProduct"
-        android:layout_alignParentRight="true"/>
 
-    <Button
+    <!--<Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cart"
         android:layout_below="@+id/textViewAmount"
         android:layout_alignParentRight="true"
         />
-
+-->
 </RelativeLayout>

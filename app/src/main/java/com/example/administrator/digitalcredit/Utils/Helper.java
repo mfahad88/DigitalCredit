@@ -32,12 +32,10 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class Helper {
     public static final String MY_PREFS_NAME = "MyPrefs";
@@ -221,7 +217,7 @@ public class Helper {
 
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(
-                    "com.example.administrator.digitalcredit",
+                    "com.example.administrator.com.example.muhammadfahad.com.example.muhammadfahad.digitalcredit",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");

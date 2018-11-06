@@ -1,7 +1,5 @@
 package com.example.administrator.digitalcredit.Model;
 
-import java.sql.Date;
-
 public class MobileLocation {
 
 

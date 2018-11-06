@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.R;
@@ -25,6 +24,7 @@ import com.example.administrator.digitalcredit.client.ApiClient;
 import com.example.administrator.digitalcredit.fragment.AvailLoanFragment;
 import com.example.administrator.digitalcredit.fragment.DashboardFragment;
 import com.example.administrator.digitalcredit.fragment.HistoryFragment;
+import com.example.administrator.digitalcredit.fragment.OrderFragment;
 import com.example.administrator.digitalcredit.fragment.RepaymentFragment;
 
 import java.util.Date;
@@ -161,6 +161,9 @@ public class HomeActivity extends AppCompatActivity
         if(id==R.id.home_loan){
             toolbar.setTitle("Dashboard");
             fragment=new DashboardFragment();
+        }else if(id==R.id.order){
+            toolbar.setTitle("Order");
+            fragment=new OrderFragment();
         }
         else if(id==R.id.avail_loan) {
             toolbar.setTitle("Avail Loan");

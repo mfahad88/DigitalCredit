@@ -1,11 +1,9 @@
 package com.example.administrator.digitalcredit.client;
 
 import com.example.administrator.digitalcredit.Interface.ApiInterface;
-import com.example.administrator.digitalcredit.Model.SessionBean;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;

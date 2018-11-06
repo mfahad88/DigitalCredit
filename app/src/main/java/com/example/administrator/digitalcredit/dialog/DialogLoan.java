@@ -4,11 +4,8 @@ package com.example.administrator.digitalcredit.dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +19,6 @@ import com.example.administrator.digitalcredit.Utils.Helper;
 
 import com.example.administrator.digitalcredit.activity.HomeActivity;
 import com.example.administrator.digitalcredit.client.ApiClient;
-import com.example.administrator.digitalcredit.fragment.DashboardFragment;
-import com.example.administrator.digitalcredit.fragment.RepaymentFragment;
 
 
 import java.text.SimpleDateFormat;

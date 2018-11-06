@@ -17,14 +17,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.administrator.digitalcredit.BuildConfig;
-import com.example.administrator.digitalcredit.Model.MobileLocation;
 import com.example.administrator.digitalcredit.Utils.Datapoints;
 import com.example.administrator.digitalcredit.Utils.Helper;
-import com.example.administrator.digitalcredit.client.ApiClient;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LocationService  extends Service implements LocationListener {
     private LocationManager locationManager;

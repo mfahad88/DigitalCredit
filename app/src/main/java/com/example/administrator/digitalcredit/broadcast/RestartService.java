@@ -7,7 +7,6 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.example.administrator.digitalcredit.service.LocService;
-import com.example.administrator.digitalcredit.service.LocationService;
 import com.example.administrator.digitalcredit.service.MyService;
 
 

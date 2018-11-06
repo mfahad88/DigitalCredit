@@ -4,6 +4,7 @@ import com.example.administrator.digitalcredit.Model.AppVersion;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.MobileLocation;
+import com.example.administrator.digitalcredit.Model.Order;
 import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -74,5 +74,8 @@ public interface ApiInterface {
 	Call<AppVersion> appVersion();
 
 	@GET("/api/fetch/product")
-	Call<Product> getProduct();
+	Call<List<Product>> getProduct();
+
+	@POST("/api/insert/Order/")
+	Call<Integer> order(Order order);
 }
