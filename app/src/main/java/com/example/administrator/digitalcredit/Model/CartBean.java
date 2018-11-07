@@ -1,17 +1,11 @@
 package com.example.administrator.digitalcredit.Model;
 
-public class CartBean {
+public class CartBean{
     private int ProductId;
-    private String ProductName;
-    private Double Price;
-    private Double Amount;
     private int Qty;
 
-    public CartBean(int productId, String productName, Double price, Double amount, int qty) {
+    public CartBean(int productId, int qty) {
         ProductId = productId;
-        ProductName = productName;
-        Price = price;
-        Amount = amount;
         Qty = qty;
     }
 
@@ -21,30 +15,6 @@ public class CartBean {
 
     public void setProductId(int productId) {
         ProductId = productId;
-    }
-
-    public String getProductName() {
-        return ProductName;
-    }
-
-    public void setProductName(String productName) {
-        ProductName = productName;
-    }
-
-    public Double getPrice() {
-        return Price;
-    }
-
-    public void setPrice(Double price) {
-        Price = price;
-    }
-
-    public Double getAmount() {
-        return Amount;
-    }
-
-    public void setAmount(Double amount) {
-        Amount = amount;
     }
 
     public int getQty() {
@@ -57,11 +27,8 @@ public class CartBean {
 
     @Override
     public String toString() {
-        return "CartBean{" +
+        return "OrderDetail{" +
                 "ProductId=" + ProductId +
-                ", ProductName='" + ProductName + '\'' +
-                ", Price=" + Price +
-                ", Amount=" + Amount +
                 ", Qty=" + Qty +
                 '}';
     }

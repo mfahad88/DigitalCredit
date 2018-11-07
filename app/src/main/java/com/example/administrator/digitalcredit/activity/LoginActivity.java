@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }*/
             requestStoragePermission();
 
-            bundle.putString("Gmail",accounts[0].name);
+
             bundle.putString("imei",tm.getDeviceId());
             bundle.putString("Carrier",tm.getNetworkOperatorName());
             bundle.putString("App Lauch time",new Date().toString());

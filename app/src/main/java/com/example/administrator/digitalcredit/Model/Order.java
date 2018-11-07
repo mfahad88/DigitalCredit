@@ -1,3 +1,4 @@
+
 package com.example.administrator.digitalcredit.Model;
 
 import com.google.gson.annotations.Expose;
@@ -5,85 +6,166 @@ import com.google.gson.annotations.SerializedName;
 
 public class Order {
 
+    @SerializedName("user_id")
+    @Expose
+    private Integer userId;
+    @SerializedName("order_id")
+    @Expose
+    private Integer orderId;
+    @SerializedName("total_amt")
+    @Expose
+    private Float totalAmt;
+    @SerializedName("discount_amt")
+    @Expose
+    private Integer discountAmt;
+    @SerializedName("fk_promo_id")
+    @Expose
+    private Integer fkPromoId;
+    @SerializedName("fk_distributer_id")
+    @Expose
+    private Integer fkDistributerId;
+    @SerializedName("fk_loan_id")
+    @Expose
+    private Integer fkLoanId;
+    @SerializedName("order_type")
+    @Expose
+    private String orderType;
+    @SerializedName("order_status")
+    @Expose
+    private String orderStatus;
+    @SerializedName("created_at")
+    @Expose
+    private String createdAt;
+    @SerializedName("modified_on")
+    @Expose
+    private Object modifiedOn;
+    @SerializedName("modified_by")
+    @Expose
+    private Integer modifiedBy;
+    @SerializedName("totalItem")
+    @Expose
+    private Integer totalItem;
 
-private Integer userId;
+    public Integer getUserId() {
+        return userId;
+    }
 
-private Double totalAmt;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-private Double discountAmt;
+    public Integer getOrderId() {
+        return orderId;
+    }
 
-private Integer fkPromoId;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
 
-private Integer fkDistributerId;
+    public Float getTotalAmt() {
+        return totalAmt;
+    }
 
-private Integer fkLoanId;
+    public void setTotalAmt(Float totalAmt) {
+        this.totalAmt = totalAmt;
+    }
 
-private String orderType;
+    public Integer getDiscountAmt() {
+        return discountAmt;
+    }
 
-private String orderStatus;
+    public void setDiscountAmt(Integer discountAmt) {
+        this.discountAmt = discountAmt;
+    }
 
-public Integer getUserId() {
-return userId;
-}
+    public Integer getFkPromoId() {
+        return fkPromoId;
+    }
 
-public void setUserId(Integer userId) {
-this.userId = userId;
-}
+    public void setFkPromoId(Integer fkPromoId) {
+        this.fkPromoId = fkPromoId;
+    }
 
-public Double getTotalAmt() {
-return totalAmt;
-}
+    public Integer getFkDistributerId() {
+        return fkDistributerId;
+    }
 
-public void setTotalAmt(Double totalAmt) {
-this.totalAmt = totalAmt;
-}
+    public void setFkDistributerId(Integer fkDistributerId) {
+        this.fkDistributerId = fkDistributerId;
+    }
 
-public Double getDiscountAmt() {
-return discountAmt;
-}
+    public Integer getFkLoanId() {
+        return fkLoanId;
+    }
 
-public void setDiscountAmt(Double discountAmt) {
-this.discountAmt = discountAmt;
-}
+    public void setFkLoanId(Integer fkLoanId) {
+        this.fkLoanId = fkLoanId;
+    }
 
-public Integer getFkPromoId() {
-return fkPromoId;
-}
+    public String getOrderType() {
+        return orderType;
+    }
 
-public void setFkPromoId(Integer fkPromoId) {
-this.fkPromoId = fkPromoId;
-}
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
-public Integer getFkDistributerId() {
-return fkDistributerId;
-}
+    public String getOrderStatus() {
+        return orderStatus;
+    }
 
-public void setFkDistributerId(Integer fkDistributerId) {
-this.fkDistributerId = fkDistributerId;
-}
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
-public Integer getFkLoanId() {
-return fkLoanId;
-}
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-public void setFkLoanId(Integer fkLoanId) {
-this.fkLoanId = fkLoanId;
-}
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
-public String getOrderType() {
-return orderType;
-}
+    public Object getModifiedOn() {
+        return modifiedOn;
+    }
 
-public void setOrderType(String orderType) {
-this.orderType = orderType;
-}
+    public void setModifiedOn(Object modifiedOn) {
+        this.modifiedOn = modifiedOn;
+    }
 
-public String getOrderStatus() {
-return orderStatus;
-}
+    public Integer getModifiedBy() {
+        return modifiedBy;
+    }
 
-public void setOrderStatus(String orderStatus) {
-this.orderStatus = orderStatus;
-}
+    public void setModifiedBy(Integer modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
+    public Integer getTotalItem() {
+        return totalItem;
+    }
+
+    public void setTotalItem(Integer totalItem) {
+        this.totalItem = totalItem;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "userId=" + userId +
+                ", orderId=" + orderId +
+                ", totalAmt=" + totalAmt +
+                ", discountAmt=" + discountAmt +
+                ", fkPromoId=" + fkPromoId +
+                ", fkDistributerId=" + fkDistributerId +
+                ", fkLoanId=" + fkLoanId +
+                ", orderType='" + orderType + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", modifiedOn=" + modifiedOn +
+                ", modifiedBy=" + modifiedBy +
+                ", totalItem=" + totalItem +
+                '}';
+    }
 }

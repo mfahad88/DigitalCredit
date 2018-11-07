@@ -131,7 +131,11 @@ public class LocService extends Service implements GoogleApiClient.ConnectionCal
 
                         Log.e("LOcation---->",location.getLatitude()+","+location.getLongitude());
                         recId++;
-                        dp.location(getApplicationContext(),location,recId, Integer.parseInt(helper.readtxtFile("config.txt")),helper);
+                        if(helper.readtxtFile("config.txt").isEmpty()){
+                            dp.location(getApplicationContext(), location, recId, Integer.parseInt(helper.getSession(getApplicationContext()).get("user_id").toString()), helper);
+                        }else {
+                            dp.location(getApplicationContext(), location, recId, Integer.parseInt(helper.readtxtFile("config.txt")), helper);
+                        }
 
                     }catch (Exception e){
                         e.printStackTrace();

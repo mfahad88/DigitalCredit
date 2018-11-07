@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,11 +18,14 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.administrator.digitalcredit.Interface.CartInterface;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
+import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
 import com.example.administrator.digitalcredit.client.ApiClient;
 import com.example.administrator.digitalcredit.fragment.AvailLoanFragment;
+import com.example.administrator.digitalcredit.fragment.CartFragment;
 import com.example.administrator.digitalcredit.fragment.DashboardFragment;
 import com.example.administrator.digitalcredit.fragment.HistoryFragment;
 import com.example.administrator.digitalcredit.fragment.OrderFragment;
@@ -35,7 +39,7 @@ import retrofit2.Response;
 
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,CartInterface {
     private FrameLayout layout;
     private FragmentTransaction ft;
     private Fragment fragment;
@@ -197,5 +201,13 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void orderList(OrderDetailResponse orderDetailResponse) {
+        Log.e("HOMEACTIVITY__>",orderDetailResponse.toString());
+        CartFragment fragment=(CartFragment)getSupportFragmentManager().findFragmentById(R.id.CartFragment);
+        fragment.getMessage(orderDetailResponse);
     }
 }

@@ -36,16 +36,24 @@
         android:layout_alignLeft="@id/textViewProduct"
         android:id="@+id/textViewPrice"
         android:text="Price:"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rs."
+        android:layout_toRightOf="@id/textViewPrice"
+        android:layout_alignTop="@id/textViewPrice"
+        android:id="@+id/textViewRs"
+        android:layout_alignBottom="@id/textViewPrice"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewProduct"
-        android:layout_toRightOf="@id/textViewPrice"
+        android:layout_toRightOf="@id/textViewRs"
         android:id="@+id/textViewPrices"
-        android:layout_alignTop="@id/textViewPrice"
-        android:layout_alignBottom="@id/textViewPrice"
-        android:text="Rs. 0.00"/>
+        android:layout_alignTop="@id/textViewRs"
+        android:layout_alignBottom="@id/textViewRs"
+        android:text="0.00"/>
 
     <TextView
         android:layout_width="80dp"

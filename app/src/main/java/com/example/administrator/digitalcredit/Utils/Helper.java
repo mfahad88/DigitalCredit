@@ -3,6 +3,7 @@ package com.example.administrator.digitalcredit.Utils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -76,6 +77,7 @@ public class Helper {
 
     public Map<String, ?> getSession(Context ctx){
         SharedPreferences preferences=ctx.getSharedPreferences(MY_PREFS_NAME,ctx.MODE_PRIVATE);
+        Log.e("Session--->",preferences.getAll().entrySet().toString());
         return preferences.getAll();
     }
 
@@ -101,6 +103,7 @@ public class Helper {
         list.add(bean);
         Log.e("Session---->",list.toString());
         helper.sessionStore(ctx,list);
+
     }
 
     public void OpenCsv(List<MobileBean> list, PrintWriter writer){
@@ -317,5 +320,13 @@ public class Helper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public AlertDialog.Builder alertdialog(Context context,String title,String message){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        return builder;
     }
 }

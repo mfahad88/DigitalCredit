@@ -1,7 +1,6 @@
 package com.example.administrator.digitalcredit.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.administrator.digitalcredit.Interface.AdapterInterface;
 import com.example.administrator.digitalcredit.Model.CartBean;
-import com.example.administrator.digitalcredit.Model.Order;
 import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.R;
 
@@ -64,7 +62,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
         try {
             final Product product=productList.get(position);
-            holder.tvProductId.setText(product.getProductName());
+            holder.tvProductId.setText(String.valueOf(product.getProductId()));
             holder.tvProduct.setText(product.getProductName());
             holder.tvPrice.setText(String.valueOf(product.getPrice()));
             holder.tvDesc.setText(product.getDesc());

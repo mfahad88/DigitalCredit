@@ -4,7 +4,8 @@ import com.example.administrator.digitalcredit.Model.AppVersion;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.MobileLocation;
-import com.example.administrator.digitalcredit.Model.Order;
+import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
+import com.example.administrator.digitalcredit.Model.OrderRequest;
 import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
 
@@ -76,6 +77,6 @@ public interface ApiInterface {
 	@GET("/api/fetch/product")
 	Call<List<Product>> getProduct();
 
-	@POST("/api/insert/Order/")
-	Call<Integer> order(Order order);
+	@POST("/api/insert/OrderDetails/")
+	Call<OrderDetailResponse> order(@Body OrderRequest orderRequest);
 }
