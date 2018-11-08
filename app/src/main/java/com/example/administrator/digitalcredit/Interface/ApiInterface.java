@@ -2,6 +2,7 @@ package com.example.administrator.digitalcredit.Interface;
 
 import com.example.administrator.digitalcredit.Model.AppVersion;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
+import com.example.administrator.digitalcredit.Model.DistributorResponse;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.MobileLocation;
 import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
@@ -79,4 +80,7 @@ public interface ApiInterface {
 
 	@POST("/api/insert/OrderDetails/")
 	Call<OrderDetailResponse> order(@Body OrderRequest orderRequest);
+
+	@GET("/api/fetch/distributerList")
+	Call<List<DistributorResponse>> distributor();
 }

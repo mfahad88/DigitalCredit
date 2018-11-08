@@ -13,33 +13,30 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.OrderDetail;
 import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
-import com.example.administrator.digitalcredit.client.ApiClient;
-import com.example.administrator.digitalcredit.dialog.DialogHistory;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
-public class CartFragment extends Fragment {
-    private ViewGroup viewRoot;
-    private Helper helper;
+
+public class CartFragment extends Fragment implements View.OnClickListener ,RadioGroup.OnCheckedChangeListener {
+    private View viewRoot;
     private TableLayout tableLayout;
-    private DialogFragment dialog;
-    private ProgressDialog pd;
     private OrderDetailResponse list;
+    private TextView tvItems,tvTotal;
+    private RadioGroup radioGroup;
+    private RadioButton radioCash,radioLoan;
+    private Button btnPay;
+    private int radioStatus=1;
     public CartFragment() {
         // Required empty public constructor
     }
@@ -49,39 +46,37 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        helper=Helper.getInstance();
-        viewRoot=(ViewGroup) inflater.inflate(R.layout.fragment_cart, container, false);
+
+        viewRoot=inflater.inflate(R.layout.fragment_cart, container, false);
         init();
 
+         populateTable(list);
+         tvItems.setText(String.valueOf(list.getOrder().getTotalItem()));
+         tvTotal.setText(String.valueOf(list.getOrder().getTotalAmt()));
+         btnPay.setOnClickListener(this);
+        radioGroup.setOnCheckedChangeListener(this);
+
+        //Toast.makeText(viewRoot.getContext(), list.toString(), Toast.LENGTH_SHORT).show();
         return viewRoot;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
 
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public void getMessage(OrderDetailResponse orderDetailResponse){
         Log.e(this.getClass().getName(),orderDetailResponse.toString());
+        list=orderDetailResponse;
        // populateTable(orderDetailResponse);
     }
 
 
     private void init(){
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
-        helper=Helper.getInstance();
-        dialog=new DialogHistory();
-        pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
+        radioGroup=viewRoot.findViewById(R.id.radioGroup);
+        radioCash=viewRoot.findViewById(R.id.radioCash);
+        radioLoan=viewRoot.findViewById(R.id.radioLoan);
+        btnPay=viewRoot.findViewById(R.id.payBtn);
+        radioCash.setChecked(true);
+        tvItems=viewRoot.findViewById(R.id.textViewItems);
+        tvTotal=viewRoot.findViewById(R.id.textViewTotalAmount);
     }
 
     private void populateTable(OrderDetailResponse orderDetailResponse){
@@ -92,7 +87,7 @@ public class CartFragment extends Fragment {
             final TextView tvId = new TextView(viewRoot.getContext());
             tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             tvId.setTextSize(15f);
-            tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+            tvId.setGravity(Gravity.START);
             tvId.setText(String.valueOf(orderDetail.getOrderDetailId()));
             row.addView(tvId);
 
@@ -103,13 +98,24 @@ public class CartFragment extends Fragment {
             tvName.setTextSize(15f);
             tvName.setGravity(Gravity.CENTER_HORIZONTAL);
             tvName.setText(orderDetail.getProductName());
-//                        tvDueDate.setWidth(100);
+            tvName.setPadding(10,0,10,0);
+            tvName.setWidth(100);
             row.addView(tvName);
+
+            TextView tvUnitPrice = new TextView(viewRoot.getContext());
+            tvUnitPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+            tvUnitPrice.setTextSize(15f);
+            tvUnitPrice.setGravity(Gravity.CENTER_HORIZONTAL);
+            tvUnitPrice.setText(orderDetail.getPrice().toString());
+            tvUnitPrice.setWidth(100);
+            row.addView(tvUnitPrice);
+            row.setPadding(10,10,10,10);
 
             TextView tvQty = new TextView(viewRoot.getContext());
             tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             tvQty.setTextSize(15f);
             tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
+            tvQty.setWidth(80);
             tvQty.setText(String.valueOf(orderDetail.getQty()));
             row.addView(tvQty);
 
@@ -120,14 +126,28 @@ public class CartFragment extends Fragment {
             tvAmt.setText(String.valueOf(orderDetail.getQty()*orderDetail.getPrice()));
             row.addView(tvAmt);
 
-            TextView tvDate = new TextView(viewRoot.getContext());
-            tvDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            tvDate.setTextSize(15f);
-            tvDate.setGravity(Gravity.CENTER_HORIZONTAL);
-            tvDate.setText(orderDetail.getCreatedAt());
-            row.addView(tvDate);
-            row.setPadding(5,5,5,5);
+
             tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.payBtn){
+          if(radioStatus==1){
+              Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
+          }else{
+              Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
+          }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if(checkedId==R.id.radioCash){
+            radioStatus=1;
+        }else{
+            radioStatus=2;
         }
     }
 }

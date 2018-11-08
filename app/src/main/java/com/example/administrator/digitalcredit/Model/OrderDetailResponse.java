@@ -30,11 +30,4 @@ public class OrderDetailResponse {
         this.orderDetail = orderDetail;
     }
 
-    @Override
-    public String toString() {
-        return "OrderDetailResponse{" +
-                "order=" + order +
-                ", orderDetail=" + orderDetail +
-                '}';
-    }
 }

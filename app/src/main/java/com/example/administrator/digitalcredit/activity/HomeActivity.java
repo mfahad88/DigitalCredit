@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.administrator.digitalcredit.Interface.CartInterface;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
+import com.example.administrator.digitalcredit.Model.OrderDetail;
 import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
@@ -206,8 +207,13 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void orderList(OrderDetailResponse orderDetailResponse) {
-        Log.e("HOMEACTIVITY__>",orderDetailResponse.toString());
-        CartFragment fragment=(CartFragment)getSupportFragmentManager().findFragmentById(R.id.CartFragment);
+
+//        CartFragment fragment=(CartFragment)getSupportFragmentManager().findFragmentById(R.id.CartFragment);
+        CartFragment fragment=new CartFragment();
         fragment.getMessage(orderDetailResponse);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.view_container,fragment)
+                .commit();
     }
 }

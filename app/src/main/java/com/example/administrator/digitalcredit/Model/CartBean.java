@@ -1,35 +1,35 @@
 package com.example.administrator.digitalcredit.Model;
 
 public class CartBean{
-    private int ProductId;
-    private int Qty;
+    private int fk_product_id;
+    private int qty;
 
-    public CartBean(int productId, int qty) {
-        ProductId = productId;
-        Qty = qty;
+    public CartBean(int fk_product_id, int qty) {
+        this.fk_product_id = fk_product_id;
+        this.qty = qty;
     }
 
-    public int getProductId() {
-        return ProductId;
+    public int getFk_product_id() {
+        return fk_product_id;
     }
 
-    public void setProductId(int productId) {
-        ProductId = productId;
+    public void setFk_product_id(int fk_product_id) {
+        this.fk_product_id = fk_product_id;
     }
 
     public int getQty() {
-        return Qty;
+        return qty;
     }
 
     public void setQty(int qty) {
-        Qty = qty;
+        this.qty = qty;
     }
 
     @Override
     public String toString() {
-        return "OrderDetail{" +
-                "ProductId=" + ProductId +
-                ", Qty=" + Qty +
+        return "CartBean{" +
+                "fk_product_id=" + fk_product_id +
+                ", qty=" + qty +
                 '}';
     }
 }

@@ -4,9 +4,7 @@ package com.example.administrator.digitalcredit.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class OrderDetail{
+public class OrderDetail {
 
     @SerializedName("order_detail_id")
     @Expose
@@ -23,14 +21,12 @@ public class OrderDetail{
     @SerializedName("fk_product_id")
     @Expose
     private Integer fkProductId;
-
     @SerializedName("product_name")
     @Expose
     private String productName;
-
     @SerializedName("price")
     @Expose
-    private float price;
+    private Double price;
 
     public Integer getOrderDetailId() {
         return orderDetailId;
@@ -80,24 +76,12 @@ public class OrderDetail{
         this.productName = productName;
     }
 
-    public float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "OrderDetail{" +
-                "orderDetailId=" + orderDetailId +
-                ", fkOrderId=" + fkOrderId +
-                ", qty=" + qty +
-                ", createdAt='" + createdAt + '\'' +
-                ", fkProductId=" + fkProductId +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-                '}';
-    }
 }

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
+import com.example.administrator.digitalcredit.Model.DistributorResponse;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
 import com.example.administrator.digitalcredit.R;
@@ -52,7 +53,7 @@ public class AvailLoanFragment extends Fragment {
     private TextView tvProcessingFee;
     private TextView tvRemaining;
     private TextView tvLoanDisburse;
-    private Spinner spinner;
+    private Spinner spinner,spinnerDistributor;
     private Call<CustomerDetail> detail;
     private View viewRoot;
     private EditText editTextConsumed;
@@ -140,6 +141,43 @@ public class AvailLoanFragment extends Fragment {
                        pd.dismiss();
                    }
                    Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+               }
+           });
+
+           ApiClient.getInstance().distributor()
+                   .enqueue(new Callback<List<DistributorResponse>>() {
+                       @Override
+                       public void onResponse(Call<List<DistributorResponse>> call, Response<List<DistributorResponse>> response) {
+                           if(response.code()==200 || response.isSuccessful()){
+                               List<String> distributor=new ArrayList<>();
+
+                               for(int i=0;i<response.body().size();i++ ){
+                                   distributor.add(response.body().get(i).getUserName());
+                               }
+                               ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,distributor);
+
+                                    spinnerDistributor.setAdapter(adapter);
+                           }else {
+                               helper.showMesage(viewRoot.getRootView(),"Something went wrong...");
+                           }
+                       }
+
+                       @Override
+                       public void onFailure(Call<List<DistributorResponse>> call, Throwable t) {
+                           t.printStackTrace();
+                            helper.showMesage(viewRoot.getRootView(),t.getMessage());
+                       }
+                   });
+
+           spinnerDistributor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+               @Override
+               public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+               }
+
+               @Override
+               public void onNothingSelected(AdapterView<?> parent) {
+
                }
            });
            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -327,6 +365,7 @@ public class AvailLoanFragment extends Fragment {
         loanDetail=new LoanDetail();
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         calendar=Calendar.getInstance();
+        spinnerDistributor=viewRoot.findViewById(R.id.spinnerDistributor);
         pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
     }
 }

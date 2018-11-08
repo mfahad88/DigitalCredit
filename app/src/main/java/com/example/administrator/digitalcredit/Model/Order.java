@@ -150,22 +150,4 @@ public class Order {
         this.totalItem = totalItem;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "userId=" + userId +
-                ", orderId=" + orderId +
-                ", totalAmt=" + totalAmt +
-                ", discountAmt=" + discountAmt +
-                ", fkPromoId=" + fkPromoId +
-                ", fkDistributerId=" + fkDistributerId +
-                ", fkLoanId=" + fkLoanId +
-                ", orderType='" + orderType + '\'' +
-                ", orderStatus='" + orderStatus + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", modifiedOn=" + modifiedOn +
-                ", modifiedBy=" + modifiedBy +
-                ", totalItem=" + totalItem +
-                '}';
-    }
 }

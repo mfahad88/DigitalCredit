@@ -8,28 +8,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@id/linearAvail"
+        android:layout_height="wrap_content"
         android:background="@drawable/square_edittext"
         android:orientation="vertical"
+        android:id="@+id/cartLayout"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_centerInParent="true">
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/linearFooter"
+        android:layout_alignParentTop="true">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="start"
                 android:orientation="vertical">
 
                 <TableLayout
+                    android:id="@+id/tableLayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tableLayout">
+                    android:layout_height="wrap_content">
 
                     <TableRow
                         android:layout_width="wrap_content"
@@ -39,28 +41,36 @@
                             android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:gravity="start"
                             android:padding="5dp"
-                            android:textAlignment="center"
-                            android:text="Id" />
+                            android:text="Id"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:layout_width="80dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
                             android:padding="5dp"
+                            android:text="Name"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Unit Price"
                             android:textAlignment="center"
-                            android:text="Name" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textView3"
-                            android:layout_width="match_parent"
+                            android:layout_width="64dp"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
                             android:padding="5dp"
-                            android:text="Quantity" />
-
+                            android:text="Quantity"
+                            android:textStyle="bold" />
 
 
                         <TextView
@@ -72,14 +82,7 @@
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:text="Date" />
+
 
                         <!--<TextView
                             android:id="@+id/textView6"
@@ -100,5 +103,91 @@
 
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/square_edittext"
+        android:id="@+id/linearFooter"
+        android:layout_above="@id/radioGroup"
+        android:layout_alignLeft="@+id/cartLayout"
+        android:layout_alignRight="@+id/cartLayout"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/linearBottom"
+            android:padding="5dp"
+            android:layout_weight=".5"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. of items: " />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewItems"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:layout_weight=".5">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Amount: "
+                />
+
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewTotalAmount"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroup"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/payBtn"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioCash"
+            android:padding="5dp"
+            android:text="@string/pay_by_cash"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioLoan"
+            android:padding="5dp"
+            android:text="@string/pay_by_loan"/>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/payBtn"
+        android:text="Pay"
+        android:background="@drawable/square_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@id/radioGroup"
+        android:layout_alignRight="@id/radioGroup"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
