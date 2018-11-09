@@ -13,7 +13,7 @@ private int id;
 private int customerId;
 @SerializedName("amt")
 @Expose
-private int amt;
+private float amt;
 @SerializedName("loanCreatedDate")
 @Expose
 private String loanCreatedDate;
@@ -22,7 +22,7 @@ private String loanCreatedDate;
 private String loanDueDate;
 @SerializedName("amtPaid")
 @Expose
-private int amtPaid;
+private float amtPaid;
 @SerializedName("loanStatus")
 @Expose
 private String loanStatus;
@@ -32,7 +32,7 @@ private String lastPaidDate;
 
 @SerializedName("remainingAmt")
 @Expose
-private int remainingAmt;
+private float remainingAmt;
 
 @SerializedName("loanFees")
 @Expose
@@ -62,11 +62,11 @@ private int fk_user_distributerId;
         this.customerId = customerId;
     }
 
-    public int getAmt() {
+    public float getAmt() {
         return amt;
     }
 
-    public void setAmt(int amt) {
+    public void setAmt(float amt) {
         this.amt = amt;
     }
 
@@ -86,11 +86,11 @@ private int fk_user_distributerId;
         this.loanDueDate = loanDueDate;
     }
 
-    public int getAmtPaid() {
+    public float getAmtPaid() {
         return amtPaid;
     }
 
-    public void setAmtPaid(int amtPaid) {
+    public void setAmtPaid(float amtPaid) {
         this.amtPaid = amtPaid;
     }
 
@@ -110,11 +110,11 @@ private int fk_user_distributerId;
         this.lastPaidDate = lastPaidDate;
     }
 
-    public int getRemainingAmt() {
+    public float getRemainingAmt() {
         return remainingAmt;
     }
 
-    public void setRemainingAmt(int remainingAmt) {
+    public void setRemainingAmt(float remainingAmt) {
         this.remainingAmt = remainingAmt;
     }
 

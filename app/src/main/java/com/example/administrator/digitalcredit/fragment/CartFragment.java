@@ -137,7 +137,12 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
           if(radioStatus==1){
               Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
           }else{
-              Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
+              AvailLoanFragment availLoanFragment=new AvailLoanFragment();
+              Bundle bundle=new Bundle();
+              bundle.putFloat("totalAmount",list.getOrder().getTotalAmt());
+              availLoanFragment.setArguments(bundle);
+              getFragmentManager().beginTransaction().replace(R.id.view_container,availLoanFragment).commit();
+             // Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
           }
         }
     }

@@ -176,6 +176,7 @@
                       android:textSize="18sp"
                       android:singleLine="true"
                       android:longClickable="false"
+                      android:enabled="false"
                       android:ems="7"
                       android:maxLength="5"
                       android:inputType="number"

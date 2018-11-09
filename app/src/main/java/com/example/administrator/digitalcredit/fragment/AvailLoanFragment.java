@@ -28,6 +28,7 @@ import com.example.administrator.digitalcredit.Model.TenureDetail;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
 import com.example.administrator.digitalcredit.activity.HomeActivity;
+import com.example.administrator.digitalcredit.adapter.DistributorAdapter;
 import com.example.administrator.digitalcredit.client.ApiClient;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +59,7 @@ public class AvailLoanFragment extends Fragment {
     private View viewRoot;
     private EditText editTextConsumed;
     private Integer weeks;
-    private int remaining_bal,availableAmt,consumedAmt;
+    private float remaining_bal,availableAmt,consumedAmt;
     private Button btn;
     private LoanDetail loanDetail;
     private Date date;
@@ -75,6 +76,10 @@ public class AvailLoanFragment extends Fragment {
         viewRoot = inflater.inflate(R.layout.fragment_avail_loan, container, false);
        try{
            init();
+           if(getArguments()!=null){
+               editTextConsumed.setText(String.valueOf(getArguments().getFloat("totalAmount")));
+               consumedAmt=getArguments().getFloat("totalAmount");
+           }
            pd.show();
            Log.e("Helper---------->",helper.getSession(viewRoot.getContext()).toString());
            detail=ApiClient.getInstance().getCustomerDetails(helper.getSession(viewRoot.getContext()).get("user_mobile_no").toString());
@@ -103,7 +108,7 @@ public class AvailLoanFragment extends Fragment {
 
                            @Override
                            public void onFailure(Call<CustomerDetail> call, Throwable t) {
-
+                                helper.showMesage(viewRoot.getRootView(),t.getMessage());
                            }
                        });
                    }
@@ -149,12 +154,8 @@ public class AvailLoanFragment extends Fragment {
                        @Override
                        public void onResponse(Call<List<DistributorResponse>> call, Response<List<DistributorResponse>> response) {
                            if(response.code()==200 || response.isSuccessful()){
-                               List<String> distributor=new ArrayList<>();
 
-                               for(int i=0;i<response.body().size();i++ ){
-                                   distributor.add(response.body().get(i).getUserName());
-                               }
-                               ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,distributor);
+                               DistributorAdapter adapter=new DistributorAdapter(viewRoot.getContext(),R.layout.distributor_list_row,response.body());
 
                                     spinnerDistributor.setAdapter(adapter);
                            }else {
@@ -172,7 +173,7 @@ public class AvailLoanFragment extends Fragment {
            spinnerDistributor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                @Override
                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                   loanDetail.setFk_user_distributerId(Integer.parseInt(String.valueOf(parent.getSelectedItemId())));
                }
 
                @Override
@@ -180,6 +181,10 @@ public class AvailLoanFragment extends Fragment {
 
                }
            });
+
+
+
+
            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                @Override
                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -189,7 +194,7 @@ public class AvailLoanFragment extends Fragment {
                    if(consumedAmt>0){
                        btn.setEnabled(false);
                        if(consumedAmt<availableAmt){
-                           ApiClient.getInstance().getProcessingFee(weeks,Integer.parseInt(editTextConsumed.getText().toString().trim()))
+                           ApiClient.getInstance().getProcessingFee(weeks,Math.round(consumedAmt))
                                    .enqueue(new Callback<Integer>() {
                                        @Override
                                        public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -226,61 +231,8 @@ public class AvailLoanFragment extends Fragment {
                }
            });
 
-           editTextConsumed.addTextChangedListener(new TextWatcher() {
-               @Override
-               public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-               }
 
-               @Override
-               public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-               }
-
-               @Override
-               public void afterTextChanged(final Editable editable) {
-                   if(TextUtils.isEmpty(editable.toString()) || Integer.parseInt(editable.toString())<1){
-                       tvLoanDisburse.setText("Rs. 0.00");
-                   }
-                   else if(editable.length()>0 && (!TextUtils.isEmpty(editable.toString())) && Integer.parseInt(editable.toString())>0){
-
-                       consumedAmt=Integer.parseInt(String.valueOf(editable));
-                      if(consumedAmt<availableAmt){
-                          ApiClient.getInstance().getProcessingFee(weeks, Integer.parseInt(editable.toString())).enqueue(new Callback<Integer>() {
-                              @Override
-                              public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                  if(response.code()==200){
-                                      processingFee=response.body();
-                                      tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
-                                      remaining_bal= availableAmt-(consumedAmt);
-                                      if(remaining_bal<0){
-                                          tvRemaining.setText("Rs. 0.00");
-                                      }else {
-                                          tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
-                                      }
-                                      Log.e("consumedAmt--->", ""+consumedAmt);
-                                      Log.e("availableAmt--->", ""+availableAmt);
-                                      if(consumedAmt-processingFee>0) {
-                                          tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt-processingFee)));
-                                      }else{
-                                          tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt-processingFee));
-                                      }
-
-                                  }
-                              }
-
-                              @Override
-                              public void onFailure(Call<Integer> call, Throwable t) {
-
-                              }
-                          });
-                      }
-                   }else{
-                       tvProcessingFee.setText("Rs. 0.00");
-                       tvRemaining.setText("Rs. 0.00");
-                   }
-               }
-           });
            btn.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(final View view) {
@@ -298,7 +250,7 @@ public class AvailLoanFragment extends Fragment {
                              loanDetail.setLoanStatus("U");
                              loanDetail.setRemainingAmt(remaining_bal);
                              loanDetail.setLoanFees(processingFee);
-                             if(Integer.parseInt(editTextConsumed.getText().toString())>availableAmt) {
+                             if(consumedAmt>availableAmt) {
                                  Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
                                  btn.setEnabled(true);
                              }
@@ -367,5 +319,6 @@ public class AvailLoanFragment extends Fragment {
         calendar=Calendar.getInstance();
         spinnerDistributor=viewRoot.findViewById(R.id.spinnerDistributor);
         pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
+
     }
 }
