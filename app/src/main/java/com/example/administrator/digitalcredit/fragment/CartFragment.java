@@ -51,10 +51,10 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Cart Details");
         init();
 
-         populateTable(list);
-         tvItems.setText(String.valueOf(list.getOrder().getTotalItem()));
-         tvTotal.setText(String.valueOf(list.getOrder().getTotalAmt()));
-         btnPay.setOnClickListener(this);
+        populateTable(list);
+        tvItems.setText(String.valueOf(list.getOrder().getTotalItem()));
+        tvTotal.setText(String.valueOf(list.getOrder().getTotalAmt()));
+        btnPay.setOnClickListener(this);
         radioGroup.setOnCheckedChangeListener(this);
 
         //Toast.makeText(viewRoot.getContext(), list.toString(), Toast.LENGTH_SHORT).show();
@@ -65,7 +65,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
     public void getMessage(OrderDetailResponse orderDetailResponse){
         Log.e(this.getClass().getName(),orderDetailResponse.toString());
         list=orderDetailResponse;
-       // populateTable(orderDetailResponse);
+        // populateTable(orderDetailResponse);
     }
 
 
@@ -135,23 +135,23 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.payBtn){
-          if(radioStatus==1){
-              DialogFragment dialog=new DialogPay();
-              Bundle bundle=new Bundle();
+            if(radioStatus==1){
+                DialogFragment dialog=new DialogPay();
+                Bundle bundle=new Bundle();
 
-              bundle.putInt("OrderId",list.getOrder().getOrderId());
-              dialog.setArguments(bundle);
-              dialog.show(getFragmentManager(),"PayByCash");
+                bundle.putInt("OrderId",list.getOrder().getOrderId());
+                dialog.setArguments(bundle);
+                dialog.show(getFragmentManager(),"PayByCash");
 
 //              Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
-          }else{
-              AvailLoanFragment availLoanFragment=new AvailLoanFragment();
-              Bundle bundle=new Bundle();
-              bundle.putFloat("totalAmount",list.getOrder().getTotalAmt());
-              availLoanFragment.setArguments(bundle);
-              getFragmentManager().beginTransaction().replace(R.id.view_container,availLoanFragment).commit();
-             // Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
-          }
+            }else{
+                AvailLoanFragment availLoanFragment=new AvailLoanFragment();
+                Bundle bundle=new Bundle();
+                bundle.putFloat("totalAmount",list.getOrder().getTotalAmt());
+                availLoanFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.view_container,availLoanFragment).commit();
+                // Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

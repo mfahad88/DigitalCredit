@@ -5,11 +5,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,6 +35,8 @@ public class OrderHistoryFragment extends Fragment {
     private TableLayout tableLayout;
     private View viewRoot;
     private Helper helper;
+    private ProgressBar bar;
+    private CardView cardView;
     public OrderHistoryFragment() {
         // Required empty public constructor
     }
@@ -45,6 +49,8 @@ public class OrderHistoryFragment extends Fragment {
         viewRoot=inflater.inflate(R.layout.fragment_order_history, container, false);
         helper=Helper.getInstance();
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
+        bar=viewRoot.findViewById(R.id.progress_bar);
+        cardView=viewRoot.findViewById(R.id.cardView);
         populateTable(helper.getSession(viewRoot.getContext()).get("user_id").toString());
         Log.e("ORderHIstory--->",helper.getSession(viewRoot.getContext()).get("user_id").toString());
         return viewRoot;
@@ -58,6 +64,8 @@ public class OrderHistoryFragment extends Fragment {
                   public void onResponse(Call<List<OrderHistoryResponse>> call, Response<List<OrderHistoryResponse>> response) {
                       if(response.code()==200 || response.isSuccessful()){
                           for(final OrderHistoryResponse historyResponse:response.body()){
+                              bar.setVisibility(View.GONE);
+                              cardView.setVisibility(View.VISIBLE);
                               TableRow row = new TableRow(viewRoot.getContext());
                               row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
@@ -75,7 +83,7 @@ public class OrderHistoryFragment extends Fragment {
                                   public void onClick(View view) {
                                     Bundle bundle=new Bundle();
                                     bundle.putInt("OrderId",historyResponse.getOrderId());
-                                    OrderHistoryDetailFragment fragment=new OrderHistoryDetailFragment();
+                                    OrderHistoryDistributorDetailFragment fragment=new OrderHistoryDistributorDetailFragment();
                                     fragment.setArguments(bundle);
                                     getFragmentManager().beginTransaction().replace(R.id.view_container,fragment).commit();
                                   }

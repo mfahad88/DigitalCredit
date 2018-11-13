@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.administrator.digitalcredit.fragment.OrderHistoryDetailFragment">
+    tools:context="com.example.administrator.digitalcredit.fragment.CartDetailFragment">
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -13,17 +13,16 @@
         />
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="350dp"
         android:layout_margin="15dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/cardView"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cardBackgroundColor="#1Affffff">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,41 +30,38 @@
                 android:orientation="vertical">
 
                 <TableLayout
+                    android:id="@+id/tableLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tableLayout"
                     android:layout_gravity="center">
 
                     <TableRow
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/textView1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
                             android:padding="5dp"
-                            android:text="Product Name" />
+                            android:text="Product Name"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textView2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
                             android:padding="5dp"
-                            android:text="Quantity" />
+                            android:text="Quantity"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textView3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:textStyle="bold"
-                            android:text="Price" />
-
-
-
+                            android:text="Price"
+                            android:textStyle="bold" />
 
 
                     </TableRow>
@@ -74,4 +70,40 @@
         </ScrollView>
 
     </android.support.v7.widget.CardView>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroup"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/payBtn"
+        >
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioCash"
+            android:padding="5dp"
+            android:text="@string/pay_by_cash"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioLoan"
+            android:padding="5dp"
+            android:text="@string/pay_by_loan"/>
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/payBtn"
+        android:text="Pay"
+        android:background="@drawable/square_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@id/radioGroup"
+        android:layout_alignRight="@id/radioGroup"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

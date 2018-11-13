@@ -28,9 +28,12 @@ import com.example.administrator.digitalcredit.client.ApiClient;
 import com.example.administrator.digitalcredit.fragment.AvailLoanFragment;
 import com.example.administrator.digitalcredit.fragment.CartFragment;
 import com.example.administrator.digitalcredit.fragment.DashboardFragment;
+import com.example.administrator.digitalcredit.fragment.DistributorFragment;
 import com.example.administrator.digitalcredit.fragment.HistoryFragment;
 import com.example.administrator.digitalcredit.fragment.OrderFragment;
+import com.example.administrator.digitalcredit.fragment.OrderHistoryDistributorFragment;
 import com.example.administrator.digitalcredit.fragment.OrderHistoryFragment;
+import com.example.administrator.digitalcredit.fragment.ProductFragment;
 import com.example.administrator.digitalcredit.fragment.RepaymentFragment;
 
 import java.util.Date;
@@ -81,14 +84,29 @@ public class HomeActivity extends AppCompatActivity
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
             toggle.syncState();
+
             extras=getIntent().getExtras();
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             header=navigationView.getHeaderView(0);
             navigationView.setNavigationItemSelectedListener(this);
+            if(helper.getSession(getApplicationContext()).get("user_type").toString().equals("1001")){
+                navigationView.getMenu().findItem(R.id.product_creation).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.wallet_topup).setVisible(true);
+                navigationView.getMenu().findItem(R.id.order_history_distributor).setVisible(true);
+                navigationView.getMenu().findItem(R.id.order_collection).setVisible(true);
+                fragment=new DistributorFragment();
 
-            tvName=header.findViewById(R.id.textViewName);
-            tvCnic=header.findViewById(R.id.textViewCnic);
+            }else{
+                navigationView.getMenu().findItem(R.id.home_loan).setVisible(true);
+                navigationView.getMenu().findItem(R.id.order).setVisible(true);
+                navigationView.getMenu().findItem(R.id.cart).setVisible(true);
+                navigationView.getMenu().findItem(R.id.repayments).setVisible(true);
+                navigationView.getMenu().findItem(R.id.order_history).setVisible(true);
+                navigationView.getMenu().findItem(R.id.avail_history).setVisible(true);
+                fragment=new DashboardFragment();
+            }
+
             ApiClient.getInstance().getCustomerDetails(helper.getSession(this).get("mobileNo").toString())
                     .enqueue(new Callback<CustomerDetail>() {
                         @Override
@@ -116,8 +134,9 @@ public class HomeActivity extends AppCompatActivity
                         }
                     });
 
+            tvName=header.findViewById(R.id.textViewName);
+            tvCnic=header.findViewById(R.id.textViewCnic);
 
-            fragment=new DashboardFragment();
             //fragment.setArguments(bundle);
             ft=getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.view_container,fragment);
@@ -130,6 +149,9 @@ public class HomeActivity extends AppCompatActivity
                     ft.replace(R.id.view_container, fragment).commit();
                 }
             }
+
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -170,11 +192,10 @@ public class HomeActivity extends AppCompatActivity
         }else if(id==R.id.order){
             toolbar.setTitle("Order");
             fragment=new OrderFragment();
-        }
-        /*else if(id==R.id.avail_loan) {
-            toolbar.setTitle("Avail Loan");
-            fragment = new AvailLoanFragment();
-        }*/else if(id==R.id.avail_history){
+        } else if(id==R.id.cart) {
+            toolbar.setTitle("Cart Details");
+            fragment = new CartFragment();
+        }else if(id==R.id.avail_history){
             toolbar.setTitle("History");
             fragment=new HistoryFragment();
         }else if(id==R.id.order_history){
@@ -183,7 +204,15 @@ public class HomeActivity extends AppCompatActivity
         } else if(id==R.id.repayments){
             toolbar.setTitle("Repayments");
             fragment=new RepaymentFragment();
-        }else if(id==R.id.logout){
+        } else if(id==R.id.product_creation){
+            toolbar.setTitle("Product Creation");
+            fragment=new ProductFragment();
+        }else if(id==R.id.order_history_distributor){
+            toolbar.setTitle("Order History");
+            fragment=new OrderHistoryDistributorFragment();
+        }
+
+        else if(id==R.id.logout){
 
             try {
                 Intent intent=new Intent(this,LoginActivity.class);
@@ -215,6 +244,9 @@ public class HomeActivity extends AppCompatActivity
 //        CartFragment fragment=(CartFragment)getSupportFragmentManager().findFragmentById(R.id.CartFragment);
         CartFragment fragment=new CartFragment();
         fragment.getMessage(orderDetailResponse);
+        Bundle bundle=new Bundle();
+        bundle.putInt("CartFragment",1);
+        fragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.view_container,fragment)

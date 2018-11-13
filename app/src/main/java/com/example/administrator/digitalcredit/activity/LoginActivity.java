@@ -190,17 +190,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     if(response.isSuccessful() && response.code()==200){
                                         btnSign.setEnabled(true);
                                         helper.putSession(getApplicationContext(),"user_id", String.valueOf(response.body().getUserId()));
+
                                         if(response.body().getUserId().equals(null)){
                                             helper.showMesage(view.getRootView(),"Invalid user and password...");
                                             //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
                                         }else if(response.body().getUser_type().intValue()==1001){
+                                            helper.putSession(getApplicationContext(),"user_type",response.body().getUser_type().toString());
 //                                            Toast.makeText(LoginActivity.this, "This is distributor", Toast.LENGTH_SHORT).show();
-                                            intent=new Intent(LoginActivity.this,DistributorActivity.class);
+                                            intent=new Intent(LoginActivity.this,HomeActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent);
                                         }
                                         else if(response.body().getUserId().intValue()>0){
                                             if(response.body().getUser_type().intValue()!=1001) {
+                                                helper.putSession(getApplicationContext(),"user_type","");
                                                 intent = new Intent(LoginActivity.this, HomeActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(intent);

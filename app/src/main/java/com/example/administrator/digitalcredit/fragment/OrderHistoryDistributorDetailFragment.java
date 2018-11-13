@@ -1,8 +1,6 @@
 package com.example.administrator.digitalcredit.fragment;
 
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -18,11 +16,9 @@ import android.widget.TextView;
 
 import com.example.administrator.digitalcredit.Model.OrderDetail;
 import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
-import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
+import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.client.ApiClient;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,14 +27,14 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrderHistoryDetailFragment extends Fragment {
-
+public class OrderHistoryDistributorDetailFragment extends Fragment {
     private View viewRoot;
     private TableLayout tableLayout;
     private Helper helper;
     private ProgressBar bar;
     private CardView cardView;
-    public OrderHistoryDetailFragment() {
+
+    public OrderHistoryDistributorDetailFragment() {
         // Required empty public constructor
     }
 
@@ -47,7 +43,7 @@ public class OrderHistoryDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        viewRoot=inflater.inflate(R.layout.fragment_order_history_detail, container, false);
+        viewRoot=inflater.inflate(R.layout.fragment_order_history_distributor_detail, container, false);
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=Helper.getInstance();
         bar=viewRoot.findViewById(R.id.progress_bar);
@@ -102,14 +98,16 @@ public class OrderHistoryDetailFragment extends Fragment {
 
 
                         }else {
-                            helper.showMesage(viewRoot.getRootView(),"Something went wrong...");
+                            helper.showMesage(getActivity().getWindow().getDecorView(),"Something went wrong...");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
-
+                        t.printStackTrace();
+                        helper.showMesage(getActivity().getWindow().getDecorView(),t.getMessage());
                     }
                 });
     }
+
 }

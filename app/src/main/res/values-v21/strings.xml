@@ -50,4 +50,7 @@
     <string name="pay_by_cash">Pay By Cash</string>
     <string name="pay_by_loan">Pay By Loan</string>
     <string name="order_history">Order History</string>
+    <string name="cart">Cart</string>
+    <string name="product_creation">Product Creation</string>
+    <string name="wallet_topup">Wallet Topup</string>
 </resources>

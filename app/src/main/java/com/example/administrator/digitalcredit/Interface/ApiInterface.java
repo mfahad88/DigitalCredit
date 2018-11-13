@@ -1,6 +1,7 @@
 package com.example.administrator.digitalcredit.Interface;
 
 import com.example.administrator.digitalcredit.Model.AppVersion;
+import com.example.administrator.digitalcredit.Model.CreateProduct;
 import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.Model.DistributorResponse;
 import com.example.administrator.digitalcredit.Model.LoanDetail;
@@ -92,12 +93,17 @@ public interface ApiInterface {
 	@GET("api/fetch/order/{userId}")
 	Call<List<OrderHistoryResponse>> orderHistory(@Path("userId")String userId);
 
-	@GET("api/fetch/OrderInquiry/{Id}")
-	Call<OrderDetailResponse> orderInquiry(@Path("Id")String Id);
+	@GET("api/fetch/OrderInquiry/{OrderId}")
+	Call<OrderDetailResponse> orderInquiry(@Path("OrderId")String OrderId);
 
+	@GET("api/fetch/OrderInquiryCart/{Id}")
+	Call<OrderDetailResponse> orderInquiryCart(@Path("Id")String Id);
 	@POST("api/insert/transaction")
 	Call<Integer> trasaction(@Body TransactionRequest transactionRequest);
 
 	@POST("api/insert/transactionCash")
 	Call<Integer> trasactionCash(@Body TransactionRequest transactionRequest);
+
+	@POST("api/insert/Product")
+	Call<Integer> createProduct(@Body CreateProduct createProduct);
 }

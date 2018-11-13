@@ -73,6 +73,7 @@ public class AvailLoanFragment extends Fragment {
     private Intent intent;
     private int processingFee;
     private ProgressDialog pd;
+    private int orderId;
 
     @SuppressLint("NewApi")
     @Override
@@ -86,6 +87,7 @@ public class AvailLoanFragment extends Fragment {
            if(getArguments()!=null){
                editTextConsumed.setText(String.valueOf(getArguments().getFloat("totalAmount")));
                consumedAmt=getArguments().getFloat("totalAmount");
+               orderId=getArguments().getInt("orderId");
            }
 
            pd.show();
@@ -297,6 +299,8 @@ public class AvailLoanFragment extends Fragment {
                              loanDetail.setLoanStatus("U");
                              loanDetail.setRemainingAmt(remaining_bal);
                              loanDetail.setLoanFees(processingFee);
+                             loanDetail.setOrderId(orderId);
+                             loanDetail.setOrder_status('U');
                              if(consumedAmt>availableAmt) {
                                  Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
                                  btn.setEnabled(true);

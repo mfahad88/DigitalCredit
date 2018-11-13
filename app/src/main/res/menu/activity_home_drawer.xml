@@ -8,34 +8,65 @@
             android:id="@+id/home_loan"
             android:checked="true"
             android:icon="@drawable/home_black"
+            android:visible="false"
             android:title="@string/dashboard"/>
 
         <item
             android:id="@+id/order"
             android:icon="@drawable/order"
+            android:visible="false"
             android:title="Order"/>
-        <!--<item
-            android:id="@+id/avail_loan"
+
+        <item
+            android:id="@+id/order_collection"
+            android:icon="@drawable/order"
+            android:visible="false"
+            android:title="Order Collection"/>
+
+        <item
+            android:id="@+id/cart"
             android:icon="@drawable/avail_loan"
-            android:title="@string/avail_loan" />-->
+            android:visible="false"
+            android:title="@string/cart" />
         <item
             android:id="@+id/repayments"
             android:icon="@drawable/repayment"
+            android:visible="false"
             android:title="@string/repayments" />
         <item
             android:id="@+id/order_history"
             android:icon="@drawable/history"
+            android:visible="false"
             android:title="@string/order_history" />
 
         <item
             android:id="@+id/avail_history"
             android:icon="@drawable/history"
+            android:visible="false"
             android:title="@string/history" />
 
        <!-- <item
             android:id="@+id/notifications"
             android:icon="@drawable/notification"
             android:title="@string/notifications" />-->
+
+        <item
+            android:id="@+id/product_creation"
+            android:icon="@drawable/history"
+            android:visible="false"
+            android:title="@string/product_creation" />
+
+        <item
+            android:id="@+id/wallet_topup"
+            android:icon="@drawable/history"
+            android:visible="false"
+            android:title="@string/wallet_topup" />
+
+        <item
+            android:id="@+id/order_history_distributor"
+            android:icon="@drawable/history"
+            android:visible="false"
+            android:title="@string/order_history" />
     </group>
         <item android:id="@+id/logout"
             android:title="Logout"/>

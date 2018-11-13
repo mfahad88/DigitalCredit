@@ -75,7 +75,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         viewRoot=inflater.inflate(R.layout.fragment_order, container, false);
         init();
-        orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+
 
         btnCart.setOnClickListener(this);
         ApiClient.getInstance().getProduct().enqueue(new Callback<List<Product>>() {
@@ -139,25 +139,30 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        View child;
+
         if(v.getId()==R.id.buttonCart){
            if(rate>0.00f){
 
-               for(int i=0;i<recyclerView.getChildCount();i++){
-                   child=recyclerView.getChildAt(i);
-                   if(Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())>0 &&
-                           Double.parseDouble(((TextView)child.findViewById(R.id.textViewAmount)).getText().toString())>0.00){
 
-                       list.add(new CartBean(Integer.parseInt(((TextView)child.findViewById(R.id.textViewProductId)).getText().toString()),
-                               Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())));
-                   }
-               }
-               orderRequest.setTotalAmt(rate);
-               orderRequest.setTotalItem(items);
-               orderRequest.setOrderDetail(list);
                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
+                        View child;
+                        for(int i=0;i<recyclerView.getChildCount();i++){
+                            child=recyclerView.getChildAt(i);
+                            if(Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())>0 &&
+                                    Double.parseDouble(((TextView)child.findViewById(R.id.textViewAmount)).getText().toString())>0.00){
+
+                                list.add(new CartBean(Integer.parseInt(((TextView)child.findViewById(R.id.textViewProductId)).getText().toString()),
+                                        Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())));
+                            }
+                        }
+                        orderRequest=new OrderRequest();
+                        orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                        orderRequest.setTotalAmt(rate);
+                        orderRequest.setTotalItem(items);
+                        orderRequest.setOrderDetail(list);
+                        orderRequest.setOrder_status('U');
                         ApiClient.getInstance().order(orderRequest)
                                 .enqueue(new Callback<OrderDetailResponse>() {
                                     @Override
@@ -166,6 +171,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                             Log.e("OrderDetailResponse--->", response.body().getOrder().toString() + "," +
                                                     response.body().getOrder().getOrderId());
                                             cartInterface.orderList(response.body());
+
+
                                             helper.putSession(viewRoot.getContext(),"OrderId", String.valueOf(response.body().getOrder().getOrderId()));
                                             dialog.dismiss();
 
@@ -239,7 +246,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     private void init(){
         list=new ArrayList<>();
-        orderRequest=new OrderRequest();
+
         recyclerView=viewRoot.findViewById(R.id.recycler_view);
         tvItems=viewRoot.findViewById(R.id.textViewItems);
         tvTotalAmount=viewRoot.findViewById(R.id.textViewTotalAmount);

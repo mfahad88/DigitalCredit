@@ -44,8 +44,12 @@ private boolean partialPayment;
 @SerializedName("fk_user_distributerId")
 @Expose
 private int fk_user_distributerId;
-
-
+@SerializedName("orderId")
+@Expose
+private int orderId;
+@SerializedName("order_status")
+@Expose
+private char order_status;
     public int getId() {
         return id;
     }
@@ -140,5 +144,21 @@ private int fk_user_distributerId;
 
     public void setFk_user_distributerId(int fk_user_distributerId) {
         this.fk_user_distributerId = fk_user_distributerId;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public char getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(char order_status) {
+        this.order_status = order_status;
     }
 }
