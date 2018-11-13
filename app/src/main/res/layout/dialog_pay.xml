@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:background="@drawable/background_gradient"
+    tools:context=".dialog.DialogLoan">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp"
+        app:cardBackgroundColor="#1Affffff"
+        android:id="@+id/card_view">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:layout_margin="7dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:layout_alignParentTop="true"
+                android:id="@+id/textViewStatic"
+                android:text="Please visit to your nearest distributor and collection your order."/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewStatic"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:textSize="20sp"
+                android:id="@+id/textViewOrder"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:text="Order Id"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:textSize="20sp"
+                android:id="@+id/textViewOrderId"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/textViewOrder"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:layout_below="@id/textViewOrderId"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:id="@+id/buttonOK"
+                android:background="@drawable/square_edittext"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

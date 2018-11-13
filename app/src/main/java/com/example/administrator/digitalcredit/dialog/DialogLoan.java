@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.Model.LoanDetail;
+import com.example.administrator.digitalcredit.Model.Transaction;
+import com.example.administrator.digitalcredit.Model.TransactionRequest;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
 
@@ -50,6 +52,7 @@ public class DialogLoan extends DialogFragment {
     private SimpleDateFormat sdf;
     private Button btnClose;
     private ProgressDialog pd;
+    private int distributorId;
 
 
     @Override
@@ -79,6 +82,7 @@ public class DialogLoan extends DialogFragment {
 //                                tvPaidDate.setText(bean.getLastPaidDate());
 //                                tvRemainingAmount.setText(String.valueOf(bean.getRemainingAmt()));
                                     tvLoanFees.setText(String.valueOf(bean.getLoanFees()));
+                                    distributorId=response.body().getFk_user_distributerId();
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -105,12 +109,17 @@ public class DialogLoan extends DialogFragment {
                         bean.setAmtPaid(bean.getAmt());
 
                         bean.setLastPaidDate(sdf.format(date).toString());
-
+                        Transaction transaction=new Transaction();
+                        transaction.setDebit_user_id(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                        transaction.setCredit_user_id(distributorId);
+                        transaction.setAmt(bean.getAmt());
+                        TransactionRequest request=new TransactionRequest();
+                        request.setTraction(transaction);
                         ApiClient.getInstance().updateLoanStatus(bean).enqueue(new Callback<Integer>() {
                             @Override
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
                                 if(response.isSuccessful() && response.code()==200){
-                                    Toast.makeText(viewRoot.getContext(), "Loan Paid...", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(viewRoot.getContext(), "Loan Paid...", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -120,6 +129,26 @@ public class DialogLoan extends DialogFragment {
                                 // Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
+
+
+                        ApiClient.getInstance().trasaction(request)
+                                .enqueue(new Callback<Integer>() {
+                                    @Override
+                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                        if(response.code()==200 || response.isSuccessful()){
+                                            Toast.makeText(viewRoot.getContext(), "Loan Paid...", Toast.LENGTH_SHORT).show();;
+                                        }else{
+                                            Toast.makeText(viewRoot.getContext(), "Something went wrong...", Toast.LENGTH_SHORT).show();;
+//                                            helper.showMesage(getActivity().getWindow().getDecorView(),"Something went wrong...");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Integer> call, Throwable t) {
+//                                        helper.showMesage(getActivity().getWindow().getDecorView(),t.getMessage());
+                                        Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();;
+                                    }
+                                });
                         dismiss();
                         Intent intent=new Intent(viewRoot.getContext(),HomeActivity.class);
                         intent.putExtra("availLoan","Yes");

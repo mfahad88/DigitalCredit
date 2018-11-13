@@ -164,19 +164,11 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                                         if (response.code() == 200 || response.isSuccessful()) {
                                             Log.e("OrderDetailResponse--->", response.body().getOrder().toString() + "," +
-                                                    response.body().getOrderDetail().toString());
+                                                    response.body().getOrder().getOrderId());
                                             cartInterface.orderList(response.body());
-                                            /*for(int i=0;i<response.body().getOrderDetail().size();i++) {
-                                                helper.putSession(viewRoot.getContext(), "OrderDetail_Id", response.body().getOrderDetail().get(i).getFkProductId().toString());
-                                                helper.putSession(viewRoot.getContext(), "OrderDetail_Name", response.body().getOrderDetail().get(i).getProductName());
-                                                helper.putSession(viewRoot.getContext(), "OrderDetail_Qty", response.body().getOrderDetail().get(i).getQty().toString());
-                                                helper.putSession(viewRoot.getContext(), "OrderDetail_Amount", String.valueOf(response.body().getOrderDetail().get(i).getQty()*response.body().getOrderDetail().get(i).getPrice()));
-                                                helper.putSession(viewRoot.getContext(),"OrderDetail_Amount",response.body().getOrderDetail().get(i).getCreatedAt());
-
-                                            }*/
+                                            helper.putSession(viewRoot.getContext(),"OrderId", String.valueOf(response.body().getOrder().getOrderId()));
                                             dialog.dismiss();
-                                            /*CartFragment fragment=new CartFragment();
-                                            getFragmentManager().beginTransaction().replace(R.id.view_container,fragment).commit();*/
+
 
 
                                             helper.showMesage(viewRoot.getRootView(), "Successful...");

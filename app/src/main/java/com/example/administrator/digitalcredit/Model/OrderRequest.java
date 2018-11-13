@@ -7,6 +7,7 @@ public class OrderRequest {
 	private float totalAmt;
 	private int userId;
 	private int totalItem;
+	private char order_type;
 	private List<CartBean> orderDetail;
 	
 	
@@ -44,5 +45,13 @@ public class OrderRequest {
 
 	public void setOrderDetail(List<CartBean> orderDetail) {
 		this.orderDetail = orderDetail;
+	}
+
+	public char getOrder_type() {
+		return order_type;
+	}
+
+	public void setOrder_type(char order_type) {
+		this.order_type = order_type;
 	}
 }

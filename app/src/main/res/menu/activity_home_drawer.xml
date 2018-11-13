@@ -14,14 +14,19 @@
             android:id="@+id/order"
             android:icon="@drawable/order"
             android:title="Order"/>
-        <item
+        <!--<item
             android:id="@+id/avail_loan"
             android:icon="@drawable/avail_loan"
-            android:title="@string/avail_loan" />
+            android:title="@string/avail_loan" />-->
         <item
             android:id="@+id/repayments"
             android:icon="@drawable/repayment"
             android:title="@string/repayments" />
+        <item
+            android:id="@+id/order_history"
+            android:icon="@drawable/history"
+            android:title="@string/order_history" />
+
         <item
             android:id="@+id/avail_history"
             android:icon="@drawable/history"

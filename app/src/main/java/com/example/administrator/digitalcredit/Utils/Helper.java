@@ -20,6 +20,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.Model.MobileBean;
@@ -328,5 +329,15 @@ public class Helper {
         builder.setMessage(message);
         builder.setCancelable(false);
         return builder;
+    }
+
+    public void cleanTable(TableLayout table) {
+
+        int childCount = table.getChildCount();
+
+        // Remove all rows except the first one
+        if (childCount > 1) {
+            table.removeViews(1, childCount - 1);
+        }
     }
 }

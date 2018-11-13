@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.administrator.digitalcredit.BuildConfig;
 import com.example.administrator.digitalcredit.Model.AppVersion;
+import com.example.administrator.digitalcredit.Model.CustomerDetail;
 import com.example.administrator.digitalcredit.service.LocService;
 
 import com.example.administrator.digitalcredit.Model.SessionBean;
@@ -181,7 +182,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     helper.putSession(this,"password",edtTextPassword.getText().toString());
 
                     btnSign.setEnabled(false);
-                    ApiClient.getInstance().loginUser(edtTextMobileNo.getText().toString())
+                    ApiClient.getInstance().getCustomerDetails(edtTextMobileNo.getText().toString())
+                            .enqueue(new Callback<CustomerDetail>() {
+                                @Override
+                                public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                                    Log.e(TAG, String.valueOf(response.code()));
+                                    if(response.isSuccessful() && response.code()==200){
+                                        btnSign.setEnabled(true);
+                                        helper.putSession(getApplicationContext(),"user_id", String.valueOf(response.body().getUserId()));
+                                        if(response.body().getUserId().equals(null)){
+                                            helper.showMesage(view.getRootView(),"Invalid user and password...");
+                                            //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
+                                        }else if(response.body().getUser_type().intValue()==1001){
+//                                            Toast.makeText(LoginActivity.this, "This is distributor", Toast.LENGTH_SHORT).show();
+                                            intent=new Intent(LoginActivity.this,DistributorActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                        }
+                                        else if(response.body().getUserId().intValue()>0){
+                                            if(response.body().getUser_type().intValue()!=1001) {
+                                                intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    }else if(response.code()==404 || response.code()==500){
+                                        helper.showMesage(view.getRootView(),"Service not available");
+                                    }
+                                    if (pd.isShowing()) {
+                                        btnSign.setEnabled(true);
+                                        pd.dismiss();
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                                    if (pd.isShowing()) {
+                                        btnSign.setEnabled(true);
+                                        pd.dismiss();
+
+                                    }
+                                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                   /* ApiClient.getInstance().loginUser(edtTextMobileNo.getText().toString())
                             .enqueue(new Callback<Integer>() {
                                 @Override
                                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -215,7 +260,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     helper.showMesage(view.getRootView(),t.getMessage());
 //                                    btnSign.setEnabled(true);
                                 }
-                            });
+                            });*/
 
                 }else{
                     edtTextMobileNo.setError("Please provide Mobile Number");

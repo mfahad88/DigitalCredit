@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,8 +25,7 @@ import android.widget.Toast;
 import com.example.administrator.digitalcredit.Model.OrderDetail;
 import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
 import com.example.administrator.digitalcredit.R;
-import com.example.administrator.digitalcredit.Utils.Helper;
-
+import com.example.administrator.digitalcredit.dialog.DialogPay;
 
 
 public class CartFragment extends Fragment implements View.OnClickListener ,RadioGroup.OnCheckedChangeListener {
@@ -48,6 +48,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
         // Inflate the layout for this fragment
 
         viewRoot=inflater.inflate(R.layout.fragment_cart, container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Cart Details");
         init();
 
          populateTable(list);
@@ -135,7 +136,14 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
     public void onClick(View v) {
         if(v.getId()==R.id.payBtn){
           if(radioStatus==1){
-              Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
+              DialogFragment dialog=new DialogPay();
+              Bundle bundle=new Bundle();
+
+              bundle.putInt("OrderId",list.getOrder().getOrderId());
+              dialog.setArguments(bundle);
+              dialog.show(getFragmentManager(),"PayByCash");
+
+//              Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
           }else{
               AvailLoanFragment availLoanFragment=new AvailLoanFragment();
               Bundle bundle=new Bundle();

@@ -30,6 +30,7 @@ import com.example.administrator.digitalcredit.fragment.CartFragment;
 import com.example.administrator.digitalcredit.fragment.DashboardFragment;
 import com.example.administrator.digitalcredit.fragment.HistoryFragment;
 import com.example.administrator.digitalcredit.fragment.OrderFragment;
+import com.example.administrator.digitalcredit.fragment.OrderHistoryFragment;
 import com.example.administrator.digitalcredit.fragment.RepaymentFragment;
 
 import java.util.Date;
@@ -170,13 +171,16 @@ public class HomeActivity extends AppCompatActivity
             toolbar.setTitle("Order");
             fragment=new OrderFragment();
         }
-        else if(id==R.id.avail_loan) {
+        /*else if(id==R.id.avail_loan) {
             toolbar.setTitle("Avail Loan");
             fragment = new AvailLoanFragment();
-        }else if(id==R.id.avail_history){
+        }*/else if(id==R.id.avail_history){
             toolbar.setTitle("History");
             fragment=new HistoryFragment();
-        }else if(id==R.id.repayments){
+        }else if(id==R.id.order_history){
+            toolbar.setTitle("Order History");
+            fragment=new OrderHistoryFragment();
+        } else if(id==R.id.repayments){
             toolbar.setTitle("Repayments");
             fragment=new RepaymentFragment();
         }else if(id==R.id.logout){

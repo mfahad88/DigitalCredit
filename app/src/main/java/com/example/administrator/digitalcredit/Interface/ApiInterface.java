@@ -9,6 +9,8 @@ import com.example.administrator.digitalcredit.Model.OrderDetailResponse;
 import com.example.administrator.digitalcredit.Model.OrderRequest;
 import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
+import com.example.administrator.digitalcredit.Model.TransactionRequest;
+import com.example.administrator.digitalcredit.fragment.OrderHistoryResponse;
 
 
 import java.util.List;
@@ -47,7 +49,7 @@ public interface ApiInterface {
 	Call<List<TenureDetail>> getTenure();
 
 	@GET("/api/fetch/processingFee/{tenure}/{amount}")
-	Call<Integer> getProcessingFee(@Path("tenure") int tenure, @Path("amount") int amount);
+	Call<Integer> getProcessingFee(@Path("tenure") int tenure, @Path("amount") float amount);
 
 	@POST("/api/insert/Customerloan")
 	Call<Integer> CustomerLoan(@Body LoanDetail loanDetail);
@@ -83,4 +85,19 @@ public interface ApiInterface {
 
 	@GET("/api/fetch/distributerList")
 	Call<List<DistributorResponse>> distributor();
+
+	@GET("/api/updateOrder/{OrderId}/{Status}")
+	Call<Integer> updateOrder(@Path("OrderId") int OrderId, @Path("Status") char Status);
+
+	@GET("api/fetch/order/{userId}")
+	Call<List<OrderHistoryResponse>> orderHistory(@Path("userId")String userId);
+
+	@GET("api/fetch/OrderInquiry/{Id}")
+	Call<OrderDetailResponse> orderInquiry(@Path("Id")String Id);
+
+	@POST("api/insert/transaction")
+	Call<Integer> trasaction(@Body TransactionRequest transactionRequest);
+
+	@POST("api/insert/transactionCash")
+	Call<Integer> trasactionCash(@Body TransactionRequest transactionRequest);
 }

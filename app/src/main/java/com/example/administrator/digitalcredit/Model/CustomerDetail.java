@@ -58,6 +58,10 @@ public class CustomerDetail {
     @Expose
     private Integer dbrValueFlag;
 
+    @SerializedName("user_type")
+    @Expose
+    private Integer user_type;
+
 
     public Integer getUserId() {
         return userId;
@@ -193,5 +197,13 @@ public class CustomerDetail {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Integer getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(Integer user_type) {
+        this.user_type = user_type;
     }
 }
