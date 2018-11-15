@@ -59,7 +59,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private ProgressBar progressBar;
     private RelativeLayout layout_body;
     private List<CartBean> list;
-    private OrderRequest orderRequest;
+
     private AlertDialog.Builder builder;
     private CartInterface cartInterface;
     public OrderFragment() {
@@ -82,17 +82,28 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if(response.isSuccessful() && response.code()==200){
-                    adapter=new ProductAdapter(response.body(),adapterInterface);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(viewRoot.getContext());
-                    recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                            ((LinearLayoutManager) mLayoutManager).getOrientation());
-                    recyclerView.addItemDecoration(dividerItemDecoration);
-                    recyclerView.setAdapter(adapter);
-                    if(adapter.getItemCount()>0){
-                        progressBar.setVisibility(View.GONE);
-                        layout_body.setVisibility(View.VISIBLE);
+                    try{
+
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(viewRoot.getContext());
+                        recyclerView.setLayoutManager(mLayoutManager);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                                ((LinearLayoutManager) mLayoutManager).getOrientation());
+                        recyclerView.addItemDecoration(dividerItemDecoration);
+                        if(adapter!=null){
+                            adapter.notifyDataSetChanged();
+                        }else{
+                            adapter=new ProductAdapter(response.body(),adapterInterface);
+                            recyclerView.setAdapter(adapter);
+                        }
+
+
+                        if(adapter.getItemCount()>0){
+                            progressBar.setVisibility(View.GONE);
+                            layout_body.setVisibility(View.VISIBLE);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
 
                 }else{
@@ -142,12 +153,18 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
         if(v.getId()==R.id.buttonCart){
            if(rate>0.00f){
-
-
-               builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+               btnCart.setEnabled(false);
+            try{
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
                         View child;
+                        OrderRequest orderRequest=new OrderRequest();
+                        orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                        orderRequest.setTotalAmt(rate);
+                        orderRequest.setTotalItem(items);
+                        orderRequest.setOrderDetail(list);
+                        orderRequest.setOrder_status('A');
                         for(int i=0;i<recyclerView.getChildCount();i++){
                             child=recyclerView.getChildAt(i);
                             if(Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())>0 &&
@@ -157,17 +174,14 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                         Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())));
                             }
                         }
-                        orderRequest=new OrderRequest();
-                        orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
-                        orderRequest.setTotalAmt(rate);
-                        orderRequest.setTotalItem(items);
-                        orderRequest.setOrderDetail(list);
-                        orderRequest.setOrder_status('U');
+
+
                         ApiClient.getInstance().order(orderRequest)
                                 .enqueue(new Callback<OrderDetailResponse>() {
                                     @Override
                                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                                         if (response.code() == 200 || response.isSuccessful()) {
+                                            btnCart.setEnabled(true);
                                             Log.e("OrderDetailResponse--->", response.body().getOrder().toString() + "," +
                                                     response.body().getOrder().getOrderId());
                                             cartInterface.orderList(response.body());
@@ -217,6 +231,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                                                         }
                                                     });
                                         } else {
+                                            btnCart.setEnabled(true);
                                             dialog.dismiss();
                                             helper.showMesage(viewRoot.getRootView(), "Something went wrong...");
                                         }
@@ -224,6 +239,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
                                     @Override
                                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
+                                        btnCart.setEnabled(true);
                                         helper.showMesage(viewRoot.getRootView(), t.getMessage());
                                         t.printStackTrace();
                                     }
@@ -231,17 +247,23 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
-               builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                         dialog.dismiss();
-                   }
-               });
-                builder.show();
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        list.clear();
+                        btnCart.setEnabled(true);
+                        dialog.dismiss();
+                    }
+                });
 
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+               builder.show();
            }
-
         }
+
+
     }
 
     private void init(){

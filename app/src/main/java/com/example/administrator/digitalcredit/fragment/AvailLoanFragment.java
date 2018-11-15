@@ -84,10 +84,12 @@ public class AvailLoanFragment extends Fragment {
 
        try{
            init();
+
            if(getArguments()!=null){
                editTextConsumed.setText(String.valueOf(getArguments().getFloat("totalAmount")));
                consumedAmt=getArguments().getFloat("totalAmount");
                orderId=getArguments().getInt("orderId");
+
            }
 
            pd.show();
@@ -100,60 +102,64 @@ public class AvailLoanFragment extends Fragment {
                @Override
                public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
                    if(response.code()==200 && response.isSuccessful()){
-                       detail.enqueue(new Callback<CustomerDetail>() {
-                           @Override
-                           public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                               availableAmt=response.body().getAvailableAmountLimit();
-                                if(availableAmt<0){
-                                    availableAmt=0;
-                                }
+                       try{
+                           detail.enqueue(new Callback<CustomerDetail>() {
+                               @Override
+                               public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
+                                   availableAmt=response.body().getAvailableAmountLimit();
+                                   if(availableAmt<0){
+                                       availableAmt=0;
+                                   }
 
-                               if(availableAmt>0) {
-                                   tvAmt.setText("Rs. " + helper.CashFormatter(String.valueOf(availableAmt)));
+                                   if(availableAmt>0) {
+                                       tvAmt.setText("Rs. " + helper.CashFormatter(String.valueOf(availableAmt)));
 
 
-                                   ApiClient.getInstance().getProcessingFee(1,consumedAmt)
-                                           .enqueue(new Callback<Integer>() {
-                                               @Override
+                                       ApiClient.getInstance().getProcessingFee(1,consumedAmt)
+                                               .enqueue(new Callback<Integer>() {
+                                                   @Override
                                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
                                                        btn.setEnabled(true);
-                                                   processingFee=response.body();
-                                                   tvProcessingFee.setText("Rs. "+helper.CashFormatter(String.valueOf(processingFee)));
-                                                   remaining_bal= availableAmt-(consumedAmt);
+                                                       processingFee=response.body();
+                                                       tvProcessingFee.setText("Rs. "+helper.CashFormatter(String.valueOf(processingFee)));
+                                                       remaining_bal= availableAmt-(consumedAmt);
 
-                                                   if(remaining_bal<0){
-                                                       tvRemaining.setText("Rs. 0.00");
-                                                   }else {
-                                                       tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
+                                                       if(remaining_bal<0){
+                                                           tvRemaining.setText("Rs. 0.00");
+                                                       }else {
+                                                           tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
+                                                       }
+                                                       if(consumedAmt-processingFee>0) {
+                                                           tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
+                                                       }else{
+                                                           tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
+                                                       }
                                                    }
-                                                   if(consumedAmt-processingFee>0) {
-                                                       tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
-                                                   }else{
-                                                       tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
-                                                   }
-                                               }
 
-                                               @Override
-                                               public void onFailure(Call<Integer> call, Throwable t) {
-                                                   btn.setEnabled(true);
-                                                   if(pd.isShowing()){
-                                                       pd.dismiss();
+                                                   @Override
+                                                   public void onFailure(Call<Integer> call, Throwable t) {
+                                                       btn.setEnabled(true);
+                                                       if(pd.isShowing()){
+                                                           pd.dismiss();
+                                                       }
                                                    }
-                                               }
-                                           });
-                               }else{
-                                   Toast.makeText(viewRoot.getContext(), "Insufficient Limit", Toast.LENGTH_SHORT).show();
-                                   tvAmt.setText("Rs. " + String.valueOf(availableAmt));
-                                   editTextConsumed.setEnabled(false);
-                                   //btn.setEnabled(false);
+                                               });
+                                   }else{
+                                       Toast.makeText(viewRoot.getContext(), "Insufficient Limit", Toast.LENGTH_SHORT).show();
+                                       tvAmt.setText("Rs. " + String.valueOf(availableAmt));
+                                       editTextConsumed.setEnabled(false);
+                                       //btn.setEnabled(false);
+                                   }
                                }
-                           }
 
-                           @Override
-                           public void onFailure(Call<CustomerDetail> call, Throwable t) {
-                                helper.showMesage(viewRoot.getRootView(),t.getMessage());
-                           }
-                       });
+                               @Override
+                               public void onFailure(Call<CustomerDetail> call, Throwable t) {
+                                   helper.showMesage(viewRoot.getRootView(),t.getMessage());
+                               }
+                           });
+                       }catch (Exception e){
+                           e.printStackTrace();
+                       }
                    }
                }
 
@@ -172,15 +178,19 @@ public class AvailLoanFragment extends Fragment {
            ApiClient.getInstance().getTenure().enqueue(new Callback<List<TenureDetail>>() {
                @Override
                public void onResponse(Call<List<TenureDetail>> call, Response<List<TenureDetail>> response) {
-                   if(response.code()==200){
-                       List<String> weeks=new ArrayList<>();
-                       for(int i=0;i<response.body().size();i++){
-                           weeks.add(response.body().get(i).getTenureTime()+" weeks");
-                       }
-                       ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,weeks);
-                       spinner.setAdapter(adapter);
-                       if(pd.isShowing()){
-                           pd.dismiss();
+                   if(response.code()==200 || response.isSuccessful()){
+                       try{
+                           List<String> weeks=new ArrayList<>();
+                           for(int i=0;i<response.body().size();i++){
+                               weeks.add(response.body().get(i).getTenureTime()+" weeks");
+                           }
+                           ArrayAdapter<String> adapter=new ArrayAdapter<String>(viewRoot.getContext(),android.R.layout.simple_list_item_1,weeks);
+                           spinner.setAdapter(adapter);
+                           if(pd.isShowing()){
+                               pd.dismiss();
+                           }
+                       }catch (Exception e){
+                           e.printStackTrace();
                        }
                    }
                }
@@ -238,41 +248,44 @@ public class AvailLoanFragment extends Fragment {
            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                @Override
                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                   try {
+                       String selected=adapterView.getAdapter().getItem(Integer.parseInt(String.valueOf(l))).toString().trim();
+                       weeks= Integer.valueOf(selected.replace(" weeks",""));
+                       if(consumedAmt>0){
+                           btn.setEnabled(false);
+                           if(consumedAmt<availableAmt){
+                               ApiClient.getInstance().getProcessingFee(weeks,consumedAmt)
+                                       .enqueue(new Callback<Integer>() {
+                                           @Override
+                                           public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                               btn.setEnabled(true);
+                                               processingFee=response.body();
+                                               tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
+                                               remaining_bal= availableAmt-(consumedAmt);
+                                               if(remaining_bal<0){
+                                                   tvRemaining.setText("Rs. 0.00");
+                                               }else {
+                                                   tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
+                                               }
+                                               if(consumedAmt-processingFee>0) {
+                                                   tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
+                                               }else{
+                                                   tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
+                                               }
+                                           }
 
-                   String selected=adapterView.getAdapter().getItem(Integer.parseInt(String.valueOf(l))).toString().trim();
-                   weeks= Integer.valueOf(selected.replace(" weeks",""));
-                   if(consumedAmt>0){
-                       btn.setEnabled(false);
-                       if(consumedAmt<availableAmt){
-                           ApiClient.getInstance().getProcessingFee(weeks,consumedAmt)
-                                   .enqueue(new Callback<Integer>() {
-                                       @Override
-                                       public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                           btn.setEnabled(true);
-                                           processingFee=response.body();
-                                           tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
-                                           remaining_bal= availableAmt-(consumedAmt);
-                                           if(remaining_bal<0){
-                                               tvRemaining.setText("Rs. 0.00");
-                                           }else {
-                                               tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
+                                           @Override
+                                           public void onFailure(Call<Integer> call, Throwable t) {
+                                               btn.setEnabled(true);
+                                               if(pd.isShowing()){
+                                                   pd.dismiss();
+                                               }
                                            }
-                                           if(consumedAmt-processingFee>0) {
-                                               tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
-                                           }else{
-                                               tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
-                                           }
-                                       }
-
-                                       @Override
-                                       public void onFailure(Call<Integer> call, Throwable t) {
-                                           btn.setEnabled(true);
-                                           if(pd.isShowing()){
-                                               pd.dismiss();
-                                           }
-                                       }
-                                   });
+                                       });
+                           }
                        }
+                   }catch (Exception e){
+                       e.printStackTrace();
                    }
                }
 
@@ -286,30 +299,31 @@ public class AvailLoanFragment extends Fragment {
                @Override
                public void onClick(final View view) {
 
-                     if(consumedAmt<availableAmt){
-                         if(!TextUtils.isEmpty(editTextConsumed.getText())){
-                             btn.setEnabled(false);
-                             date = new Date();
-                             calendar.add(Calendar.WEEK_OF_YEAR,weeks);
-                             loanDetail.setAmt(consumedAmt+processingFee);
-                             loanDetail.setCustomerId(Integer.valueOf(helper.getSession(view.getContext()).get("user_id").toString()));
-                             loanDetail.setLoanCreatedDate(sdf.format(date));
-                             loanDetail.setLoanDueDate(sdf.format(calendar.getTime()));
-                             loanDetail.setAmtPaid(0);
-                             loanDetail.setLoanStatus("U");
-                             loanDetail.setRemainingAmt(remaining_bal);
-                             loanDetail.setLoanFees(processingFee);
-                             loanDetail.setOrderId(orderId);
-                             loanDetail.setOrder_status('U');
-                             if(consumedAmt>availableAmt) {
-                                 Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
-                                 btn.setEnabled(true);
-                             }
+                     try{
+                         if(consumedAmt<availableAmt){
+                             if(!TextUtils.isEmpty(editTextConsumed.getText())){
+                                 btn.setEnabled(false);
+                                 date = new Date();
+                                 calendar.add(Calendar.WEEK_OF_YEAR,weeks);
+                                 loanDetail.setAmt(consumedAmt+processingFee);
+                                 loanDetail.setCustomerId(Integer.valueOf(helper.getSession(view.getContext()).get("user_id").toString()));
+                                 loanDetail.setLoanCreatedDate(sdf.format(date));
+                                 loanDetail.setLoanDueDate(sdf.format(calendar.getTime()));
+                                 loanDetail.setAmtPaid(0);
+                                 loanDetail.setLoanStatus("U");
+                                 loanDetail.setRemainingAmt(remaining_bal);
+                                 loanDetail.setLoanFees(processingFee);
+                                 loanDetail.setOrderId(orderId);
+                                 loanDetail.setOrder_status('U');
+                                 if(consumedAmt>availableAmt) {
+                                     Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
+                                     btn.setEnabled(true);
+                                 }
 //                           Log.e("Check___>", "consumedAmt+processingFee= "+(consumedAmt+processingFee)+"Amount="+availableAmt
 //                                   +String.valueOf((consumedAmt+processingFee)<availableAmt));
-                             if(consumedAmt>0){
-                                 if( consumedAmt<=availableAmt /*&& (consumedAmt+processingFee)>availableAmt*/) {
-                                     /*if(consumedAmt<processingFee *//*|| consumedAmt==processingFee*//*){
+                                 if(consumedAmt>0){
+                                     if( consumedAmt<=availableAmt /*&& (consumedAmt+processingFee)>availableAmt*/) {
+                                         /*if(consumedAmt<processingFee *//*|| consumedAmt==processingFee*//*){
                                          btn.setEnabled(false);
                                          Toast.makeText(viewRoot.getContext(), "Consumed amount cannot be less than processing fee", Toast.LENGTH_SHORT).show();
                                      }else {*/
@@ -333,16 +347,19 @@ public class AvailLoanFragment extends Fragment {
                                                  Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                              }
                                          });
-                                   //  }
+                                         //  }
+
+                                     }
+                                     else {
+                                         btn.setEnabled(false);
+                                         Toast.makeText(viewRoot.getContext(), "Invalid amount", Toast.LENGTH_SHORT).show();
+                                     }
 
                                  }
-                                 else {
-                                     btn.setEnabled(false);
-                                     Toast.makeText(viewRoot.getContext(), "Invalid amount", Toast.LENGTH_SHORT).show();
-                                 }
-
                              }
                          }
+                     }catch (Exception e){
+                         e.printStackTrace();
                      }
 
                }

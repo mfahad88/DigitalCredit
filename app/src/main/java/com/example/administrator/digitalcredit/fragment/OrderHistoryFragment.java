@@ -15,9 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.administrator.digitalcredit.Model.LoanDetail;
+import com.example.administrator.digitalcredit.Model.OrderHistoryResponse;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
 import com.example.administrator.digitalcredit.client.ApiClient;
@@ -58,73 +57,77 @@ public class OrderHistoryFragment extends Fragment {
 
 
     private void populateTable(String Id){
-        ApiClient.getInstance().orderHistory("user_id="+Id)
-              .enqueue(new Callback<List<OrderHistoryResponse>>() {
-                  @Override
-                  public void onResponse(Call<List<OrderHistoryResponse>> call, Response<List<OrderHistoryResponse>> response) {
-                      if(response.code()==200 || response.isSuccessful()){
-                          for(final OrderHistoryResponse historyResponse:response.body()){
-                              bar.setVisibility(View.GONE);
-                              cardView.setVisibility(View.VISIBLE);
-                              TableRow row = new TableRow(viewRoot.getContext());
-                              row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+      try {
+          ApiClient.getInstance().orderHistory("fk_distributer_id="+Id)
+                  .enqueue(new Callback<List<OrderHistoryResponse>>() {
+                      @Override
+                      public void onResponse(Call<List<OrderHistoryResponse>> call, Response<List<OrderHistoryResponse>> response) {
+                          if(response.code()==200 || response.isSuccessful()){
+                              for(final OrderHistoryResponse historyResponse:response.body()){
+                                  bar.setVisibility(View.GONE);
+                                  cardView.setVisibility(View.VISIBLE);
+                                  TableRow row = new TableRow(viewRoot.getContext());
+                                  row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                              final TextView tvId = new TextView(viewRoot.getContext());
-                              tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                              tvId.setTextSize(15f);
-                              tvId.setGravity(Gravity.CENTER_HORIZONTAL);
-                              tvId.setText(String.valueOf(historyResponse.getOrderId()));
-                              row.addView(tvId);
-                              tvId.setClickable(true);
-                              tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-                              tvId.setTextColor(Color.argb(255,0,0,255));
-                              tvId.setOnClickListener(new View.OnClickListener() {
-                                  @Override
-                                  public void onClick(View view) {
-                                    Bundle bundle=new Bundle();
-                                    bundle.putInt("OrderId",historyResponse.getOrderId());
-                                    OrderHistoryDistributorDetailFragment fragment=new OrderHistoryDistributorDetailFragment();
-                                    fragment.setArguments(bundle);
-                                    getFragmentManager().beginTransaction().replace(R.id.view_container,fragment).commit();
-                                  }
-                              });
+                                  final TextView tvId = new TextView(viewRoot.getContext());
+                                  tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvId.setTextSize(15f);
+                                  tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvId.setText(String.valueOf(historyResponse.getOrderId()));
+                                  row.addView(tvId);
+                                  tvId.setClickable(true);
+                                  tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+                                  tvId.setTextColor(Color.argb(255,0,0,255));
+                                  tvId.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          Bundle bundle=new Bundle();
+                                          bundle.putInt("OrderId",historyResponse.getOrderId());
+                                          OrderHistoryDistributorDetailFragment fragment=new OrderHistoryDistributorDetailFragment();
+                                          fragment.setArguments(bundle);
+                                          getFragmentManager().beginTransaction().replace(R.id.view_container,fragment).commit();
+                                      }
+                                  });
 
 
-                              TextView tvCreatedDate = new TextView(viewRoot.getContext());
-                              tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                              tvCreatedDate.setTextSize(15f);
-                              tvCreatedDate.setGravity(Gravity.CENTER_HORIZONTAL);
-                              tvCreatedDate.setText(historyResponse.getCreatedAt());
+                                  TextView tvCreatedDate = new TextView(viewRoot.getContext());
+                                  tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvCreatedDate.setTextSize(15f);
+                                  tvCreatedDate.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvCreatedDate.setText(historyResponse.getCreatedAt());
 //                        tvDueDate.setWidth(100);
-                              row.addView(tvCreatedDate);
+                                  row.addView(tvCreatedDate);
 
-                              TextView tvItems = new TextView(viewRoot.getContext());
-                              tvItems.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                              tvItems.setTextSize(15f);
-                              tvItems.setGravity(Gravity.CENTER_HORIZONTAL);
-                              tvItems.setText(String.valueOf(historyResponse.getTotalItem()));
-                              row.addView(tvItems);
+                                  TextView tvItems = new TextView(viewRoot.getContext());
+                                  tvItems.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvItems.setTextSize(15f);
+                                  tvItems.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvItems.setText(String.valueOf(historyResponse.getTotalItem()));
+                                  row.addView(tvItems);
 
-                              TextView tvAmt = new TextView(viewRoot.getContext());
-                              tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                              tvAmt.setTextSize(15f);
-                              tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
-                              tvAmt.setText(String.valueOf(historyResponse.getTotalAmt()));
-                              row.addView(tvAmt);
+                                  TextView tvAmt = new TextView(viewRoot.getContext());
+                                  tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvAmt.setTextSize(15f);
+                                  tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvAmt.setText(String.valueOf(historyResponse.getTotalAmt()));
+                                  row.addView(tvAmt);
 
-                              row.setPadding(5,5,5,5);
-                              tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                                  row.setPadding(5,5,5,5);
+                                  tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                              }
+
+                          }else {
+                              helper.showMesage(viewRoot.getRootView(),"Something went wrong...");
                           }
-
-                      }else {
-                          helper.showMesage(viewRoot.getRootView(),"Something went wrong...");
                       }
-                  }
 
-                  @Override
-                  public void onFailure(Call<List<OrderHistoryResponse>> call, Throwable t) {
+                      @Override
+                      public void onFailure(Call<List<OrderHistoryResponse>> call, Throwable t) {
 
-                  }
-              });
+                      }
+                  });
+      }catch (Exception e){
+          e.printStackTrace();
+      }
     }
 }

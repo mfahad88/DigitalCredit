@@ -11,7 +11,7 @@ import com.example.administrator.digitalcredit.Model.OrderRequest;
 import com.example.administrator.digitalcredit.Model.Product;
 import com.example.administrator.digitalcredit.Model.TenureDetail;
 import com.example.administrator.digitalcredit.Model.TransactionRequest;
-import com.example.administrator.digitalcredit.fragment.OrderHistoryResponse;
+import com.example.administrator.digitalcredit.Model.OrderHistoryResponse;
 
 
 import java.util.List;
@@ -96,8 +96,11 @@ public interface ApiInterface {
 	@GET("api/fetch/OrderInquiry/{OrderId}")
 	Call<OrderDetailResponse> orderInquiry(@Path("OrderId")String OrderId);
 
-	@GET("api/fetch/OrderInquiryCart/{Id}")
-	Call<OrderDetailResponse> orderInquiryCart(@Path("Id")String Id);
+	@GET("api/fetch/OrderInquiryCash/{OrderId}")
+	Call<OrderDetailResponse> orderInquiryCash(@Path("OrderId")String OrderId);
+
+	@GET("api/fetch/OrderInquiryCart/{UserId}")
+	Call<OrderDetailResponse> orderInquiryCart(@Path("UserId")String UserId);
 	@POST("api/insert/transaction")
 	Call<Integer> trasaction(@Body TransactionRequest transactionRequest);
 

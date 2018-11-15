@@ -68,35 +68,36 @@ public class RepaymentFragment extends Fragment {
     }
 
     private void populateTable(){
-        ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
-        .enqueue(new Callback<List<LoanDetail>>() {
-            @Override
-            public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
-                if(response.code()==200) {
-                    for (LoanDetail loanDetail : response.body()) {
-                        TableRow row = new TableRow(viewRoot.getContext());
-                        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+      try {
+          ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
+                  .enqueue(new Callback<List<LoanDetail>>() {
+                      @Override
+                      public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
+                          if(response.code()==200) {
+                              for (LoanDetail loanDetail : response.body()) {
+                                  TableRow row = new TableRow(viewRoot.getContext());
+                                  row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                        final TextView tvId = new TextView(viewRoot.getContext());
-                        tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvId.setTextSize(15f);
-                        tvId.setGravity(Gravity.CENTER_HORIZONTAL);
-                        tvId.setText(String.valueOf(loanDetail.getId()));
-                        row.addView(tvId);
-                        tvId.setClickable(true);
-                        tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-                        tvId.setTextColor(Color.argb(255,0,0,255));
-                        tvId.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //pd.show();
-                                Bundle bundle=new Bundle();
-                                bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
-                                dialog.setArguments(bundle);
-                                dialog.show(getFragmentManager(),"Loan");
+                                  final TextView tvId = new TextView(viewRoot.getContext());
+                                  tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvId.setTextSize(15f);
+                                  tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvId.setText(String.valueOf(loanDetail.getId()));
+                                  row.addView(tvId);
+                                  tvId.setClickable(true);
+                                  tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+                                  tvId.setTextColor(Color.argb(255,0,0,255));
+                                  tvId.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          //pd.show();
+                                          Bundle bundle=new Bundle();
+                                          bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
+                                          dialog.setArguments(bundle);
+                                          dialog.show(getFragmentManager(),"Loan");
 
-                            }
-                        });
+                                      }
+                                  });
 
                         /*TextView tvCreatedDate = new TextView(viewRoot.getContext());
                         tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -106,52 +107,55 @@ public class RepaymentFragment extends Fragment {
                         tvCreatedDate.setWidth(100);
                         row.addView(tvCreatedDate);*/
 
-                        TextView tvDueDate = new TextView(viewRoot.getContext());
-                        tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvDueDate.setTextSize(15f);
-                        tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
-                        tvDueDate.setText(loanDetail.getLoanDueDate());
+                                  TextView tvDueDate = new TextView(viewRoot.getContext());
+                                  tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvDueDate.setTextSize(15f);
+                                  tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvDueDate.setText(loanDetail.getLoanDueDate());
 //                        tvDueDate.setWidth(100);
-                        row.addView(tvDueDate);
+                                  row.addView(tvDueDate);
 
-                        TextView tvAmt = new TextView(viewRoot.getContext());
-                        tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvAmt.setTextSize(15f);
-                        tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
-                        tvAmt.setText(String.valueOf(loanDetail.getAmt()));
-                        row.addView(tvAmt);
+                                  TextView tvAmt = new TextView(viewRoot.getContext());
+                                  tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvAmt.setTextSize(15f);
+                                  tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvAmt.setText(String.valueOf(loanDetail.getAmt()));
+                                  row.addView(tvAmt);
 
-                        TextView tvStatus = new TextView(viewRoot.getContext());
-                        tvStatus.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvStatus.setTextSize(15f);
-                        tvStatus.setGravity(Gravity.CENTER_HORIZONTAL);
-                        tvStatus.setText(loanDetail.getLoanStatus());
-                        row.addView(tvStatus);
+                                  TextView tvStatus = new TextView(viewRoot.getContext());
+                                  tvStatus.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvStatus.setTextSize(15f);
+                                  tvStatus.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvStatus.setText(loanDetail.getLoanStatus());
+                                  row.addView(tvStatus);
 
-                        row.setPadding(5,5,5,5);
-                        tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-                    }
-                    if(pd.isShowing()){
-                        pd.dismiss();
-                    }
-                }else{
-                    if (pd.isShowing()) {
-                        pd.dismiss();
-                        Toast.makeText(viewRoot.getContext(), "Service not available", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                                  row.setPadding(5,5,5,5);
+                                  tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                              }
+                              if(pd.isShowing()){
+                                  pd.dismiss();
+                              }
+                          }else{
+                              if (pd.isShowing()) {
+                                  pd.dismiss();
+                                  Toast.makeText(viewRoot.getContext(), "Service not available", Toast.LENGTH_SHORT).show();
+                              }
+                          }
 
-            }
+                      }
 
-            @Override
-            public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
-                if(pd.isShowing()){
-                    pd.dismiss();
-                }
+                      @Override
+                      public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
+                          if(pd.isShowing()){
+                              pd.dismiss();
+                          }
 
-                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                          Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                      }
+                  });
+      }catch (Exception e){
+          e.printStackTrace();
+      }
     }
 
 }

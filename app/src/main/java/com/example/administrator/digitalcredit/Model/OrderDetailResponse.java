@@ -13,6 +13,9 @@ public class OrderDetailResponse {
     @SerializedName("orderDetail")
     @Expose
     private List<OrderDetail> orderDetail = null;
+    @SerializedName("status")
+    @Expose
+    private String status;
 
     public Order getOrder() {
         return order;
@@ -30,4 +33,11 @@ public class OrderDetailResponse {
         this.orderDetail = orderDetail;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

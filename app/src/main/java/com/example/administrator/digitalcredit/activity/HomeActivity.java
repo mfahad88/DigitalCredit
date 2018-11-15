@@ -162,11 +162,11 @@ public class HomeActivity extends AppCompatActivity
     @SuppressLint("NewApi")
     @Override
     public void onBackPressed() {
-        counter++;
+        //counter++;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } /*else {
                 if(counter>=2) {
 
                     if(helper.clearSession(this)) {
@@ -178,7 +178,7 @@ public class HomeActivity extends AppCompatActivity
                     }
                 }
 //            super.onBackPressed();
-        }
+        }*/
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -210,6 +210,9 @@ public class HomeActivity extends AppCompatActivity
         }else if(id==R.id.order_history_distributor){
             toolbar.setTitle("Order History");
             fragment=new OrderHistoryDistributorFragment();
+        }else if(id==R.id.order_collection){
+            toolbar.setTitle("Collection");
+            fragment=new DistributorFragment();
         }
 
         else if(id==R.id.logout){

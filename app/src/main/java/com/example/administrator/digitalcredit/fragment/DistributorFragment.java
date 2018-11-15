@@ -24,7 +24,6 @@ import com.example.administrator.digitalcredit.Model.Transaction;
 import com.example.administrator.digitalcredit.Model.TransactionRequest;
 import com.example.administrator.digitalcredit.R;
 import com.example.administrator.digitalcredit.Utils.Helper;
-import com.example.administrator.digitalcredit.activity.DistributorActivity;
 import com.example.administrator.digitalcredit.client.ApiClient;
 import com.example.administrator.digitalcredit.dialog.DialogPayment;
 
@@ -45,6 +44,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
     private RelativeLayout relativeLayout;
     private LinearLayout linearLayout;
     private View viewRoot;
+    private TextView tvStatus;
     public DistributorFragment() {
         // Required empty public constructor
     }
@@ -72,6 +72,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
         bar=viewRoot.findViewById(R.id.progress_bar);
         relativeLayout=viewRoot.findViewById(R.id.relativeBody);
         linearLayout=viewRoot.findViewById(R.id.linearFooter);
+        tvStatus=viewRoot.findViewById(R.id.textViewStatus);
     }
 
     @Override
@@ -87,55 +88,80 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
             if(buttonCollect.isShown()){
                 buttonCollect.setVisibility(View.GONE);
             }
+            if(tvStatus.isShown()){
+                tvStatus.setVisibility(View.GONE);
+            }
             bar.setVisibility(View.VISIBLE);
 
-            ApiClient.getInstance().orderInquiry(edtTextOrderId.getText().toString())
+            ApiClient.getInstance().orderInquiryCash(edtTextOrderId.getText().toString())
                     .enqueue(new Callback<OrderDetailResponse>() {
                         @Override
                         public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
-                            if(response.code()==200 || response.isSuccessful()){
-                                populateTable(edtTextOrderId.getText().toString());
-                                textViewItems.setText(String.valueOf(response.body().getOrder().getTotalItem()));
-                                textViewTotalAmount.setText(String.valueOf(response.body().getOrder().getTotalAmt()));
-                                linearLayout.setVisibility(View.VISIBLE);
-                                buttonCollect.setVisibility(View.VISIBLE);
+                            try {
+                                if(response.code()==200 || response.isSuccessful()){
+                                    bar.setVisibility(View.GONE);
+                                    if(response.body().getStatus().equalsIgnoreCase("P")){
+                                        tvStatus.setVisibility(View.VISIBLE);
+                                        tvStatus.setText("Order already paid received...");
+                                    }else if(response.body().getStatus().equalsIgnoreCase("U")){
+                                        populateTable(edtTextOrderId.getText().toString());
+                                        textViewItems.setText(String.valueOf(response.body().getOrder().getTotalItem()));
+                                        textViewTotalAmount.setText(String.valueOf(response.body().getOrder().getTotalAmt()));
+                                        linearLayout.setVisibility(View.VISIBLE);
+                                        buttonCollect.setVisibility(View.VISIBLE);
+                                    }else{
+                                        tvStatus.setVisibility(View.VISIBLE);
+                                        tvStatus.setText("Order not found...");
+                                    }
 
-                            }else{
-                                Toast.makeText(viewRoot.getContext(), "OrderId not found...", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    bar.setVisibility(View.GONE);
+                                    helper.showMesage(viewRoot, "Something went wrong...");
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
-                            Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            t.printStackTrace();
+                            bar.setVisibility(View.GONE);
+                            helper.showMesage(viewRoot, t.getMessage());
                         }
                     });
         }else{
-            TransactionRequest request=new TransactionRequest();
-            Transaction transaction=new Transaction();
-            transaction.setDebit_user_id(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
-            transaction.setAmt(Float.parseFloat(textViewTotalAmount.getText().toString()));
-            request.setTraction(transaction);
-            ApiClient.getInstance().trasactionCash(request)
-                    .enqueue(new Callback<Integer>() {
-                        @Override
-                        public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            if(response.code()==200 || response.isSuccessful()){
-                                DialogPayment dialogPayment=new DialogPayment();
-                                dialogPayment.show(getFragmentManager(),"PaymentDialog");
-                                helper.cleanTable(tableLayout);
-                                edtTextOrderId.setText("");
-                                textViewItems.setText("");
-                                textViewTotalAmount.setText("");
+            try {
+                TransactionRequest request=new TransactionRequest();
+                request.setDistributer_id(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                request.setOrder_id(Integer.parseInt(edtTextOrderId.getText().toString()));
+                Transaction transaction=new Transaction();
+                transaction.setDebit_user_id(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                transaction.setAmt(Float.parseFloat(textViewTotalAmount.getText().toString()));
+                request.setTraction(transaction);
+                ApiClient.getInstance().trasactionCash(request)
+                        .enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if(response.code()==200 || response.isSuccessful()){
+                                    DialogPayment dialogPayment=new DialogPayment();
+                                    dialogPayment.show(getFragmentManager(),"PaymentDialog");
+                                    helper.cleanTable(tableLayout);
+                                    edtTextOrderId.setText("");
+                                    textViewItems.setText("");
+                                    textViewTotalAmount.setText("");
 
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Integer> call, Throwable t) {
-                            Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable t) {
+                                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -145,49 +171,52 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
-                            for(OrderDetail detail:response.body().getOrderDetail()){
-                                bar.setVisibility(View.GONE);
-                                relativeLayout.setVisibility(View.VISIBLE);
-                                Log.e("OrderDetail---->",detail.getProductName());
-                                TableRow row = new TableRow(viewRoot.getContext());
-                                row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                final TextView tvName = new TextView(viewRoot.getContext());
-                                tvName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvName.setTextSize(15f);
-                                tvName.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvName.setText(String.valueOf(detail.getProductName()));
-                                row.addView(tvName);
+                            try {
+                                for(OrderDetail detail:response.body().getOrderDetail()){
+                                    bar.setVisibility(View.GONE);
+                                    relativeLayout.setVisibility(View.VISIBLE);
+                                    Log.e("OrderDetail---->",detail.getProductName());
+                                    TableRow row = new TableRow(viewRoot.getContext());
+                                    row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    final TextView tvName = new TextView(viewRoot.getContext());
+                                    tvName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvName.setTextSize(15f);
+                                    tvName.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvName.setText(String.valueOf(detail.getProductName()));
+                                    row.addView(tvName);
 
 
 
-                                TextView tvQty = new TextView(viewRoot.getContext());
-                                tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvQty.setTextSize(15f);
-                                tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvQty.setText(String.valueOf(detail.getQty()));
+                                    TextView tvQty = new TextView(viewRoot.getContext());
+                                    tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvQty.setTextSize(15f);
+                                    tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvQty.setText(String.valueOf(detail.getQty()));
 //                        tvDueDate.setWidth(100);
-                                row.addView(tvQty);
+                                    row.addView(tvQty);
 
-                                TextView tvPrice = new TextView(viewRoot.getContext());
-                                tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvPrice.setTextSize(15f);
-                                tvPrice.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvPrice.setText(String.valueOf(detail.getPrice()));
-                                row.addView(tvPrice);
+                                    TextView tvPrice = new TextView(viewRoot.getContext());
+                                    tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvPrice.setTextSize(15f);
+                                    tvPrice.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvPrice.setText(String.valueOf(detail.getPrice()));
+                                    row.addView(tvPrice);
 
 
 
-                                row.setPadding(5,5,5,5);
-                                tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                                    row.setPadding(5,5,5,5);
+                                    tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
-
-
                         }
                     }
 
                     @Override
                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
-
+                        t.printStackTrace();
+                        helper.showMesage(getActivity().getWindow().getDecorView(),t.getMessage());
                     }
                 });
     }

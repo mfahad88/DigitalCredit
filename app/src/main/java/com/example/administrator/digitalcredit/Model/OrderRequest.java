@@ -54,4 +54,15 @@ public class OrderRequest {
 	public void setOrder_status(char order_status) {
 		this.order_status = order_status;
 	}
+
+	@Override
+	public String toString() {
+		return "OrderRequest{" +
+				"totalAmt=" + totalAmt +
+				", userId=" + userId +
+				", totalItem=" + totalItem +
+				", order_status=" + order_status +
+				", orderDetail=" + orderDetail +
+				'}';
+	}
 }

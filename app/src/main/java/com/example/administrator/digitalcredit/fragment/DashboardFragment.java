@@ -86,7 +86,11 @@ public class DashboardFragment extends Fragment {
                                 tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
                                 tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
                                 Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
-                                tvRemainingAmt.setText("Rs. "+helper.CashFormatter(response.body().getAvailableBalance().toString()));
+                                if(response.body().getAvailableBalance().intValue()>0){
+                                    tvRemainingAmt.setText("Rs. "+helper.CashFormatter(response.body().getAvailableBalance().toString()));
+                                }else{
+                                    tvRemainingAmt.setText("Rs. "+response.body().getAvailableBalance().toString());
+                                }
                                 if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
                                     tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));
                                 }else{
@@ -97,26 +101,30 @@ public class DashboardFragment extends Fragment {
                                     }
                                 }
 
-                                ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
-                                        .enqueue(new Callback<List<LoanDetail>>() {
-                                            @Override
-                                            public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
-                                                if(response.code()==200) {
-                                                    populateTable(response.body());
-                                                }
-                                                if(pd.isShowing()){
-                                                    pd.dismiss();
-                                                }
-                                            }
+                               try{
+                                   ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
+                                           .enqueue(new Callback<List<LoanDetail>>() {
+                                               @Override
+                                               public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
+                                                   if(response.code()==200) {
+                                                       populateTable(response.body());
+                                                   }
+                                                   if(pd.isShowing()){
+                                                       pd.dismiss();
+                                                   }
+                                               }
 
-                                            @Override
-                                            public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
-                                                if(pd.isShowing()){
-                                                    pd.dismiss();
-                                                }
-                                                Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                               @Override
+                                               public void onFailure(Call<List<LoanDetail>> call, Throwable t) {
+                                                   if(pd.isShowing()){
+                                                       pd.dismiss();
+                                                   }
+                                                   Toast.makeText(viewRoot.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                               }
+                                           });
+                               }catch (Exception e){
+                                    e.printStackTrace();
+                               }
                             }
                         }
 
@@ -154,17 +162,18 @@ public class DashboardFragment extends Fragment {
     }
 
     public void populateTable(List<LoanDetail> list){
-        for (LoanDetail loanDetail : list) {
-            TableRow row = new TableRow(viewRoot.getContext());
-            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+       try {
+           for (LoanDetail loanDetail : list) {
+               TableRow row = new TableRow(viewRoot.getContext());
+               row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-            final TextView tvId = new TextView(viewRoot.getContext());
-            tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            tvId.setTextSize(15f);
-            tvId.setGravity(Gravity.CENTER_HORIZONTAL);
-            tvId.setText(String.valueOf(loanDetail.getId()));
-            row.addView(tvId);
-            tvId.setClickable(true);
+               final TextView tvId = new TextView(viewRoot.getContext());
+               tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+               tvId.setTextSize(15f);
+               tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+               tvId.setText(String.valueOf(loanDetail.getId()));
+               row.addView(tvId);
+               tvId.setClickable(true);
             /*tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             tvId.setTextColor(Color.argb(255,0,0,255));
             tvId.setOnClickListener(new View.OnClickListener() {
@@ -186,31 +195,34 @@ public class DashboardFragment extends Fragment {
             tvCreatedDate.setWidth(100);
             row.addView(tvCreatedDate);*/
 
-            TextView tvDueDate = new TextView(viewRoot.getContext());
-            tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            tvDueDate.setTextSize(15f);
-            tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
-            tvDueDate.setText(loanDetail.getLoanDueDate());
+               TextView tvDueDate = new TextView(viewRoot.getContext());
+               tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+               tvDueDate.setTextSize(15f);
+               tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
+               tvDueDate.setText(loanDetail.getLoanDueDate());
 //            tvDueDate.setWidth(100);
-            row.addView(tvDueDate);
+               row.addView(tvDueDate);
 
-            TextView tvAmt = new TextView(viewRoot.getContext());
-            tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            tvAmt.setTextSize(15f);
-            tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
-            tvAmt.setText(String.valueOf(loanDetail.getAmt()));
-            row.addView(tvAmt);
+               TextView tvAmt = new TextView(viewRoot.getContext());
+               tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+               tvAmt.setTextSize(15f);
+               tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
+               tvAmt.setText(String.valueOf(loanDetail.getAmt()));
+               row.addView(tvAmt);
 
-            TextView tvStatus = new TextView(viewRoot.getContext());
-            tvStatus.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-            tvStatus.setTextSize(15f);
-            tvStatus.setGravity(Gravity.CENTER_HORIZONTAL);
-            tvStatus.setText(loanDetail.getLoanStatus());
-            row.addView(tvStatus);
+               TextView tvStatus = new TextView(viewRoot.getContext());
+               tvStatus.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+               tvStatus.setTextSize(15f);
+               tvStatus.setGravity(Gravity.CENTER_HORIZONTAL);
+               tvStatus.setText(loanDetail.getLoanStatus());
+               row.addView(tvStatus);
 
 
-            tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-        }
+               tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+           }
+       }catch (Exception e){
+           e.printStackTrace();
+       }
     }
 
 }

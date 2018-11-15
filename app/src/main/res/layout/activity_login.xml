@@ -43,6 +43,7 @@
         android:singleLine="true"
         android:longClickable="false"
         android:maxLength="11"
+        android:digits="1234567890"
         android:inputType="phone"/>
 
     <EditText

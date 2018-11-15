@@ -1,4 +1,4 @@
-package com.example.administrator.digitalcredit.fragment;
+package com.example.administrator.digitalcredit.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

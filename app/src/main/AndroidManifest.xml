@@ -116,7 +116,6 @@
             android:exported="true" />
 
         <activity android:name=".activity.LocationCheckActivity" />
-        <activity android:name=".activity.DistributorActivity"></activity>
     </application>
 
 </manifest>

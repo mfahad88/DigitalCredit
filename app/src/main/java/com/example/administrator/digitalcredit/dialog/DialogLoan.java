@@ -114,7 +114,9 @@ public class DialogLoan extends DialogFragment {
                         transaction.setCredit_user_id(distributorId);
                         transaction.setAmt(bean.getAmt());
                         TransactionRequest request=new TransactionRequest();
+                        transaction.setFeesAmt(bean.getLoanFees());
                         request.setTraction(transaction);
+
                         ApiClient.getInstance().updateLoanStatus(bean).enqueue(new Callback<Integer>() {
                             @Override
                             public void onResponse(Call<Integer> call, Response<Integer> response) {

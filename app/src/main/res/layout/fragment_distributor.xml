@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context="com.example.administrator.digitalcredit.activity.DistributorActivity">
+    tools:context="com.example.administrator.digitalcredit.fragment.DistributorFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewUserId"
-        android:text="UserId: "
+        android:text="Order Id: "
         android:textSize="17sp"
         android:textStyle="bold"
         android:layout_alignParentTop="true"
@@ -50,6 +50,16 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         android:id="@+id/progress_bar"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewStatus"
+        android:layout_centerInParent="true"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,6 +71,8 @@
         android:layout_above="@id/linearFooter"
         android:visibility="gone"
         android:id="@+id/relativeBody">
+
+
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"

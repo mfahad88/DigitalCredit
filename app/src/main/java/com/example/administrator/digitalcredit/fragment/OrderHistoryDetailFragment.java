@@ -64,51 +64,56 @@ public class OrderHistoryDetailFragment extends Fragment {
                     @Override
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
-                            for(OrderDetail detail:response.body().getOrderDetail()){
-                                bar.setVisibility(View.GONE);
-                                cardView.setVisibility(View.VISIBLE);
-                                Log.e("OrderDetail---->",detail.getProductName());
-                                TableRow row = new TableRow(viewRoot.getContext());
-                                row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                final TextView tvName = new TextView(viewRoot.getContext());
-                                tvName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvName.setTextSize(15f);
-                                tvName.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvName.setText(String.valueOf(detail.getProductName()));
-                                row.addView(tvName);
+                          try {
+                              for(OrderDetail detail:response.body().getOrderDetail()){
+                                  bar.setVisibility(View.GONE);
+                                  cardView.setVisibility(View.VISIBLE);
+                                  Log.e("OrderDetail---->",detail.getProductName());
+                                  TableRow row = new TableRow(viewRoot.getContext());
+                                  row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  final TextView tvName = new TextView(viewRoot.getContext());
+                                  tvName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvName.setTextSize(15f);
+                                  tvName.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvName.setText(String.valueOf(detail.getProductName()));
+                                  row.addView(tvName);
 
 
 
-                                TextView tvQty = new TextView(viewRoot.getContext());
-                                tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvQty.setTextSize(15f);
-                                tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvQty.setText(String.valueOf(detail.getQty()));
+                                  TextView tvQty = new TextView(viewRoot.getContext());
+                                  tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvQty.setTextSize(15f);
+                                  tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvQty.setText(String.valueOf(detail.getQty()));
 //                        tvDueDate.setWidth(100);
-                                row.addView(tvQty);
+                                  row.addView(tvQty);
 
-                                TextView tvPrice = new TextView(viewRoot.getContext());
-                                tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                tvPrice.setTextSize(15f);
-                                tvPrice.setGravity(Gravity.CENTER_HORIZONTAL);
-                                tvPrice.setText(String.valueOf(detail.getPrice()));
-                                row.addView(tvPrice);
+                                  TextView tvPrice = new TextView(viewRoot.getContext());
+                                  tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvPrice.setTextSize(15f);
+                                  tvPrice.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvPrice.setText(String.valueOf(detail.getPrice()));
+                                  row.addView(tvPrice);
 
 
 
-                                row.setPadding(5,5,5,5);
-                                tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
-                            }
+                                  row.setPadding(5,5,5,5);
+                                  tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                              }
 
+                          }catch (Exception e){
+                              e.printStackTrace();
+                          }
 
                         }else {
-                            helper.showMesage(viewRoot.getRootView(),"Something went wrong...");
+                            helper.showMesage(viewRoot,"Something went wrong...");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
-
+                        t.printStackTrace();
+                        helper.showMesage(viewRoot,t.getMessage());
                     }
                 });
     }
