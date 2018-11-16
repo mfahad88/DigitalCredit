@@ -4,7 +4,10 @@ package com.example.administrator.digitalcredit.fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.DigitsKeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.EditText;
 
 import com.example.administrator.digitalcredit.Model.CreateProduct;
 import com.example.administrator.digitalcredit.R;
+import com.example.administrator.digitalcredit.Utils.DecimalDigitsInputFilter;
 import com.example.administrator.digitalcredit.Utils.Helper;
 import com.example.administrator.digitalcredit.client.ApiClient;
 
@@ -41,6 +45,7 @@ public class ProductFragment extends Fragment implements View.OnClickListener {
         viewRoot=inflater.inflate(R.layout.fragment_product, container, false);
         init();
         pd=helper.showDialog(viewRoot.getContext(),"Loading...","Please wait while product creation is in progress");
+        edtTextPrice.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         btn_add.setOnClickListener(this);
         return viewRoot;
 

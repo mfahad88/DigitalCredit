@@ -1,7 +1,9 @@
 package com.example.administrator.digitalcredit.fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -49,6 +51,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
     private ProgressBar bar;
     private RelativeLayout layout;
     private TextView tvStatus;
+    private AlertDialog.Builder builder;
     public CartFragment() {
         // Required empty public constructor
     }
@@ -134,6 +137,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
         tvStatus=viewRoot.findViewById(R.id.textViewStatus);
         bar=viewRoot.findViewById(R.id.progress_bar);
         layout=viewRoot.findViewById(R.id.relativeBody);
+        builder=helper.alertdialog(viewRoot.getContext(),"Confirmation","Are you sure you want to pay?");
     }
 
     private void populateTable(OrderDetailResponse orderDetailResponse){
@@ -146,7 +150,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
                tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                tvId.setTextSize(15f);
                tvId.setGravity(Gravity.START);
-               tvId.setText(String.valueOf(orderDetail.getOrderDetailId()));
+               tvId.setText(String.valueOf(orderDetail.getFkProductId()));
                row.addView(tvId);
 
 
@@ -197,23 +201,38 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
         try {
             if(v.getId()==R.id.payBtn){
                 btnPay.setEnabled(false);
-                if(radioStatus==1){
-                    DialogFragment dialog=new DialogPay();
-                    Bundle bundle=new Bundle();
-                    bundle.putInt("OrderId",list.getOrder().getOrderId());
-                    dialog.setArguments(bundle);
-                    dialog.show(getFragmentManager(),"PayByCash");
+                  builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        if(radioStatus==1){
+                            DialogFragment dialogPay=new DialogPay();
+                            Bundle bundle=new Bundle();
+                            bundle.putInt("OrderId",list.getOrder().getOrderId());
+                            dialogPay.setArguments(bundle);
+                            dialogPay.show(getFragmentManager(),"PayByCash");
 
 //              Toast.makeText(viewRoot.getContext(), "Pay by Cash", Toast.LENGTH_SHORT).show();
-                }else{
-                    Fragment availLoanFragment=new AvailLoanFragment();
-                    Bundle bundle=new Bundle();
-                    bundle.putInt("orderId",list.getOrder().getOrderId());
-                    bundle.putFloat("totalAmount",list.getOrder().getTotalAmt());
-                    availLoanFragment.setArguments(bundle);
-                    getFragmentManager().beginTransaction().replace(R.id.view_container,availLoanFragment).commit();
-                    // Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
-                }
+                        }else{
+                            Fragment availLoanFragment=new AvailLoanFragment();
+                            Bundle bundle=new Bundle();
+                            bundle.putInt("orderId",list.getOrder().getOrderId());
+                            bundle.putFloat("totalAmount",list.getOrder().getTotalAmt());
+                            availLoanFragment.setArguments(bundle);
+                            getFragmentManager().beginTransaction().replace(R.id.view_container,availLoanFragment).commit();
+                            // Toast.makeText(viewRoot.getContext(), "Pay by Loan", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        btnPay.setEnabled(true);
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         }catch (Exception e){
             btnPay.setEnabled(true);

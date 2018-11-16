@@ -86,10 +86,10 @@ public class DashboardFragment extends Fragment {
                                 tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
                                 tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
                                 Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
-                                if(response.body().getAvailableBalance().intValue()>0){
-                                    tvRemainingAmt.setText("Rs. "+helper.CashFormatter(response.body().getAvailableBalance().toString()));
+                                if(response.body().getAvailLoan()>0.00){
+                                    tvRemainingAmt.setText("Rs. "+helper.CashFormatter(String.valueOf(response.body().getAvailLoan())));
                                 }else{
-                                    tvRemainingAmt.setText("Rs. "+response.body().getAvailableBalance().toString());
+                                    tvRemainingAmt.setText("Rs. "+String.valueOf(response.body().getAvailLoan()));
                                 }
                                 if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
                                     tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));

@@ -1,6 +1,7 @@
 package com.example.administrator.digitalcredit.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -71,6 +72,7 @@ public class RepaymentFragment extends Fragment {
       try {
           ApiClient.getInstance().getLoan(helper.getSession(viewRoot.getContext()).get("user_id").toString(),"U")
                   .enqueue(new Callback<List<LoanDetail>>() {
+                      @SuppressLint("NewApi")
                       @Override
                       public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                           if(response.code()==200) {
@@ -81,7 +83,7 @@ public class RepaymentFragment extends Fragment {
                                   final TextView tvId = new TextView(viewRoot.getContext());
                                   tvId.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                   tvId.setTextSize(15f);
-                                  tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvId.setGravity(Gravity.START);
                                   tvId.setText(String.valueOf(loanDetail.getId()));
                                   row.addView(tvId);
                                   tvId.setClickable(true);
@@ -99,27 +101,22 @@ public class RepaymentFragment extends Fragment {
                                       }
                                   });
 
-                        /*TextView tvCreatedDate = new TextView(viewRoot.getContext());
-                        tvCreatedDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvCreatedDate.setTextSize(15f);
-                        tvCreatedDate.setGravity(Gravity.CENTER_HORIZONTAL);
-                        tvCreatedDate.setText(loanDetail.getLoanCreatedDate());
-                        tvCreatedDate.setWidth(100);
-                        row.addView(tvCreatedDate);*/
 
                                   TextView tvDueDate = new TextView(viewRoot.getContext());
                                   tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                   tvDueDate.setTextSize(15f);
-                                  tvDueDate.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvDueDate.setGravity(Gravity.START);
                                   tvDueDate.setText(loanDetail.getLoanDueDate());
-//                        tvDueDate.setWidth(100);
+                                  tvDueDate.setWidth(270);
                                   row.addView(tvDueDate);
 
                                   TextView tvAmt = new TextView(viewRoot.getContext());
                                   tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                   tvAmt.setTextSize(15f);
-                                  tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
+                                  tvAmt.setGravity(Gravity.END);
+                                  tvAmt.setWidth(200);
                                   tvAmt.setText(String.valueOf(loanDetail.getAmt()));
+
                                   row.addView(tvAmt);
 
                                   TextView tvStatus = new TextView(viewRoot.getContext());
@@ -130,7 +127,9 @@ public class RepaymentFragment extends Fragment {
                                   row.addView(tvStatus);
 
                                   row.setPadding(5,5,5,5);
-                                  tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                                  TableLayout.LayoutParams params=new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                                  params.setMarginStart(10);
+                                  tableLayout.addView(row, params);
                               }
                               if(pd.isShowing()){
                                   pd.dismiss();

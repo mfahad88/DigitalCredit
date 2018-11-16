@@ -22,8 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:weightSum="1"
                 android:id="@+id/linearBody"
                 android:layout_alignParentTop="true"
@@ -46,9 +46,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
-                        android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                        android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()., "
                         android:inputType="text"
                         android:padding="5dp"
+                        android:maxLength="50"
                         android:longClickable="false"
                         android:singleLine="true"
                         android:background="@drawable/square_edittext"
@@ -71,16 +72,17 @@
                         android:textAlignment="center"/>
 
                     <EditText
+                        android:id="@+id/editTextPrice"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
-                        android:digits="0123456789."
-                        android:inputType="number"
-                        android:padding="5dp"
-                        android:longClickable="false"
-                        android:singleLine="true"
                         android:background="@drawable/square_edittext"
-                        android:id="@+id/editTextPrice"/>
+                        android:digits="0123456789."
+                        android:inputType="number|numberDecimal"
+                        android:maxLength="5"
+                        android:longClickable="false"
+                        android:padding="5dp"
+                        android:singleLine="true" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -94,21 +96,22 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Description"
-                        android:layout_weight=".2"
+                        android:layout_weight=".26"
+                        android:gravity="start"
                         android:padding="5dp"
                         />
 
                     <EditText
+                        android:id="@+id/editTextdesc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
-                        android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                        android:background="@drawable/square_edittext"
                         android:inputType="text"
                         android:longClickable="false"
                         android:padding="5dp"
-                        android:singleLine="true"
-                        android:background="@drawable/square_edittext"
-                        android:id="@+id/editTextdesc"/>
+                        android:maxLength="250"
+                        android:singleLine="true" />
                 </LinearLayout>
 
 

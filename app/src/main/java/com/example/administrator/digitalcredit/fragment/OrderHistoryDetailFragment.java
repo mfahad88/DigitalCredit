@@ -38,6 +38,7 @@ public class OrderHistoryDetailFragment extends Fragment {
     private Helper helper;
     private ProgressBar bar;
     private CardView cardView;
+    private TextView tvHeader;
     public OrderHistoryDetailFragment() {
         // Required empty public constructor
     }
@@ -52,6 +53,7 @@ public class OrderHistoryDetailFragment extends Fragment {
         helper=Helper.getInstance();
         bar=viewRoot.findViewById(R.id.progress_bar);
         cardView=viewRoot.findViewById(R.id.cardView);
+        tvHeader=viewRoot.findViewById(R.id.textViewheader);
         if(getArguments()!=null){
             populateTable(String.valueOf(getArguments().getInt("OrderId")));
         }
@@ -65,8 +67,20 @@ public class OrderHistoryDetailFragment extends Fragment {
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
                           try {
+                              tvHeader.append("Order Id: "+response.body().getOrder().getOrderId()+"\n");
+                              tvHeader.append("Distributor Name: "+response.body().getDetail().getUserName()+"\n");
+                              if(response.body().getDetail().getUserStatus().equalsIgnoreCase("C")){
+                                  tvHeader.append("Payment Mode: CASH");
+                              }if(response.body().getDetail().getUserStatus().equalsIgnoreCase("L")){
+                                  tvHeader.append("Payment Mode: LOAN");
+                              }if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("A")){
+
+                              }if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("A")){
+
+                              }
                               for(OrderDetail detail:response.body().getOrderDetail()){
                                   bar.setVisibility(View.GONE);
+                                  tvHeader.setVisibility(View.VISIBLE);
                                   cardView.setVisibility(View.VISIBLE);
                                   Log.e("OrderDetail---->",detail.getProductName());
                                   TableRow row = new TableRow(viewRoot.getContext());

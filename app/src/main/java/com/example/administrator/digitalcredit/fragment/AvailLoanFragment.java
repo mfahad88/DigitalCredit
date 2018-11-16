@@ -74,7 +74,7 @@ public class AvailLoanFragment extends Fragment {
     private int processingFee;
     private ProgressDialog pd;
     private int orderId;
-
+    private TextView tvStatus;
     @SuppressLint("NewApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,6 +107,15 @@ public class AvailLoanFragment extends Fragment {
                                @Override
                                public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
                                    availableAmt=response.body().getAvailableAmountLimit();
+
+                                   if(consumedAmt>availableAmt){
+                                       spinner.setEnabled(false);
+                                       spinnerDistributor.setEnabled(false);
+                                       btn.setEnabled(false);
+                                       tvStatus.setVisibility(View.VISIBLE);
+                                       tvStatus.setText("Low Limit...");
+                                   }
+
                                    if(availableAmt<0){
                                        availableAmt=0;
                                    }
@@ -120,20 +129,23 @@ public class AvailLoanFragment extends Fragment {
                                                    @Override
                                                    public void onResponse(Call<Integer> call, Response<Integer> response) {
                                                        btn.setEnabled(true);
-                                                       processingFee=response.body();
-                                                       tvProcessingFee.setText("Rs. "+helper.CashFormatter(String.valueOf(processingFee)));
-                                                       remaining_bal= availableAmt-(consumedAmt);
+                                                        if(response.code()==200 || response.isSuccessful()){
+                                                            spinner.setEnabled(true);
+                                                            processingFee=response.body();
+                                                            tvProcessingFee.setText("Rs. "+helper.CashFormatter(String.valueOf(processingFee)));
+                                                            remaining_bal= availableAmt-(consumedAmt);
 
-                                                       if(remaining_bal<0){
-                                                           tvRemaining.setText("Rs. 0.00");
-                                                       }else {
-                                                           tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
-                                                       }
-                                                       if(consumedAmt-processingFee>0) {
-                                                           tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
-                                                       }else{
-                                                           tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
-                                                       }
+                                                            if(remaining_bal<0){
+                                                                tvRemaining.setText("Rs. 0.00");
+                                                            }else {
+                                                                tvRemaining.setText("Rs. " + helper.CashFormatter(String.valueOf(remaining_bal)));
+                                                            }
+                                                            if(consumedAmt-processingFee>0) {
+                                                                tvLoanDisburse.setText("Rs. "+helper.CashFormatter(String.valueOf(consumedAmt+processingFee)));
+                                                            }else{
+                                                                tvLoanDisburse.setText("Rs. "+String.valueOf(consumedAmt+processingFee));
+                                                            }
+                                                        }
                                                    }
 
                                                    @Override
@@ -192,6 +204,7 @@ public class AvailLoanFragment extends Fragment {
                        }catch (Exception e){
                            e.printStackTrace();
                        }
+
                    }
                }
 
@@ -212,8 +225,10 @@ public class AvailLoanFragment extends Fragment {
                    .enqueue(new Callback<List<DistributorResponse>>() {
                        @Override
                        public void onResponse(Call<List<DistributorResponse>> call, Response<List<DistributorResponse>> response) {
+                           btn.setEnabled(false);
                            if(response.code()==200 || response.isSuccessful()){
-
+                            btn.setEnabled(true);
+                            spinnerDistributor.setEnabled(true);
                                DistributorAdapter adapter=new DistributorAdapter(viewRoot.getContext(),R.layout.distributor_list_row,response.body());
 
                                     spinnerDistributor.setAdapter(adapter);
@@ -293,6 +308,7 @@ public class AvailLoanFragment extends Fragment {
                public void onNothingSelected(AdapterView<?> adapterView) {
                }
            });
+
 
 
            btn.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +401,11 @@ public class AvailLoanFragment extends Fragment {
         sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         calendar=Calendar.getInstance();
         spinnerDistributor=viewRoot.findViewById(R.id.spinnerDistributor);
+        tvStatus=viewRoot.findViewById(R.id.textViewStatus);
         pd=helper.showDialog(viewRoot.getContext(),"Loading","Please wait...");
+        spinner.setEnabled(false);
+        spinnerDistributor.setEnabled(false);
+        btn.setEnabled(false);
 
     }
 }

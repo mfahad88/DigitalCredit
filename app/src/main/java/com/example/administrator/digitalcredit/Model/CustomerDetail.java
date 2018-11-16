@@ -61,7 +61,9 @@ public class CustomerDetail {
     @SerializedName("user_type")
     @Expose
     private Integer user_type;
-
+    @SerializedName("availLoan")
+    @Expose
+    private float availLoan;
 
     public Integer getUserId() {
         return userId;
@@ -205,5 +207,13 @@ public class CustomerDetail {
 
     public void setUser_type(Integer user_type) {
         this.user_type = user_type;
+    }
+
+    public float getAvailLoan() {
+        return availLoan;
+    }
+
+    public void setAvailLoan(float availLoan) {
+        this.availLoan = availLoan;
     }
 }

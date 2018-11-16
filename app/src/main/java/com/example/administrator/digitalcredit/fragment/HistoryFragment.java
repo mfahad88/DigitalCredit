@@ -1,6 +1,7 @@
 package com.example.administrator.digitalcredit.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -55,6 +56,7 @@ public class HistoryFragment extends Fragment {
             Log.e("User_id------->",helper.getSession(viewRoot.getContext()).get("user_id").toString());
             ApiClient.getInstance().getLoanAll(helper.getSession(viewRoot.getContext()).get("user_id").toString())
                     .enqueue(new Callback<List<LoanDetail>>() {
+                        @SuppressLint("NewApi")
                         @Override
                         public void onResponse(Call<List<LoanDetail>> call, Response<List<LoanDetail>> response) {
                             if(response.code()==200) {
@@ -62,61 +64,58 @@ public class HistoryFragment extends Fragment {
                                     pd.dismiss();
                                 }
                                 for (LoanDetail loanDetail : response.body()) {
+                                    TableRow.LayoutParams params=new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+
                                     TableRow row = new TableRow(viewRoot.getContext());
-                                    row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                                    row.setLayoutParams(params);
 
                                     final TextView tvId = new TextView(viewRoot.getContext());
-                                    tvId.setLayoutParams(new TableRow.LayoutParams(50, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvId.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                     tvId.setTextSize(15f);
-                                    tvId.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvId.setGravity(Gravity.START);
                                     tvId.setText(String.valueOf(loanDetail.getId()));
                                     tvId.setPadding(2,2,2,2);
                                     row.addView(tvId);
-                                    tvId.setClickable(true);
                                     tvId.setClickable(true);
                                     tvId.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
                                     tvId.setTextColor(Color.argb(255,0,0,255));
                                     tvId.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            tvId.setEnabled(false);
                                             //pd.show();
                                             Bundle bundle=new Bundle();
                                             bundle.putInt("loanId",Integer.parseInt(tvId.getText().toString()));
                                             dialog.setArguments(bundle);
+                                            dialog.setCancelable(false);
                                             dialog.show(getFragmentManager(),"Loan");
+                                            tvId.setEnabled(true);
                                         }
                                     });
 
 
-                        /*TextView tvPaidDate = new TextView(viewRoot.getContext());
-                        tvPaidDate.setLayoutParams(new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT));
-                        tvPaidDate.setTextSize(15f);
-                        tvPaidDate.setGravity(Gravity.CENTER_HORIZONTAL);
 
-                        tvPaidDate.setText(loanDetail.getLastPaidDate());
-                        tvPaidDate.setPadding(2,2,2,2);
-                        row.addView(tvPaidDate);
-*/
                                     TextView tvDueDate = new TextView(viewRoot.getContext());
-                                    tvDueDate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-
+                                    tvDueDate.setLayoutParams(params);
                                     tvDueDate.setTextSize(15f);
-                                    tvDueDate.setGravity(Gravity.NO_GRAVITY);
-                                    tvDueDate.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                                    tvDueDate.setGravity(Gravity.START);
+//                                    tvDueDate.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                                     tvDueDate.setText(loanDetail.getLoanDueDate());
+                                    tvDueDate.setWidth(300);
                                     tvDueDate.setPadding(2,2,2,2);
                                     row.addView(tvDueDate);
 
                                     TextView tvAmt = new TextView(viewRoot.getContext());
-                                    tvAmt.setLayoutParams(new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvAmt.setLayoutParams(params);
                                     tvAmt.setTextSize(15f);
-                                    tvAmt.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvAmt.setGravity(Gravity.END);
                                     tvAmt.setText(String.valueOf(loanDetail.getAmt()));
                                     tvAmt.setPadding(2,2,2,2);
                                     row.addView(tvAmt);
 
                                     TextView tvStatus = new TextView(viewRoot.getContext());
-                                    tvStatus.setLayoutParams(new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvStatus.setLayoutParams(params);
                                     tvStatus.setTextSize(15f);
                                     tvStatus.setGravity(Gravity.CENTER_HORIZONTAL);
                                     tvStatus.setText(loanDetail.getLoanStatus());
@@ -124,16 +123,17 @@ public class HistoryFragment extends Fragment {
                                     row.addView(tvStatus);
 
                                     TextView tvLoan = new TextView(viewRoot.getContext());
-                                    tvLoan.setLayoutParams(new TableRow.LayoutParams(100, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvLoan.setLayoutParams(params);
                                     tvLoan.setTextSize(15f);
-                                    tvLoan.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvLoan.setGravity(Gravity.START);
                                     tvLoan.setText(String.valueOf(loanDetail.getLoanFees()));
                                     tvLoan.setPadding(2,2,2,2);
                                     row.addView(tvLoan);
 
 
-
-                                    tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+                                    TableLayout.LayoutParams table_params=new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                                    table_params.setMargins(7,0,0,0);
+                                    tableLayout.addView(row, table_params);
                                 }
                             }
                         }

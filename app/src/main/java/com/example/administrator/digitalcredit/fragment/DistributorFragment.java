@@ -78,6 +78,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.buttonInquiry){
+            btnInquiry.setEnabled(false);
             helper.cleanTable(tableLayout);
             if(relativeLayout.isShown()){
                 relativeLayout.setVisibility(View.GONE);
@@ -99,10 +100,12 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                         public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                             try {
                                 if(response.code()==200 || response.isSuccessful()){
+
                                     bar.setVisibility(View.GONE);
                                     if(response.body().getStatus().equalsIgnoreCase("P")){
                                         tvStatus.setVisibility(View.VISIBLE);
-                                        tvStatus.setText("Order already paid received...");
+                                        tvStatus.setText("Order already paid delivered...");
+                                        btnInquiry.setEnabled(true);
                                     }else if(response.body().getStatus().equalsIgnoreCase("U")){
                                         populateTable(edtTextOrderId.getText().toString());
                                         textViewItems.setText(String.valueOf(response.body().getOrder().getTotalItem()));
@@ -112,9 +115,11 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                     }else{
                                         tvStatus.setVisibility(View.VISIBLE);
                                         tvStatus.setText("Order not found...");
+                                        btnInquiry.setEnabled(true);
                                     }
 
                                 }else{
+                                    btnInquiry.setEnabled(true);
                                     bar.setVisibility(View.GONE);
                                     helper.showMesage(viewRoot, "Something went wrong...");
                                 }
@@ -126,6 +131,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                         @Override
                         public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
                             t.printStackTrace();
+                            btnInquiry.setEnabled(true);
                             bar.setVisibility(View.GONE);
                             helper.showMesage(viewRoot, t.getMessage());
                         }
@@ -181,7 +187,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                     final TextView tvName = new TextView(viewRoot.getContext());
                                     tvName.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                     tvName.setTextSize(15f);
-                                    tvName.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvName.setGravity(Gravity.START);
                                     tvName.setText(String.valueOf(detail.getProductName()));
                                     row.addView(tvName);
 
@@ -190,7 +196,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                     TextView tvQty = new TextView(viewRoot.getContext());
                                     tvQty.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                     tvQty.setTextSize(15f);
-                                    tvQty.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvQty.setGravity(Gravity.END);
                                     tvQty.setText(String.valueOf(detail.getQty()));
 //                        tvDueDate.setWidth(100);
                                     row.addView(tvQty);
@@ -198,7 +204,7 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                     TextView tvPrice = new TextView(viewRoot.getContext());
                                     tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                     tvPrice.setTextSize(15f);
-                                    tvPrice.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    tvPrice.setGravity(Gravity.END);
                                     tvPrice.setText(String.valueOf(detail.getPrice()));
                                     row.addView(tvPrice);
 
@@ -211,11 +217,13 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                 e.printStackTrace();
                             }
                         }
+                        btnInquiry.setEnabled(true);
                     }
 
                     @Override
                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
                         t.printStackTrace();
+                        btnInquiry.setEnabled(true);
                         helper.showMesage(getActivity().getWindow().getDecorView(),t.getMessage());
                     }
                 });

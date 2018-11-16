@@ -185,7 +185,7 @@
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-smallcaps"
                 android:padding="5dp"
-                android:text="Available balance"
+                android:text="Avail Loan"
                 android:textAlignment="center"
                 android:textSize="17sp"
                 android:textStyle="bold" />

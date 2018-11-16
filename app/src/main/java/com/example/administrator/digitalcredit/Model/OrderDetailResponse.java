@@ -16,6 +16,9 @@ public class OrderDetailResponse {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("distributer")
+    @Expose
+    private CustomerDetail detail;
 
     public Order getOrder() {
         return order;
@@ -39,5 +42,13 @@ public class OrderDetailResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public CustomerDetail getDetail() {
+        return detail;
+    }
+
+    public void setDetail(CustomerDetail detail) {
+        this.detail = detail;
     }
 }

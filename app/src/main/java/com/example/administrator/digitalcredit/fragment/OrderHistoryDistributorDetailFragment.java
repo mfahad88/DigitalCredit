@@ -33,7 +33,7 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
     private Helper helper;
     private ProgressBar bar;
     private CardView cardView;
-
+    private TextView tvHeader;
     public OrderHistoryDistributorDetailFragment() {
         // Required empty public constructor
     }
@@ -47,6 +47,7 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=Helper.getInstance();
         bar=viewRoot.findViewById(R.id.progress_bar);
+
         cardView=viewRoot.findViewById(R.id.cardView);
         if(getArguments()!=null){
             populateTable(String.valueOf(getArguments().getInt("OrderId")));
@@ -61,8 +62,10 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
                             try {
+
                                 for(OrderDetail detail:response.body().getOrderDetail()){
                                     bar.setVisibility(View.GONE);
+
                                     cardView.setVisibility(View.VISIBLE);
                                     Log.e("OrderDetail---->",detail.getProductName());
                                     TableRow row = new TableRow(viewRoot.getContext());
@@ -91,7 +94,16 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
                                     tvPrice.setText(String.valueOf(detail.getPrice()));
                                     row.addView(tvPrice);
 
-
+                                    TextView tvType = new TextView(viewRoot.getContext());
+                                    tvType.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvType.setTextSize(15f);
+                                    tvType.setGravity(Gravity.START);
+                                    if(response.body().getOrder().getOrderType().equalsIgnoreCase("L")) {
+                                        tvType.setText("Loan");
+                                    }if(response.body().getOrder().getOrderType().equalsIgnoreCase("C")){
+                                        tvType.setText("Cash");
+                                    }
+                                    row.addView(tvType);
 
                                     row.setPadding(5,5,5,5);
                                     tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));

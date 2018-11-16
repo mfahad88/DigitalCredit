@@ -155,111 +155,112 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
            if(rate>0.00f){
                btnCart.setEnabled(false);
             try{
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                View child;
+                OrderRequest orderRequest=new OrderRequest();
+                orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
+                orderRequest.setTotalAmt(rate);
+                orderRequest.setTotalItem(items);
+                orderRequest.setOrderDetail(list);
+                orderRequest.setOrder_status('A');
+                for(int i=0;i<recyclerView.getChildCount();i++){
+                    child=recyclerView.getChildAt(i);
+                    if(Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())>0 &&
+                            Double.parseDouble(((TextView)child.findViewById(R.id.textViewAmount)).getText().toString())>0.00){
+
+                        list.add(new CartBean(Integer.parseInt(((TextView)child.findViewById(R.id.textViewProductId)).getText().toString()),
+                                Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())));
+                    }
+                }
+
+
+                ApiClient.getInstance().order(orderRequest)
+                        .enqueue(new Callback<OrderDetailResponse>() {
+                            @Override
+                            public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
+                                if (response.code() == 200 || response.isSuccessful()) {
+                                    btnCart.setEnabled(true);
+                                    Log.e("OrderDetailResponse--->", response.body().getOrder().toString() + "," +
+                                            response.body().getOrder().getOrderId());
+                                    cartInterface.orderList(response.body());
+
+
+                                    helper.putSession(viewRoot.getContext(),"OrderId", String.valueOf(response.body().getOrder().getOrderId()));
+                                    //dialog.dismiss();
+
+
+
+                                    helper.showMesage(viewRoot.getRootView(), "Successful...");
+                                    layout_body.setVisibility(View.GONE);
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    ApiClient.getInstance().getProduct().clone()
+                                            .enqueue(new Callback<List<Product>>() {
+                                                @Override
+                                                public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                                                    if(response.isSuccessful() && response.code()==200){
+                                                        adapter=new ProductAdapter(response.body(),adapterInterface);
+                                                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(viewRoot.getContext());
+                                                        recyclerView.setLayoutManager(mLayoutManager);
+                                                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                                        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                                                                ((LinearLayoutManager) mLayoutManager).getOrientation());
+                                                        recyclerView.addItemDecoration(dividerItemDecoration);
+                                                        recyclerView.setAdapter(adapter);
+
+                                                        if(adapter.getItemCount()>0){
+                                                            progressBar.setVisibility(View.GONE);
+                                                            layout_body.setVisibility(View.VISIBLE);
+                                                            tvItems.setText("0");
+                                                            tvTotalAmount.setText("Rs. 0.00");
+                                                            list.clear();
+                                                        }
+
+
+
+                                                    }else{
+                                                        helper.showMesage(viewRoot,"Something went wrong...");
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<List<Product>> call, Throwable t) {
+                                                    helper.showMesage(viewRoot,t.getMessage());
+                                                    t.printStackTrace();
+                                                }
+                                            });
+                                } else {
+                                    btnCart.setEnabled(true);
+                                    //dialog.dismiss();
+                                    helper.showMesage(viewRoot.getRootView(), "Something went wrong...");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
+                                btnCart.setEnabled(true);
+                                helper.showMesage(viewRoot.getRootView(), t.getMessage());
+                                t.printStackTrace();
+                            }
+                        });
+              /*  builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
-                        View child;
-                        OrderRequest orderRequest=new OrderRequest();
-                        orderRequest.setUserId(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("user_id").toString()));
-                        orderRequest.setTotalAmt(rate);
-                        orderRequest.setTotalItem(items);
-                        orderRequest.setOrderDetail(list);
-                        orderRequest.setOrder_status('A');
-                        for(int i=0;i<recyclerView.getChildCount();i++){
-                            child=recyclerView.getChildAt(i);
-                            if(Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())>0 &&
-                                    Double.parseDouble(((TextView)child.findViewById(R.id.textViewAmount)).getText().toString())>0.00){
 
-                                list.add(new CartBean(Integer.parseInt(((TextView)child.findViewById(R.id.textViewProductId)).getText().toString()),
-                                        Integer.parseInt(((TextView)child.findViewById(R.id.textViewQty)).getText().toString())));
-                            }
-                        }
-
-
-                        ApiClient.getInstance().order(orderRequest)
-                                .enqueue(new Callback<OrderDetailResponse>() {
-                                    @Override
-                                    public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
-                                        if (response.code() == 200 || response.isSuccessful()) {
-                                            btnCart.setEnabled(true);
-                                            Log.e("OrderDetailResponse--->", response.body().getOrder().toString() + "," +
-                                                    response.body().getOrder().getOrderId());
-                                            cartInterface.orderList(response.body());
-
-
-                                            helper.putSession(viewRoot.getContext(),"OrderId", String.valueOf(response.body().getOrder().getOrderId()));
-                                            dialog.dismiss();
-
-
-
-                                            helper.showMesage(viewRoot.getRootView(), "Successful...");
-                                            layout_body.setVisibility(View.GONE);
-                                            progressBar.setVisibility(View.VISIBLE);
-                                            ApiClient.getInstance().getProduct().clone()
-                                                    .enqueue(new Callback<List<Product>>() {
-                                                        @Override
-                                                        public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                                                            if(response.isSuccessful() && response.code()==200){
-                                                                adapter=new ProductAdapter(response.body(),adapterInterface);
-                                                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(viewRoot.getContext());
-                                                                recyclerView.setLayoutManager(mLayoutManager);
-                                                                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                                                                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                                                                        ((LinearLayoutManager) mLayoutManager).getOrientation());
-                                                                recyclerView.addItemDecoration(dividerItemDecoration);
-                                                                recyclerView.setAdapter(adapter);
-
-                                                                if(adapter.getItemCount()>0){
-                                                                    progressBar.setVisibility(View.GONE);
-                                                                    layout_body.setVisibility(View.VISIBLE);
-                                                                    tvItems.setText("0");
-                                                                    tvTotalAmount.setText("Rs. 0.00");
-                                                                    list.clear();
-                                                                }
-
-
-
-                                                            }else{
-                                                                helper.showMesage(viewRoot,"Something went wrong...");
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onFailure(Call<List<Product>> call, Throwable t) {
-                                                            helper.showMesage(viewRoot,t.getMessage());
-                                                            t.printStackTrace();
-                                                        }
-                                                    });
-                                        } else {
-                                            btnCart.setEnabled(true);
-                                            dialog.dismiss();
-                                            helper.showMesage(viewRoot.getRootView(), "Something went wrong...");
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
-                                        btnCart.setEnabled(true);
-                                        helper.showMesage(viewRoot.getRootView(), t.getMessage());
-                                        t.printStackTrace();
-                                    }
-                                });
                     }
-                });
+                });*/
 
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                /*builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         list.clear();
                         btnCart.setEnabled(true);
                         dialog.dismiss();
                     }
-                });
+                });*/
 
             }catch (Exception e){
                 e.printStackTrace();
             }
-               builder.show();
+               //builder.show();
            }
         }
 

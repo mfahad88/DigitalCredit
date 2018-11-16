@@ -27,7 +27,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:id="@+id/tableLayout"
-                   android:layout_gravity="center">
+                   android:layout_gravity="start">
 
                    <TableRow
                        android:layout_width="wrap_content"
@@ -63,6 +63,7 @@
                            android:layout_height="wrap_content"
                            android:textStyle="bold"
                            android:padding="5dp"
+                           android:textAlignment="viewEnd"
                            android:text="Amount" />
 
                        <TextView
