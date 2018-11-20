@@ -21,6 +21,7 @@ import com.example.administrator.digitalcredit.Utils.Helper;
 
 import com.example.administrator.digitalcredit.activity.HomeActivity;
 import com.example.administrator.digitalcredit.client.ApiClient;
+import com.example.administrator.digitalcredit.fragment.DashboardFragment;
 
 
 import java.text.SimpleDateFormat;
@@ -138,7 +139,7 @@ public class DialogLoan extends DialogFragment {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                                         if(response.code()==200 || response.isSuccessful()){
-                                            Toast.makeText(viewRoot.getContext(), "Loan Paid...", Toast.LENGTH_SHORT).show();;
+                                            Toast.makeText(viewRoot.getContext(), "Loan Paid...", Toast.LENGTH_SHORT).show();
                                         }else{
                                             Toast.makeText(viewRoot.getContext(), "Something went wrong...", Toast.LENGTH_SHORT).show();;
 //                                            helper.showMesage(getActivity().getWindow().getDecorView(),"Something went wrong...");

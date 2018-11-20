@@ -84,7 +84,7 @@ public class CartFragment extends Fragment implements View.OnClickListener ,Radi
                                    list=response.body();
                                    if(response.body().getStatus().equalsIgnoreCase("N")){
                                        tvStatus.setVisibility(View.VISIBLE);
-                                       tvStatus.setText("Order not found...");
+                                       tvStatus.setText("No item in cart...");
                                    }else{
                                        layout.setVisibility(View.VISIBLE);
                                        populateTable(list);

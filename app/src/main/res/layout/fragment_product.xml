@@ -8,10 +8,11 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         app:cardBackgroundColor="#1Affffff"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
         android:id="@+id/cardView">
 
         <RelativeLayout
@@ -21,9 +22,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:weightSum="1"
                 android:id="@+id/linearBody"
                 android:layout_alignParentTop="true"
@@ -31,16 +29,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Name"
-                        android:padding="5dp"
                         android:layout_weight=".2"
-                        android:textAlignment="center"/>
+                        android:gravity="start"
+                        android:textAlignment="textStart"/>
 
                     <EditText
                         android:layout_width="0dp"
@@ -59,8 +57,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal">
                     <TextView
@@ -68,8 +66,8 @@
                         android:layout_height="wrap_content"
                         android:text="Price"
                         android:layout_weight=".2"
-                        android:padding="5dp"
-                        android:textAlignment="center"/>
+                        android:gravity="start"
+                        android:textAlignment="textStart"/>
 
                     <EditText
                         android:id="@+id/editTextPrice"
@@ -88,17 +86,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Description"
-                        android:layout_weight=".26"
+                        android:layout_weight=".2"
                         android:gravity="start"
-                        android:padding="5dp"
+                        android:textAlignment="textStart"
                         />
 
                     <EditText
@@ -120,7 +118,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@id/linearBody"
+                android:layout_marginTop="20dp"
                 android:text="Add"
                 android:id="@+id/buttonAdd"
                 android:layout_alignLeft="@id/linearBody"
@@ -129,4 +128,80 @@
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cardView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:id="@+id/progress_bar"
+        />
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/cardView"
+        android:id="@+id/linearProduct"
+        android:background="@drawable/square_edittext"
+        android:orientation="vertical"
+        android:layout_margin="20dp"
+        android:layout_centerInParent="true">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tableLayout">
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/textView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:padding="5dp"
+                            android:text="Product Id"
+                            android:layout_gravity="start" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:padding="5dp"
+                            android:text="Name"
+                            android:layout_gravity="start" />
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:padding="5dp"
+                            android:layout_gravity="start"
+                            android:text="Rate" />
+
+
+                    </TableRow>
+
+
+                </TableLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+
+    </LinearLayout>
 </RelativeLayout>

@@ -34,7 +34,7 @@ public class LocService extends Service implements GoogleApiClient.ConnectionCal
     private Helper helper;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 1000*60*30, FASTEST_INTERVAL = 1000*60*30; // = 5 seconds
+    private static final long UPDATE_INTERVAL = 1000*60*30, FASTEST_INTERVAL = 1000*60*30; // = 30 minutes
     private int LOCATION_SETTINGS_REQUEST=100;
     private LocationManager locationManager;
 

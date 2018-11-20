@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -33,7 +34,8 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
     private Helper helper;
     private ProgressBar bar;
     private CardView cardView;
-    private TextView tvHeader;
+    private TextView tvAgentId,tvAgentName,tvAgentCNIC,tvAgentMobile;
+    private LinearLayout layout;
     public OrderHistoryDistributorDetailFragment() {
         // Required empty public constructor
     }
@@ -47,7 +49,11 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         helper=Helper.getInstance();
         bar=viewRoot.findViewById(R.id.progress_bar);
-
+        tvAgentId=viewRoot.findViewById(R.id.textViewAgentId);
+        tvAgentName=viewRoot.findViewById(R.id.textViewAgentName);
+        tvAgentCNIC=viewRoot.findViewById(R.id.textViewAgentCNIC);
+        tvAgentMobile=viewRoot.findViewById(R.id.textViewAgentMobile);
+        layout=viewRoot.findViewById(R.id.linearBody);
         cardView=viewRoot.findViewById(R.id.cardView);
         if(getArguments()!=null){
             populateTable(String.valueOf(getArguments().getInt("OrderId")));
@@ -62,11 +68,15 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
                             try {
-
+                                tvAgentName.setText(response.body().getOrder().getName());
+                                tvAgentCNIC.setText(response.body().getOrder().getCnic());
+                                tvAgentId.setText(String.valueOf(response.body().getOrder().getUserId()));
+                                tvAgentMobile.setText(response.body().getOrder().getMobile_no());
                                 for(OrderDetail detail:response.body().getOrderDetail()){
                                     bar.setVisibility(View.GONE);
 
                                     cardView.setVisibility(View.VISIBLE);
+                                    layout.setVisibility(View.VISIBLE);
                                     Log.e("OrderDetail---->",detail.getProductName());
                                     TableRow row = new TableRow(viewRoot.getContext());
                                     row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -114,14 +124,14 @@ public class OrderHistoryDistributorDetailFragment extends Fragment {
                             }
 
                         }else {
-                            helper.showMesage(viewRoot,"Something went wrong...");
+                            helper.showMesage(getActivity().getWindow().getDecorView(),"Something went wrong...");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<OrderDetailResponse> call, Throwable t) {
                         t.printStackTrace();
-                        helper.showMesage(viewRoot,t.getMessage());
+                        helper.showMesage(getActivity().getWindow().getDecorView(),t.getMessage());
                     }
                 });
     }

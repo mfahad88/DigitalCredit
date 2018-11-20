@@ -52,15 +52,20 @@ public class OrderHistoryFragment extends Fragment {
         tableLayout=viewRoot.findViewById(R.id.tableLayout);
         bar=viewRoot.findViewById(R.id.progress_bar);
         linearBody=viewRoot.findViewById(R.id.linearBody);
-        populateTable(helper.getSession(viewRoot.getContext()).get("user_id").toString());
-        Log.e("ORderHIstory--->",helper.getSession(viewRoot.getContext()).get("user_id").toString());
+        try {
+            Log.e(this.getClass().getName()+"---->",helper.getSession(viewRoot.getContext()).get("user_id").toString());
+            populateTable(helper.getSession(viewRoot.getContext()).get("user_id").toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return viewRoot;
     }
 
 
     private void populateTable(String Id){
       try {
-          ApiClient.getInstance().orderHistory("user_id="+Id)
+          ApiClient.getInstance().orderHistory("cd.user_id="+Id)
                   .enqueue(new Callback<List<OrderHistoryResponse>>() {
                       @SuppressLint("NewApi")
                       @Override
@@ -102,7 +107,7 @@ public class OrderHistoryFragment extends Fragment {
                                   tvCreatedDate.setGravity(Gravity.START);
                                   tvCreatedDate.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
                                   tvCreatedDate.setText(historyResponse.getCreatedAt());
-                                  tvCreatedDate.setWidth(200);
+                                  tvCreatedDate.setWidth(450);
 //                        tvDueDate.setWidth(100);
                                   row.addView(tvCreatedDate);
 
@@ -110,17 +115,25 @@ public class OrderHistoryFragment extends Fragment {
                                   tvItems.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                   tvItems.setTextSize(15f);
                                   tvItems.setGravity(Gravity.END);
-                                  tvItems.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                                  tvItems.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                                   tvItems.setText(String.valueOf(historyResponse.getTotalItem()));
                                   row.addView(tvItems);
 
-                                  TextView tvAmt = new TextView(viewRoot.getContext());
+                                  TextView tvRate = new TextView(viewRoot.getContext());
+                                  tvRate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                  tvRate.setTextSize(15f);
+                                  tvRate.setGravity(Gravity.END);
+                                  tvRate.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                                  tvRate.setText(String.valueOf(historyResponse.getTotalAmt()));
+                                  row.addView(tvRate);
+
+                                  /*TextView tvAmt = new TextView(viewRoot.getContext());
                                   tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                                   tvAmt.setTextSize(15f);
                                   tvAmt.setGravity(Gravity.END);
                                   tvAmt.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-                                  tvAmt.setText(String.valueOf(historyResponse.getTotalAmt()));
-                                  row.addView(tvAmt);
+                                  tvAmt.setText(String.valueOf(historyResponse.getTotalAmt()*historyResponse.getTotalItem()));
+                                  row.addView(tvAmt);*/
 
 
                                   /*TextView tvType = new TextView(viewRoot.getContext());
@@ -130,7 +143,7 @@ public class OrderHistoryFragment extends Fragment {
                                   tvType.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                                   tvType.setText(String.valueOf(historyResponse.getOrderType()));
                                   row.addView(tvType);*/
-                                  row.setPadding(5,5,5,5);
+                                  row.setPadding(15,15,15,15);
                                   tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
                               }
 

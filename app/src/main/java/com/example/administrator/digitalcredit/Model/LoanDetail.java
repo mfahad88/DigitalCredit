@@ -49,7 +49,7 @@ private int fk_user_distributerId;
 private int orderId;
 @SerializedName("order_status")
 @Expose
-private char order_status;
+private String order_status;
     public int getId() {
         return id;
     }
@@ -154,11 +154,11 @@ private char order_status;
         this.orderId = orderId;
     }
 
-    public char getOrder_status() {
+    public String getOrder_status() {
         return order_status;
     }
 
-    public void setOrder_status(char order_status) {
+    public void setOrder_status(String order_status) {
         this.order_status = order_status;
     }
 }

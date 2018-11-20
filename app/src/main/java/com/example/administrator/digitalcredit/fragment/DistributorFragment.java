@@ -102,16 +102,18 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
                                 if(response.code()==200 || response.isSuccessful()){
 
                                     bar.setVisibility(View.GONE);
-                                    if(response.body().getStatus().equalsIgnoreCase("P")){
-                                        tvStatus.setVisibility(View.VISIBLE);
-                                        tvStatus.setText("Order already paid delivered...");
-                                        btnInquiry.setEnabled(true);
-                                    }else if(response.body().getStatus().equalsIgnoreCase("U")){
-                                        populateTable(edtTextOrderId.getText().toString());
-                                        textViewItems.setText(String.valueOf(response.body().getOrder().getTotalItem()));
-                                        textViewTotalAmount.setText(String.valueOf(response.body().getOrder().getTotalAmt()));
-                                        linearLayout.setVisibility(View.VISIBLE);
-                                        buttonCollect.setVisibility(View.VISIBLE);
+                                    if(response.body().getOrder()!=null) {
+                                        if (response.body().getOrder().getOrderStatus().equalsIgnoreCase("Delivered")) {
+                                            tvStatus.setVisibility(View.VISIBLE);
+                                            tvStatus.setText("Order already collected...");
+                                            btnInquiry.setEnabled(true);
+                                        } else if (response.body().getOrder().getOrderStatus().equalsIgnoreCase("Undelivered")) {
+                                            populateTable(edtTextOrderId.getText().toString());
+                                            textViewItems.setText(String.valueOf(response.body().getOrder().getTotalItem()));
+                                            textViewTotalAmount.setText(String.valueOf(response.body().getOrder().getTotalAmt()));
+                                            linearLayout.setVisibility(View.VISIBLE);
+                                            buttonCollect.setVisibility(View.VISIBLE);
+                                        }
                                     }else{
                                         tvStatus.setVisibility(View.VISIBLE);
                                         tvStatus.setText("Order not found...");
@@ -201,13 +203,19 @@ public class DistributorFragment extends Fragment implements View.OnClickListene
 //                        tvDueDate.setWidth(100);
                                     row.addView(tvQty);
 
-                                    TextView tvPrice = new TextView(viewRoot.getContext());
-                                    tvPrice.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                                    tvPrice.setTextSize(15f);
-                                    tvPrice.setGravity(Gravity.END);
-                                    tvPrice.setText(String.valueOf(detail.getPrice()));
-                                    row.addView(tvPrice);
+                                    TextView tvRate = new TextView(viewRoot.getContext());
+                                    tvRate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvRate.setTextSize(15f);
+                                    tvRate.setGravity(Gravity.END);
+                                    tvRate.setText(String.valueOf(detail.getPrice()));
+                                    row.addView(tvRate);
 
+                                    TextView tvAmt = new TextView(viewRoot.getContext());
+                                    tvAmt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                                    tvAmt.setTextSize(15f);
+                                    tvAmt.setGravity(Gravity.END);
+                                    tvAmt.setText(String.valueOf(detail.getQty()*detail.getPrice()));
+                                    row.addView(tvAmt);
 
 
                                     row.setPadding(5,5,5,5);

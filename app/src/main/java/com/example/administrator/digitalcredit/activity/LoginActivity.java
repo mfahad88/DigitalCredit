@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setContentView(R.layout.activity_login);
             init();
 
+
           /*  if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))){
                 Intent intent=new Intent(this,LocationCheckActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -112,9 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             bundle.putString("App Lauch time",new Date().toString());
             helper.facebookLog(getApplicationContext(),"Device Info",bundle);
 
-            if(helper.getSession(getApplicationContext())!=null){
-                helper.clearSession(getApplicationContext());
-            }
+
 
 
 
@@ -191,18 +190,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         btnSign.setEnabled(true);
                                         helper.putSession(getApplicationContext(),"user_id", String.valueOf(response.body().getUserId()));
 
-                                        if(response.body().getUserId().equals(null)){
+                                        if(response.body().getUserId()==0){
                                             helper.showMesage(view.getRootView(),"Invalid user and password...");
                                             //Toast.makeText(LoginActivity.this, "Invalid user...", Toast.LENGTH_SHORT).show();
-                                        }else if(response.body().getUser_type().intValue()==1001){
-                                            helper.putSession(getApplicationContext(),"user_type",response.body().getUser_type().toString());
+                                        }else if(response.body().getUserType().intValue()==1001){
+                                            helper.putSession(getApplicationContext(),"user_type",response.body().getUserType().toString());
 //                                            Toast.makeText(LoginActivity.this, "This is distributor", Toast.LENGTH_SHORT).show();
                                             intent=new Intent(LoginActivity.this,HomeActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent);
                                         }
                                         else if(response.body().getUserId().intValue()>0){
-                                            if(response.body().getUser_type().intValue()!=1001) {
+                                            if(response.body().getUserType().intValue()!=1001) {
                                                 helper.putSession(getApplicationContext(),"user_type","");
                                                 intent = new Intent(LoginActivity.this, HomeActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -226,6 +225,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         pd.dismiss();
 
                                     }
+                                    t.printStackTrace();
                                     Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });

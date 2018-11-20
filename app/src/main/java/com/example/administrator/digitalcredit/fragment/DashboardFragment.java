@@ -64,37 +64,37 @@ public class DashboardFragment extends Fragment {
                         @Override
                         public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
                             if(response.isSuccessful() && response.code()==200){
-
+                                Log.e("Customer------>",response.body().toString());
                                 helper.putSession(viewRoot.getContext(),"user_id",response.body().getUserId().toString());
                                 helper.putSession(viewRoot.getContext(),"user_mobile_no",response.body().getUserMobileNo().toString());
                                 helper.putSession(viewRoot.getContext(),"user_cnic",response.body().getUserCnic().toString());
                                 helper.putSession(viewRoot.getContext(),"user_channel_id",response.body().getUserChannelId().toString());
                                 helper.putSession(viewRoot.getContext(),"income",response.body().getIncome().toString());
                                 helper.putSession(viewRoot.getContext(),"user_status",response.body().getUserStatus().toString());
-                                helper.putSession(viewRoot.getContext(),"available_Balance",response.body().getAvailableBalance().toString());
+                                helper.putSession(viewRoot.getContext(),"available_Balance", String.valueOf(response.body().getAvailableBalance()));
                                 helper.putSession(viewRoot.getContext(),"base_scrore",response.body().getBaseScrore().toString());
                                 helper.putSession(viewRoot.getContext(),"behavior_score",response.body().getBehaviorScore().toString());
                                 helper.putSession(viewRoot.getContext(),"base_score_flag",response.body().getBaseScoreFlag().toString());
                                 helper.putSession(viewRoot.getContext(),"behavior_score_flag",response.body().getBehaviorScoreFlag().toString());
-                                helper.putSession(viewRoot.getContext(),"assigned_amount_Limit",response.body().getAssignedAmountLimit().toString());
+                                helper.putSession(viewRoot.getContext(),"assigned_amount_Limit", String.valueOf(response.body().getAssignedAmountLimit()));
                                 helper.putSession(viewRoot.getContext(),"consumed_Limit",response.body().getConsumedLimit().toString());
-                                helper.putSession(viewRoot.getContext(),"available_Amount_Limit",response.body().getAvailableAmountLimit().toString());
+                                helper.putSession(viewRoot.getContext(),"available_Amount_Limit", String.valueOf(response.body().getAvailableAmountLimit()));
                                 helper.putSession(viewRoot.getContext(),"dbr_value",response.body().getDbrValue().toString());
                                 helper.putSession(viewRoot.getContext(),"dbr_value_flag",response.body().getDbrValueFlag().toString());
                                 //startActivity(intent);
                                 tvBase.setText(helper.getSession(viewRoot.getContext()).get("base_scrore").toString());
                                 tvBehavior.setText(helper.getSession(viewRoot.getContext()).get("behavior_score").toString());
                                 tvAggregation.setText(String.valueOf(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("base_scrore").toString())+Integer.parseInt(helper.getSession(viewRoot.getContext()).get("behavior_score").toString())));
-                                Log.e("Helper----->",helper.CashFormatter(response.body().getAvailableBalance().toString()));
+                                Log.e("Helper----->",helper.CashFormatter(String.valueOf(response.body().getAvailableBalance())));
                                 if(response.body().getAvailLoan()>0.00){
-                                    tvRemainingAmt.setText("Rs. "+helper.CashFormatter(String.valueOf(response.body().getAvailLoan())));
+                                    tvRemainingAmt.setText("Rs. "+helper.CashFormatter(String.valueOf(response.body().getAvailableBalance())));
                                 }else{
-                                    tvRemainingAmt.setText("Rs. "+String.valueOf(response.body().getAvailLoan()));
+                                    tvRemainingAmt.setText("Rs. "+String.valueOf(response.body().getAvailableBalance()));
                                 }
-                                if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0) {
+                                if(Float.parseFloat(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())>0.00) {
                                     tvLimit.setText("Rs. " + helper.CashFormatter(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString()));
                                 }else{
-                                    if(Integer.parseInt(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())<0){
+                                    if(Float.parseFloat(helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString())<0.00){
                                         tvLimit.setText("Rs. 0.00");
                                     }else {
                                         tvLimit.setText("Rs. " + helper.getSession(viewRoot.getContext()).get("available_Amount_Limit").toString());

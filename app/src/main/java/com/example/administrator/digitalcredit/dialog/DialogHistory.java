@@ -39,6 +39,7 @@ public class DialogHistory extends DialogFragment {
     private TextView tvPaidDate;
     private TextView tvRemainingAmount;
     private TextView tvLoanFees;
+    private TextView tvOrderId;
     private Helper helper;
     private LoanDetail bean;
     private Button btnClose;
@@ -73,6 +74,7 @@ public class DialogHistory extends DialogFragment {
                                }
                                try {
                                    bean=response.body();
+
                                    tvLoanId.setText(String.valueOf(bean.getId()));
 //                                tvUserId.setText(bean.getCustomerId().toString());
                                    tvAmount.setText(String.valueOf(bean.getAmt()));
@@ -80,6 +82,7 @@ public class DialogHistory extends DialogFragment {
                                    tvDueDate.setText(bean.getLoanDueDate());
                                    tvAmountPaid.setText(String.valueOf(bean.getAmtPaid()));
                                    tvStatus.setText(bean.getLoanStatus());
+                                   tvOrderId.setText(String.valueOf(response.body().getOrderId()));
 //                                tvPaidDate.setText(bean.getLastPaidDate());
 //                                tvRemainingAmount.setText(String.valueOf(bean.getRemainingAmt()));
                                    tvLoanFees.setText(String.valueOf(bean.getLoanFees()));
@@ -119,6 +122,7 @@ public class DialogHistory extends DialogFragment {
         tvDueDate=viewRoot.findViewById(R.id.textViewLoanDueDate);
         tvAmountPaid=viewRoot.findViewById(R.id.textViewAmtPaid);
         tvStatus=viewRoot.findViewById(R.id.textViewLoanStatus);
+        tvOrderId=viewRoot.findViewById(R.id.textViewOrderId);
 //        tvPaidDate=viewRoot.findViewById(R.id.textViewLastPaidDate);
 //        tvRemainingAmount=viewRoot.findViewById(R.id.textViewRemainingAmt);
         tvLoanFees=viewRoot.findViewById(R.id.textViewLoanFees);

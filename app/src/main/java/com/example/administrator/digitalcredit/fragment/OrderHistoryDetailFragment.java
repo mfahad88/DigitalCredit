@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -38,7 +39,8 @@ public class OrderHistoryDetailFragment extends Fragment {
     private Helper helper;
     private ProgressBar bar;
     private CardView cardView;
-    private TextView tvHeader;
+    private TextView tvOrderId,tvDistributor,tvMode,tvStatus,tvLoanId;
+    private LinearLayout linearLayoutHeader,linearLayoutLoan;
     public OrderHistoryDetailFragment() {
         // Required empty public constructor
     }
@@ -53,7 +55,13 @@ public class OrderHistoryDetailFragment extends Fragment {
         helper=Helper.getInstance();
         bar=viewRoot.findViewById(R.id.progress_bar);
         cardView=viewRoot.findViewById(R.id.cardView);
-        tvHeader=viewRoot.findViewById(R.id.textViewheader);
+        linearLayoutHeader=viewRoot.findViewById(R.id.linearHeader);
+        tvOrderId=viewRoot.findViewById(R.id.textViewOrderId);
+        tvDistributor=viewRoot.findViewById(R.id.textViewDistributor);
+        tvMode=viewRoot.findViewById(R.id.textViewMode);
+        tvStatus=viewRoot.findViewById(R.id.textViewStatus);
+        tvLoanId=viewRoot.findViewById(R.id.textViewLoanId);
+        linearLayoutLoan=viewRoot.findViewById(R.id.linearLoanId);
         if(getArguments()!=null){
             populateTable(String.valueOf(getArguments().getInt("OrderId")));
         }
@@ -67,20 +75,34 @@ public class OrderHistoryDetailFragment extends Fragment {
                     public void onResponse(Call<OrderDetailResponse> call, Response<OrderDetailResponse> response) {
                         if(response.code()==200 || response.isSuccessful()){
                           try {
-                              tvHeader.append("Order Id: "+response.body().getOrder().getOrderId()+"\n");
-                              tvHeader.append("Distributor Name: "+response.body().getDetail().getUserName()+"\n");
-                              if(response.body().getDetail().getUserStatus().equalsIgnoreCase("C")){
-                                  tvHeader.append("Payment Mode: CASH");
-                              }if(response.body().getDetail().getUserStatus().equalsIgnoreCase("L")){
-                                  tvHeader.append("Payment Mode: LOAN");
-                              }if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("A")){
 
-                              }if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("A")){
-
+                              tvOrderId.setText(String.valueOf(response.body().getOrder().getOrderId()));
+                              if(response.body().getDetail()!=null) {
+                                  tvDistributor.setText(response.body().getDetail().getUserName());
+                              }else{
+                                  tvDistributor.setText("N/A");
                               }
+                              if(response.body().getOrder().getOrderType().equalsIgnoreCase("C")){
+                                  tvMode.setText("CASH");
+                              }else if(response.body().getOrder().getOrderType().equalsIgnoreCase("L")){
+                                  tvMode.setText("LOAN");
+                              }
+                              if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("A")){
+                                tvStatus.setText("In Cart");
+                              }else{
+                                  tvStatus.setText(response.body().getOrder().getOrderStatus());
+                              }if(response.body().getOrder().getFkLoanId()>0){
+                                  linearLayoutLoan.setVisibility(View.VISIBLE);
+                                  tvLoanId.setText(String.valueOf(response.body().getOrder().getFkLoanId()));
+                              }
+                              /*if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("U")){
+                                  tvStatus.setText("UnDelivered");
+                              }else if(response.body().getOrder().getOrderStatus().equalsIgnoreCase("Delivered")){
+                                  tvStatus.setText("Delivered");
+                              }*/
                               for(OrderDetail detail:response.body().getOrderDetail()){
                                   bar.setVisibility(View.GONE);
-                                  tvHeader.setVisibility(View.VISIBLE);
+                                  linearLayoutHeader.setVisibility(View.VISIBLE);
                                   cardView.setVisibility(View.VISIBLE);
                                   Log.e("OrderDetail---->",detail.getProductName());
                                   TableRow row = new TableRow(viewRoot.getContext());

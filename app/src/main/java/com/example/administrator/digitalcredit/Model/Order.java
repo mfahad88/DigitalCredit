@@ -45,6 +45,15 @@ public class Order {
     @SerializedName("totalItem")
     @Expose
     private Integer totalItem;
+    @SerializedName("mobile_no")
+    @Expose
+    private String mobile_no;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("cnic")
+    @Expose
+    private String cnic;
 
     public Integer getUserId() {
         return userId;
@@ -150,4 +159,49 @@ public class Order {
         this.totalItem = totalItem;
     }
 
+    public String getMobile_no() {
+        return mobile_no;
+    }
+
+    public void setMobile_no(String mobile_no) {
+        this.mobile_no = mobile_no;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCnic() {
+        return cnic;
+    }
+
+    public void setCnic(String cnic) {
+        this.cnic = cnic;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "userId=" + userId +
+                ", orderId=" + orderId +
+                ", totalAmt=" + totalAmt +
+                ", discountAmt=" + discountAmt +
+                ", fkPromoId=" + fkPromoId +
+                ", fkDistributerId=" + fkDistributerId +
+                ", fkLoanId=" + fkLoanId +
+                ", orderType='" + orderType + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", modifiedOn=" + modifiedOn +
+                ", modifiedBy=" + modifiedBy +
+                ", totalItem=" + totalItem +
+                ", mobile_no='" + mobile_no + '\'' +
+                ", name='" + name + '\'' +
+                ", cnic='" + cnic + '\'' +
+                '}';
+    }
 }

@@ -33,14 +33,14 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HistoryFragment extends Fragment {
+public class LoanHistoryFragment extends Fragment {
     private View viewRoot;
     private Helper helper;
     private TableLayout tableLayout;
     private DialogFragment dialog;
     private ProgressDialog pd;
 
-    public HistoryFragment() {
+    public LoanHistoryFragment() {
         // Required empty public constructor
     }
 

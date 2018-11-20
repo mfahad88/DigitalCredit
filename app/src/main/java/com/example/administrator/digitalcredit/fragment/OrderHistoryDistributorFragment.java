@@ -60,7 +60,7 @@ public class OrderHistoryDistributorFragment extends Fragment {
 
     private void populateTable(String Id){
        try{
-           ApiClient.getInstance().orderHistory("fk_distributer_id="+Id)
+           ApiClient.getInstance().orderHistory("fk_distributer_id="+Id+" ORDER BY order_id desc")
                    .enqueue(new Callback<List<OrderHistoryResponse>>() {
                        @Override
                        public void onResponse(Call<List<OrderHistoryResponse>> call, Response<List<OrderHistoryResponse>> response) {
@@ -85,7 +85,7 @@ public class OrderHistoryDistributorFragment extends Fragment {
                                        public void onClick(View view) {
                                            Bundle bundle=new Bundle();
                                            bundle.putInt("OrderId",historyResponse.getOrderId());
-                                           OrderHistoryDetailFragment fragment=new OrderHistoryDetailFragment();
+                                           OrderHistoryDistributorDetailFragment fragment=new OrderHistoryDistributorDetailFragment();
                                            fragment.setArguments(bundle);
                                            getFragmentManager().beginTransaction().replace(R.id.view_container,fragment).commit();
                                        }

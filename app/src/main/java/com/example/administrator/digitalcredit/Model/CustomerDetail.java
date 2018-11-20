@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class CustomerDetail {
 
-    @SerializedName("user_name")
-    @Expose
-    private String userName;
     @SerializedName("user_id")
     @Expose
     private Integer userId;
@@ -29,7 +26,7 @@ public class CustomerDetail {
     private String userStatus;
     @SerializedName("available_Balance")
     @Expose
-    private Integer availableBalance;
+    private Double availableBalance;
     @SerializedName("base_scrore")
     @Expose
     private Integer baseScrore;
@@ -44,26 +41,28 @@ public class CustomerDetail {
     private Integer behaviorScoreFlag;
     @SerializedName("assigned_amount_Limit")
     @Expose
-    private Integer assignedAmountLimit;
+    private Double assignedAmountLimit;
     @SerializedName("consumed_Limit")
     @Expose
     private Integer consumedLimit;
     @SerializedName("available_Amount_Limit")
     @Expose
-    private Integer availableAmountLimit;
+    private Double availableAmountLimit;
     @SerializedName("dbr_value")
     @Expose
     private Integer dbrValue;
     @SerializedName("dbr_value_flag")
     @Expose
     private Integer dbrValueFlag;
-
     @SerializedName("user_type")
     @Expose
-    private Integer user_type;
+    private Integer userType;
     @SerializedName("availLoan")
     @Expose
-    private float availLoan;
+    private Double availLoan;
+    @SerializedName("user_name")
+    @Expose
+    private String userName;
 
     public Integer getUserId() {
         return userId;
@@ -113,11 +112,11 @@ public class CustomerDetail {
         this.userStatus = userStatus;
     }
 
-    public Integer getAvailableBalance() {
+    public Double getAvailableBalance() {
         return availableBalance;
     }
 
-    public void setAvailableBalance(Integer availableBalance) {
+    public void setAvailableBalance(Double availableBalance) {
         this.availableBalance = availableBalance;
     }
 
@@ -153,11 +152,11 @@ public class CustomerDetail {
         this.behaviorScoreFlag = behaviorScoreFlag;
     }
 
-    public Integer getAssignedAmountLimit() {
+    public Double getAssignedAmountLimit() {
         return assignedAmountLimit;
     }
 
-    public void setAssignedAmountLimit(Integer assignedAmountLimit) {
+    public void setAssignedAmountLimit(Double assignedAmountLimit) {
         this.assignedAmountLimit = assignedAmountLimit;
     }
 
@@ -169,11 +168,11 @@ public class CustomerDetail {
         this.consumedLimit = consumedLimit;
     }
 
-    public Integer getAvailableAmountLimit() {
+    public Double getAvailableAmountLimit() {
         return availableAmountLimit;
     }
 
-    public void setAvailableAmountLimit(Integer availableAmountLimit) {
+    public void setAvailableAmountLimit(Double availableAmountLimit) {
         this.availableAmountLimit = availableAmountLimit;
     }
 
@@ -193,6 +192,22 @@ public class CustomerDetail {
         this.dbrValueFlag = dbrValueFlag;
     }
 
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
+    }
+
+    public Double getAvailLoan() {
+        return availLoan;
+    }
+
+    public void setAvailLoan(Double availLoan) {
+        this.availLoan = availLoan;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -201,19 +216,28 @@ public class CustomerDetail {
         this.userName = userName;
     }
 
-    public Integer getUser_type() {
-        return user_type;
-    }
-
-    public void setUser_type(Integer user_type) {
-        this.user_type = user_type;
-    }
-
-    public float getAvailLoan() {
-        return availLoan;
-    }
-
-    public void setAvailLoan(float availLoan) {
-        this.availLoan = availLoan;
+    @Override
+    public String toString() {
+        return "CustomerDetail{" +
+                "userId=" + userId +
+                ", userMobileNo='" + userMobileNo + '\'' +
+                ", userCnic='" + userCnic + '\'' +
+                ", userChannelId='" + userChannelId + '\'' +
+                ", income=" + income +
+                ", userStatus='" + userStatus + '\'' +
+                ", availableBalance=" + availableBalance +
+                ", baseScrore=" + baseScrore +
+                ", behaviorScore=" + behaviorScore +
+                ", baseScoreFlag=" + baseScoreFlag +
+                ", behaviorScoreFlag=" + behaviorScoreFlag +
+                ", assignedAmountLimit=" + assignedAmountLimit +
+                ", consumedLimit=" + consumedLimit +
+                ", availableAmountLimit=" + availableAmountLimit +
+                ", dbrValue=" + dbrValue +
+                ", dbrValueFlag=" + dbrValueFlag +
+                ", userType=" + userType +
+                ", availLoan=" + availLoan +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 }

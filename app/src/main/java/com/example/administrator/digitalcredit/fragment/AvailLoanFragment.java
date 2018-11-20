@@ -106,7 +106,7 @@ public class AvailLoanFragment extends Fragment {
                            detail.enqueue(new Callback<CustomerDetail>() {
                                @Override
                                public void onResponse(Call<CustomerDetail> call, Response<CustomerDetail> response) {
-                                   availableAmt=response.body().getAvailableAmountLimit();
+                                   availableAmt=response.body().getAvailableAmountLimit().floatValue();
 
                                    if(consumedAmt>availableAmt){
                                        spinner.setEnabled(false);
@@ -133,7 +133,7 @@ public class AvailLoanFragment extends Fragment {
                                                             spinner.setEnabled(true);
                                                             processingFee=response.body();
                                                             tvProcessingFee.setText("Rs. "+helper.CashFormatter(String.valueOf(processingFee)));
-                                                            remaining_bal= availableAmt-(consumedAmt);
+                                                            remaining_bal= availableAmt-consumedAmt-processingFee;
 
                                                             if(remaining_bal<0){
                                                                 tvRemaining.setText("Rs. 0.00");
@@ -276,7 +276,7 @@ public class AvailLoanFragment extends Fragment {
                                                btn.setEnabled(true);
                                                processingFee=response.body();
                                                tvProcessingFee.setText("Rs. "+helper.CashFormatter(response.body().toString()));
-                                               remaining_bal= availableAmt-(consumedAmt);
+                                               remaining_bal= availableAmt-consumedAmt-processingFee;
                                                if(remaining_bal<0){
                                                    tvRemaining.setText("Rs. 0.00");
                                                }else {
@@ -330,13 +330,12 @@ public class AvailLoanFragment extends Fragment {
                                  loanDetail.setRemainingAmt(remaining_bal);
                                  loanDetail.setLoanFees(processingFee);
                                  loanDetail.setOrderId(orderId);
-                                 loanDetail.setOrder_status('U');
+                                 loanDetail.setOrder_status("Delivered");
                                  if(consumedAmt>availableAmt) {
                                      Toast.makeText(viewRoot.getContext(), "Please enter valid amount...", Toast.LENGTH_SHORT).show();
                                      btn.setEnabled(true);
                                  }
-//                           Log.e("Check___>", "consumedAmt+processingFee= "+(consumedAmt+processingFee)+"Amount="+availableAmt
-//                                   +String.valueOf((consumedAmt+processingFee)<availableAmt));
+
                                  if(consumedAmt>0){
                                      if( consumedAmt<=availableAmt /*&& (consumedAmt+processingFee)>availableAmt*/) {
                                          /*if(consumedAmt<processingFee *//*|| consumedAmt==processingFee*//*){

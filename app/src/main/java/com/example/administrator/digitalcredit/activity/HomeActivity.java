@@ -29,7 +29,7 @@ import com.example.administrator.digitalcredit.fragment.AvailLoanFragment;
 import com.example.administrator.digitalcredit.fragment.CartFragment;
 import com.example.administrator.digitalcredit.fragment.DashboardFragment;
 import com.example.administrator.digitalcredit.fragment.DistributorFragment;
-import com.example.administrator.digitalcredit.fragment.HistoryFragment;
+import com.example.administrator.digitalcredit.fragment.LoanHistoryFragment;
 import com.example.administrator.digitalcredit.fragment.OrderFragment;
 import com.example.administrator.digitalcredit.fragment.OrderHistoryDistributorFragment;
 import com.example.administrator.digitalcredit.fragment.OrderHistoryFragment;
@@ -197,7 +197,7 @@ public class HomeActivity extends AppCompatActivity
             fragment = new CartFragment();
         }else if(id==R.id.avail_history){
             toolbar.setTitle("History");
-            fragment=new HistoryFragment();
+            fragment=new LoanHistoryFragment();
         }else if(id==R.id.order_history){
             toolbar.setTitle("Order History");
             fragment=new OrderHistoryFragment();
@@ -218,9 +218,13 @@ public class HomeActivity extends AppCompatActivity
         else if(id==R.id.logout){
 
             try {
+                if(helper.getSession(getApplicationContext())!=null){
+                    helper.clearSession(getApplicationContext());
+                }
                 Intent intent=new Intent(this,LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("clear","1");
+               // helper.clearSession(getApplicationContext());
                 startActivity(intent);
             }catch (Exception e){
                 if(pd.isShowing()) {
