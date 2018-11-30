@@ -19,14 +19,14 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
 
     private List<Product> productList;
-    private int qty=0;
+
     private AdapterInterface adapterInterface;
     private DecimalFormat format;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvProduct,tvPrice,tvDesc,tvQty,tvMinus,tvPlus,tvAmount,tvProductId;
         public ImageView imageView;
-
+        public int qty=0;
         public MyViewHolder(View view) {
             super(view);
 
@@ -66,14 +66,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             holder.tvProduct.setText(product.getProductName());
             holder.tvPrice.setText(String.valueOf(product.getPrice()));
             holder.tvDesc.setText(product.getDesc());
-            holder.tvQty.setText(String.valueOf(qty));
+            holder.tvQty.setText(String.valueOf(holder.qty));
             holder.tvPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    qty=Integer.parseInt(holder.tvQty.getText().toString());
-                    qty++;
-                    holder.tvQty.setText(String.valueOf(qty));
-                    holder.tvAmount.setText(String.valueOf(product.getPrice()*qty));
+                    holder.qty=Integer.parseInt(holder.tvQty.getText().toString());
+                    holder.qty++;
+                    holder.tvQty.setText(String.valueOf(holder.qty));
+                    holder.tvAmount.setText(String.valueOf(product.getPrice()*holder.qty));
                     adapterInterface.totalItems("plus");
                     adapterInterface.totalAmount(product.getPrice().floatValue(),"plus");
 
@@ -83,11 +83,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             holder.tvMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    qty=Integer.parseInt(holder.tvQty.getText().toString());
-                    if(qty>0){
-                        qty--;
-                        holder.tvQty.setText(String.valueOf(qty));
-                        holder.tvAmount.setText(String.valueOf(product.getPrice()*qty));
+                    holder.qty=Integer.parseInt(holder.tvQty.getText().toString());
+                    if(holder.qty>0){
+                        holder.qty--;
+                        holder.tvQty.setText(String.valueOf(holder.qty));
+                        holder.tvAmount.setText(String.valueOf(product.getPrice()*holder.qty));
                         adapterInterface.totalItems("minus");
                         adapterInterface.totalAmount(product.getPrice().floatValue(),"minus");
 
